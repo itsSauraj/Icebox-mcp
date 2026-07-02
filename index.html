@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <title>MCP Apps — Preview Launcher</title>
+  <link rel="stylesheet" href="/src/global.css">
+  <style>
+    body { font-family: var(--font-sans); }
+    .wrap { max-width: 520px; margin: 40px auto; padding: 0 20px; }
+    h1 { font-size: 1.5rem; }
+    p.note { color: var(--color-text-secondary); font-size: 0.9rem; }
+    ul { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    a.app {
+      display: block; padding: 16px; border-radius: 12px; text-decoration: none;
+      color: var(--color-text-primary);
+      background: var(--color-background-secondary);
+      border: 1px solid var(--color-border);
+      font-weight: 600;
+    }
+    a.app:hover { border-color: var(--color-ring-primary); }
+    a.app small { display: block; font-weight: 400; color: var(--color-text-secondary); margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>MCP Apps — local preview</h1>
+    <p class="note">Standalone preview mode (no MCP host needed). Each link opens one app's UI.</p>
+    <ul>
+      <li><a class="app" href="/color-picker.html">🎨 Color Picker<small>Pick a color</small></a></li>
+      <li><a class="app" href="/dice.html">🎲 Dice<small>Roll 1–5 · duel mode</small></a></li>
+      <li><a class="app" href="/coin.html">🪙 Coin Flip<small>Heads or tails</small></a></li>
+      <li><a class="app" href="/card.html">🃏 Draw a Card<small>52-card deck</small></a></li>
+      <li><a class="app" href="/wheel.html">🎡 Spin the Wheel<small>Editable labels</small></a></li>
+      <li><a class="app" href="/decision-dice.html">🎲 Decision Die<small>Custom faces</small></a></li>
+    </ul>
+  </div>
+</body>
+</html>

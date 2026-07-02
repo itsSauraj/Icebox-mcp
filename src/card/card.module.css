@@ -1,0 +1,37 @@
+.card {
+  position: relative;
+  width: 96px;
+  height: 134px;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #1a1a1a;
+  border: 1px solid #d0d0d0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  animation: deal 0.32s ease-out;
+}
+.red { color: #d1344b; }
+
+.cornerTop,
+.cornerBottom {
+  position: absolute;
+  font-size: 0.85rem;
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  text-align: center;
+}
+.cornerTop { top: 7px; left: 8px; }
+.cornerBottom { bottom: 7px; right: 8px; transform: rotate(180deg); }
+
+.suitBig {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+}
+
+@keyframes deal {
+  from { transform: translateY(-10px) rotateY(80deg); opacity: 0; }
+  to { transform: translateY(0) rotateY(0deg); opacity: 1; }
+}

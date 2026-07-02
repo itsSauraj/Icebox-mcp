@@ -1,0 +1,32 @@
+.scene {
+  perspective: 600px;
+  width: 96px;
+  height: 96px;
+}
+
+.coin {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.95s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  backface-visibility: hidden;
+  font-size: 2.4rem;
+  font-weight: var(--font-weight-bold);
+  color: #7a5b12;
+  background: radial-gradient(circle at 35% 30%, #ffe9a8, #f2c94c 60%, #d4a72c);
+  border: 3px solid #caa63c;
+  box-shadow: inset 0 0 0 4px rgba(255, 255, 255, 0.25), 0 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+.front { transform: rotateX(0deg); }
+.back { transform: rotateX(180deg); }

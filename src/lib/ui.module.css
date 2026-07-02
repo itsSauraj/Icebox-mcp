@@ -1,0 +1,190 @@
+.main {
+  width: 100%;
+  max-width: 360px;
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: var(--font-weight-bold);
+}
+.subtitle {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+/* Centered area holding the visual (die, coin, card, wheel…). */
+.stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  min-height: 132px;
+  flex-wrap: wrap;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+}
+
+/* ---- Buttons ---- */
+.btn {
+  padding: 9px 16px;
+  font-size: 0.9rem;
+  font-weight: var(--font-weight-bold);
+  border-radius: var(--border-radius-md);
+  border: var(--border-width-regular) solid var(--color-border);
+  background: var(--color-background-secondary);
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+.btn:hover { border-color: var(--color-ring-primary); }
+.btn:focus-visible {
+  outline: 2px solid var(--color-ring-primary);
+  outline-offset: 2px;
+}
+.btn:disabled { opacity: 0.55; cursor: default; }
+
+.primary {
+  color: var(--color-text-on-accent);
+  background: var(--color-accent);
+  border-color: transparent;
+}
+.primary:hover {
+  background: color-mix(in srgb, var(--color-accent) 85%, var(--color-background-inverse));
+  border-color: transparent;
+}
+
+.icon {
+  min-width: 34px;
+  padding: 6px 10px;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+/* ---- Result + status ---- */
+.result {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: var(--font-weight-medium);
+}
+.resultBig {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-bold);
+}
+.status {
+  margin: 0;
+  min-height: 1.1em;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+.muted { color: var(--color-text-secondary); }
+
+.notice {
+  padding: var(--spacing-md);
+  color: var(--color-text-secondary);
+}
+
+/* ---- Win / lose / tie banners ---- */
+.banner {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-weight: var(--font-weight-bold);
+}
+.win { color: #065f46; background: light-dark(#d1fae5, #064e3b); }
+.lose { color: #7f1d1d; background: light-dark(#fee2e2, #7f1d1d33); }
+.tie { color: var(--color-text-secondary); background: var(--color-background-secondary); }
+
+/* ---- Inline number stepper ---- */
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: 4px 8px;
+  border: var(--border-width-regular) solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  background: var(--color-background-secondary);
+}
+.stepper > span { min-width: 1.5em; font-variant-numeric: tabular-nums; }
+
+/* ---- Label / faces editor (wheel + decision dice) ---- */
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  width: 100%;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px 4px 10px;
+  font-size: 0.8rem;
+  border-radius: 999px;
+  background: var(--color-background-secondary);
+  border: var(--border-width-regular) solid var(--color-border);
+}
+.chipX {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  background: transparent;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+.chipX:hover { color: var(--color-text-primary); background: var(--color-border); }
+
+.addRow {
+  display: flex;
+  gap: var(--spacing-sm);
+  width: 100%;
+}
+.input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 7px 10px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  color: var(--color-text-primary);
+  background: var(--color-background-secondary);
+  border: var(--border-width-regular) solid var(--color-border);
+  border-radius: var(--border-radius-sm);
+}
+.input:focus-visible {
+  outline: 2px solid var(--color-ring-primary);
+  outline-offset: -1px;
+}
+
+/* ---- Small tally row (coin) ---- */
+.tally {
+  display: flex;
+  gap: var(--spacing-lg);
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+.tally b { color: var(--color-text-primary); }

@@ -1,0 +1,61 @@
+:root {
+  color-scheme: light dark;
+
+  /* Fallbacks for host style variables. The host may override these via context. */
+  --color-text-primary: light-dark(#1f2937, #f3f4f6);
+  --color-text-secondary: light-dark(#6b7280, #9ca3af);
+  --color-text-inverse: light-dark(#f3f4f6, #1f2937);
+  --color-text-on-accent: #ffffff;
+  --color-background-primary: light-dark(#ffffff, #1a1a1a);
+  --color-background-secondary: light-dark(#f3f4f6, #262626);
+  --color-background-inverse: light-dark(#1a1a1a, #ffffff);
+  --color-border: light-dark(#e5e7eb, #3f3f46);
+  --color-ring-primary: light-dark(#3b82f6, #60a5fa);
+  --color-accent: light-dark(#2563eb, #3b82f6);
+
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-width-regular: 1px;
+
+  --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  --font-text-md-size: 1rem;
+  --font-text-md-line-height: 1.5;
+
+  --spacing-unit: 1rem;
+  --spacing-xs: calc(var(--spacing-unit) * 0.25);
+  --spacing-sm: calc(var(--spacing-unit) * 0.5);
+  --spacing-md: var(--spacing-unit);
+  --spacing-lg: calc(var(--spacing-unit) * 1.5);
+
+  /* Checkerboard shown behind translucent colors. */
+  --checker: repeating-conic-gradient(
+      light-dark(#c9c9c9, #555) 0% 25%, transparent 0% 50%)
+    50% / 12px 12px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--font-text-md-size);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--font-text-md-line-height);
+  color: var(--color-text-primary);
+  background: transparent;
+}
+
+code, pre, kbd {
+  font-family: var(--font-mono);
+}
+
+b, strong {
+  font-weight: var(--font-weight-bold);
+}

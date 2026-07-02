@@ -1,0 +1,27 @@
+.die {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
+  padding: 10px;
+  border-radius: 20px;
+  text-align: center;
+  color: var(--color-text-on-accent);
+  background: linear-gradient(145deg, var(--color-accent), color-mix(in srgb, var(--color-accent) 60%, #000));
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+.rolling { animation: shake 0.28s ease-in-out infinite; }
+
+.faceText {
+  font-size: 1.1rem;
+  font-weight: var(--font-weight-bold);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-4px) rotate(-6deg); }
+  75% { transform: translateY(4px) rotate(6deg); }
+}
