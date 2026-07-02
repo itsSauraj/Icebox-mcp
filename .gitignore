@@ -2,3 +2,5 @@ node_modules/
 dist/
 .vercel/
 generated/html.js
+.env
+.env*.local

@@ -13,6 +13,11 @@ import express, { type Request, type Response } from "express";
 import path from "node:path";
 import { createServer } from "./server.js";
 
+// Load .env for local dev if present (Vercel injects env vars, so this is a
+// no-op there). `loadEnvFile` is Node 20.12+; guard for older/other runtimes.
+const { loadEnvFile } = process as unknown as { loadEnvFile?: (path?: string) => void };
+try { loadEnvFile?.(); } catch { /* no .env file — fine */ }
+
 /**
  * Starts an MCP server with Streamable HTTP transport in stateless mode.
  */
@@ -23,6 +28,13 @@ export async function startStreamableHTTPServer(
 
   const app = createMcpExpressApp({ host: "0.0.0.0" });
   app.use(cors());
+
+  // OpenAI Apps domain-verification challenge (token from env).
+  app.get("/.well-known/openai-apps-challenge", (_req: Request, res: Response) => {
+    const challenge = process.env.OPEN_AI_APP_CHALLANGE ?? process.env.OPENAI_APPS_CHALLENGE ?? "";
+    res.type("text/plain");
+    res.status(challenge ? 200 : 404).send(challenge);
+  });
 
   // Serve the landing page (/), privacy (/privacy) and terms (/terms) from
   // public/. `extensions: ["html"]` gives clean URLs. /mcp is unaffected — no
