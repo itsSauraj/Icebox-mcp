@@ -13,6 +13,10 @@ export default defineConfig(({ command }) => {
 
   return {
     plugins: [react(), viteSingleFile()],
+    // `public/` holds the server's base-domain pages (landing/privacy/terms),
+    // not Vite assets — disable Vite's publicDir so it isn't copied into dist/
+    // or served in place of the dev launcher.
+    publicDir: false,
     // Dev server opens the launcher (index.html) listing every app.
     server: {
       open: "/",

@@ -6,12 +6,17 @@
   "license": "MIT",
   "main": "dist/server.js",
   "scripts": {
-    "build": "tsc --noEmit && npm run build:apps",
+    "build": "npm run build:apps && npm run bundle:html && tsc --noEmit",
     "build:apps": "cross-env CLEAN=1 INPUT=color-picker.html vite build && cross-env INPUT=dice.html vite build && cross-env INPUT=coin.html vite build && cross-env INPUT=card.html vite build && cross-env INPUT=wheel.html vite build && cross-env INPUT=decision-dice.html vite build",
+    "bundle:html": "node scripts/bundle-html.mjs",
+    "vercel-build": "npm run build:apps && npm run bundle:html",
     "dev:ui": "cross-env NODE_ENV=development vite",
     "serve": "tsx main.ts",
     "serve:stdio": "tsx main.ts --stdio",
     "start": "cross-env NODE_ENV=development npm run build && npm run serve"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "dependencies": {
     "@modelcontextprotocol/ext-apps": "^1.7.4",
@@ -28,6 +33,7 @@
     "@types/node": "^26.1.0",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
+    "@vercel/node": "^5.8.22",
     "@vitejs/plugin-react": "^6.0.3",
     "concurrently": "^10.0.3",
     "cross-env": "^10.1.0",

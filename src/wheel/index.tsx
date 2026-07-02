@@ -113,8 +113,18 @@ function WheelApp({ runtime }: AppProps) {
                 </g>
               );
             })}
-            <circle cx={C} cy={C} r={16} fill="#fff" stroke="rgba(0,0,0,0.2)" />
           </svg>
+          {/* Clickable center hub — spins the wheel too. Sits outside the rotating
+              <svg> so it stays upright. */}
+          <button
+            type="button"
+            className={w.hub}
+            onClick={spin}
+            disabled={spinning || n < 2}
+            aria-label="Spin the wheel"
+          >
+            {spinning ? "…" : "Spin"}
+          </button>
         </div>
       </div>
 

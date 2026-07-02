@@ -1,14 +1,10 @@
 import { registerAppResource, registerAppTool, RESOURCE_MIME_TYPE } from "@modelcontextprotocol/ext-apps/server";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { CallToolResult, ReadResourceResult } from "@modelcontextprotocol/sdk/types.js";
-import fs from "node:fs/promises";
-import path from "node:path";
 import { z } from "zod";
-
-// Works both from source (server.ts) and compiled (dist/server.js).
-const DIST_DIR = import.meta.filename.endsWith(".ts")
-  ? path.join(import.meta.dirname, "dist")
-  : import.meta.dirname;
+// App HTML is inlined at build time (scripts/bundle-html.mjs) so the server
+// needs no runtime filesystem access — required for serverless (Vercel, etc.).
+import { htmlByFile } from "./generated/html.js";
 
 const randInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
 const pick = <T>(arr: readonly T[]): T => arr[Math.floor(Math.random() * arr.length)];
@@ -37,7 +33,8 @@ function serveHtml(server: McpServer, name: string, htmlFile: string): string {
     resourceUri,
     { mimeType: RESOURCE_MIME_TYPE },
     async (): Promise<ReadResourceResult> => {
-      const html = await fs.readFile(path.join(DIST_DIR, htmlFile), "utf-8");
+      const html = htmlByFile[htmlFile];
+      if (!html) throw new Error(`Missing bundled HTML for "${htmlFile}" — run \`npm run build\`.`);
       const uiMeta: Record<string, unknown> = {
         // These apps are fully self-contained (JS/CSS inlined, no network), so
         // no external origins are allowed. An explicit, locked-down policy
@@ -65,6 +62,11 @@ const SUITS = ["♠", "♥", "♦", "♣"];
 const SUIT_NAME: Record<string, string> = { "♠": "Spades", "♥": "Hearts", "♦": "Diamonds", "♣": "Clubs" };
 const WHEEL_DEFAULT = ["100", "200", "300", "400", "500", "Bankrupt", "600", "700", "800", "Free Spin"];
 const FACES_DEFAULT = ["Yes", "No", "Maybe", "Definitely", "No way", "Ask again"];
+const LOCAL_READONLY_TOOL_ANNOTATIONS = {
+  readOnlyHint: true,
+  openWorldHint: false,
+  destructiveHint: false,
+};
 
 /**
  * Creates a new MCP server instance hosting the color picker plus a set of
@@ -80,6 +82,7 @@ export function createServer(): McpServer {
     description: "Opens an interactive color picker, optionally seeded with a hex color. The user's chosen color is reported back.",
     inputSchema: { initialColor: z.string().regex(HEX_RE, "Must be a hex color like #2563eb").optional().describe("Initial color (hex).") },
     outputSchema: z.object({ color: z.string() }),
+    annotations: LOCAL_READONLY_TOOL_ANNOTATIONS,
     _meta: { ui: { resourceUri: colorUri } },
   }, async ({ initialColor }): Promise<CallToolResult> => {
     const color = normalizeHex(initialColor);
@@ -93,6 +96,7 @@ export function createServer(): McpServer {
     description: "Rolls one or more six-sided dice (default 1) and returns the faces and total. The UI supports re-rolling and a two-player 'highest total wins' duel.",
     inputSchema: { count: z.number().int().min(1).max(5).optional().describe("Number of dice to roll (1–5).") },
     outputSchema: z.object({ rolls: z.array(z.number()), total: z.number() }),
+    annotations: LOCAL_READONLY_TOOL_ANNOTATIONS,
     _meta: { ui: { resourceUri: diceUri } },
   }, async ({ count }): Promise<CallToolResult> => {
     const n = count ?? 1;
@@ -108,6 +112,7 @@ export function createServer(): McpServer {
     description: "Flips a fair coin and returns Heads or Tails.",
     inputSchema: {},
     outputSchema: z.object({ result: z.enum(["Heads", "Tails"]) }),
+    annotations: LOCAL_READONLY_TOOL_ANNOTATIONS,
     _meta: { ui: { resourceUri: coinUri } },
   }, async (): Promise<CallToolResult> => {
     const result = Math.random() < 0.5 ? "Heads" : "Tails";
@@ -121,6 +126,7 @@ export function createServer(): McpServer {
     description: "Draws a random card from a standard 52-card deck.",
     inputSchema: {},
     outputSchema: z.object({ rank: z.string(), suit: z.string(), label: z.string() }),
+    annotations: LOCAL_READONLY_TOOL_ANNOTATIONS,
     _meta: { ui: { resourceUri: cardUri } },
   }, async (): Promise<CallToolResult> => {
     const rank = pick(RANKS), suit = pick(SUITS);
@@ -135,6 +141,7 @@ export function createServer(): McpServer {
     description: "Spins a Wheel-of-Fortune style wheel. Provide custom labels (as many as you like) or use the defaults. Returns the winning label.",
     inputSchema: { labels: z.array(z.string()).min(2).max(24).optional().describe("Wheel segment labels (2–24).") },
     outputSchema: z.object({ labels: z.array(z.string()), winner: z.string(), index: z.number() }),
+    annotations: LOCAL_READONLY_TOOL_ANNOTATIONS,
     _meta: { ui: { resourceUri: wheelUri } },
   }, async ({ labels }): Promise<CallToolResult> => {
     const segs = labels && labels.length >= 2 ? labels : WHEEL_DEFAULT;
@@ -150,6 +157,7 @@ export function createServer(): McpServer {
     description: "Rolls a die with custom text faces (e.g. Yes/No/Maybe). Provide your own faces or use the defaults. Returns the chosen face.",
     inputSchema: { faces: z.array(z.string()).min(1).max(12).optional().describe("Custom die faces (1–12).") },
     outputSchema: z.object({ faces: z.array(z.string()), result: z.string() }),
+    annotations: LOCAL_READONLY_TOOL_ANNOTATIONS,
     _meta: { ui: { resourceUri: decisionUri } },
   }, async ({ faces }): Promise<CallToolResult> => {
     const set = faces && faces.length ? faces : FACES_DEFAULT;

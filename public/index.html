@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <title>Color Picker & Mini-Games</title>
+  <meta name="description" content="Interactive mini apps for ChatGPT and Claude: pick colors, roll dice, flip coins, draw cards, spin a wheel, and make randomized decisions.">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <div class="logo">🎨🎲</div>
+      <h1>Color Picker &amp; Mini-Games</h1>
+      <p class="subtitle">Pick colors and play</p>
+    </header>
+
+    <p class="lead">
+      A single <a href="https://modelcontextprotocol.io">Model Context Protocol</a>
+      (MCP) server that adds six interactive mini apps to MCP-enabled hosts like
+      ChatGPT and Claude — choose colors, roll dice, flip coins, draw cards, spin a
+      wheel, and make simple randomized decisions with custom labels.
+    </p>
+
+    <section class="grid">
+      <div class="card"><span class="emoji">🎨</span><b>Color Picker</b><span>HSV area, sliders, HEX/RGB/HSL, swatches</span></div>
+      <div class="card"><span class="emoji">🎲</span><b>Dice</b><span>Roll 1–5 dice, or a highest-total duel</span></div>
+      <div class="card"><span class="emoji">🪙</span><b>Coin Flip</b><span>Heads or tails, with a tally</span></div>
+      <div class="card"><span class="emoji">🃏</span><b>Draw a Card</b><span>Shuffled 52-card deck</span></div>
+      <div class="card"><span class="emoji">🎡</span><b>Spin the Wheel</b><span>Editable labels, add as many as you want</span></div>
+      <div class="card"><span class="emoji">🎲</span><b>Decision Die</b><span>Custom text faces (Yes/No/Maybe…)</span></div>
+    </section>
+
+    <h2>Connect it</h2>
+    <p>Add this server as a connector in your MCP-enabled host, using its endpoint:</p>
+    <p><span class="endpoint">https://&lt;this-domain&gt;/mcp</span></p>
+    <p class="muted">Then ask, for example, “roll three dice” or “open a color picker starting from #2563eb”.</p>
+
+    <div class="callout">
+      <strong>No account, no data collection.</strong> Every app runs locally in the
+      host and generates its results on the fly. See the
+      <a href="/privacy">Privacy Policy</a> for details.
+    </div>
+
+    <footer>
+      <a href="/privacy">Privacy Policy</a>
+      <a href="/terms">Terms of Service</a>
+      <span>© 2026 Color Picker &amp; Mini-Games</span>
+    </footer>
+  </div>
+</body>
+</html>

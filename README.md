@@ -31,7 +31,12 @@ Everything runnable lives in this directory:
 *.html                 One HTML entry per app (color-picker.html, dice.html, …)
 index.html             Dev-only launcher linking to every app's preview
 server.ts              Registers all 6 tools + UI resources
-main.ts                Server entry — Streamable HTTP (default) or stdio (--stdio)
+main.ts                Local server — Streamable HTTP (default) or stdio (--stdio)
+api/mcp.ts             Vercel serverless function exposing the MCP endpoint
+vercel.json            Vercel config (static pages + /mcp rewrite)
+public/                Base-domain pages: index.html, privacy.html, terms.html, styles.css
+scripts/bundle-html.mjs   Inlines built app HTML → generated/html.js
+generated/html.js      Inlined app HTML (generated; imported by server.ts)
 src/
   lib/
     runtime.tsx        Shared MCP App runtime: connect, theming, preview, reporting
@@ -46,7 +51,24 @@ dist/                  Built single-file HTML per app (generated)
 
 Adding another app = one HTML entry + one `src/<name>/index.tsx` calling
 `renderApp(...)` + one `serveHtml`/`registerAppTool` pair in `server.ts` + one
-line in `build:apps`.
+line in `build:apps` + one line in `scripts/bundle-html.mjs`.
+
+## Pages served on the base domain
+
+The server also serves plain web pages alongside the MCP endpoint (needed for app
+submission, which requires a privacy policy URL):
+
+| Path | Page |
+|------|------|
+| `/` | Landing page describing the apps |
+| `/privacy` | Privacy Policy |
+| `/terms` | Terms of Service |
+| `/mcp` | The MCP endpoint (unchanged) |
+
+Locally these come from `public/` via Express static (`npm run serve` →
+`http://localhost:3001/`). On Vercel they're served as static files. Edit the
+placeholder contact email in `public/privacy.html` and `public/terms.html`
+before submitting.
 
 ## Setup
 
@@ -73,9 +95,44 @@ npm start                       # build all apps + start HTTP server on :3001/mc
 npm run build && npm run serve:stdio   # stdio transport (subprocess hosts)
 ```
 
-`npm run build` typechecks and bundles all six apps into `dist/`. `npm run serve`
-reads those bundles, so build first (or use `npm start`). Set `PORT` to change
-the HTTP port (default `3001`).
+`npm run build` bundles all six apps into `dist/`, then inlines them into
+`generated/html.js`. `npm run serve` reads that module (no filesystem at runtime),
+so build first (or use `npm start`). Set `PORT` to change the port (default `3001`).
+
+## Deploy to Vercel
+
+The server is serverless-ready:
+
+- App HTML is **inlined** at build time (`generated/html.js`) — no runtime
+  filesystem access, so it works in a Vercel Function.
+- The transport is **stateless** (`sessionIdGenerator: undefined`) — no session
+  storage or sticky routing needed.
+- [api/mcp.ts](api/mcp.ts) is the Function (reuses the same transport as local);
+  [vercel.json](vercel.json) rewrites `/mcp` → `/api/mcp` and serves `public/`.
+
+Deployment (you run these — accounts/auth are yours):
+
+```bash
+npm i -g vercel     # if needed
+vercel              # link + deploy a preview
+vercel --prod       # production deploy
+```
+
+Vercel runs `vercel-build` (`build:apps` + `bundle:html`) automatically. After
+deploy you get:
+
+| URL | Purpose |
+|-----|---------|
+| `https://<app>.vercel.app/` | Landing page |
+| `https://<app>.vercel.app/privacy` | Privacy Policy (use this in the submission) |
+| `https://<app>.vercel.app/mcp` | **MCP connector URL** — point Claude/ChatGPT here |
+
+Point your connector at `…/mcp` and drop the local tunnel. For submission, set
+`APP_DOMAIN` in the Vercel project's Environment Variables (see below).
+
+> Note: `@vercel/node` pulls in an `esbuild` postinstall. Deploys on Vercel's
+> infra handle it; only if you run `vercel dev` locally may you need
+> `npm approve-scripts esbuild`.
 
 ## Try it with the reference host
 

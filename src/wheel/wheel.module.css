@@ -35,3 +35,38 @@
   stroke: rgba(0, 0, 0, 0.35);
   stroke-width: 2px;
 }
+
+/* Clickable center hub — a second way to spin. */
+.hub {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 3px solid light-dark(#ffffff, #e5e7eb);
+  background: var(--color-accent);
+  color: var(--color-text-on-accent, #ffffff);
+  font-family: inherit;
+  font-weight: var(--font-weight-bold);
+  font-size: 0.8rem;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  z-index: 3;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+.hub:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-accent) 85%, var(--color-background-inverse));
+}
+.hub:active:not(:disabled) {
+  transform: translate(-50%, -50%) scale(0.94);
+}
+.hub:disabled {
+  cursor: default;
+  opacity: 0.85;
+}
+.hub:focus-visible {
+  outline: 2px solid var(--color-ring-primary);
+  outline-offset: 2px;
+}

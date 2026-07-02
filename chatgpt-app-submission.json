@@ -1,0 +1,152 @@
+{
+  "$schema": "https://developers.openai.com/apps-sdk/schemas/chatgpt-app-submission.v1.json",
+  "schema_version": 1,
+  "app_info": {
+    "display_name": "Color Picker & Mini-Games",
+    "subtitle": "Pick colors and play",
+    "description": "Color Picker & Mini-Games lets users open interactive mini apps in ChatGPT to choose colors, roll dice, flip coins, draw cards, spin a wheel, and make simple randomized decisions with custom labels.",
+    "category": "ENTERTAINMENT"
+  },
+  "tools": {
+    "color-picker": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Normalizes an optional hex color and opens a local picker without changing stored or external data.",
+        "open_world_justification": "Does not publish content, send messages, or modify any external third-party system.",
+        "destructive_justification": "Does not delete, overwrite, revoke access, or perform irreversible actions."
+      }
+    },
+    "dice": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Generates random dice values and returns the total without changing stored or external data.",
+        "open_world_justification": "Does not publish content, send messages, or modify any external third-party system.",
+        "destructive_justification": "Does not delete, overwrite, revoke access, or perform irreversible actions."
+      }
+    },
+    "coin-flip": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Generates a random Heads or Tails result without changing stored or external data.",
+        "open_world_justification": "Does not publish content, send messages, or modify any external third-party system.",
+        "destructive_justification": "Does not delete, overwrite, revoke access, or perform irreversible actions."
+      }
+    },
+    "draw-card": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Generates a random standard playing card result without changing stored or external data.",
+        "open_world_justification": "Does not publish content, send messages, or modify any external third-party system.",
+        "destructive_justification": "Does not delete, overwrite, revoke access, or perform irreversible actions."
+      }
+    },
+    "spin-wheel": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Selects a random winner from provided or default labels without changing stored or external data.",
+        "open_world_justification": "Does not publish content, send messages, or modify any external third-party system.",
+        "destructive_justification": "Does not delete, overwrite, revoke access, or perform irreversible actions."
+      }
+    },
+    "decision-dice": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Selects a random result from provided or default die faces without changing stored or external data.",
+        "open_world_justification": "Does not publish content, send messages, or modify any external third-party system.",
+        "destructive_justification": "Does not delete, overwrite, revoke access, or perform irreversible actions."
+      }
+    }
+  },
+  "test_cases": [
+    {
+      "description": "Open the color picker with a seeded hex color.",
+      "user_prompt": "Open a color picker starting from #2563eb so I can choose a shade.",
+      "file_attachment_urls": null,
+      "tools_triggered": "color-picker",
+      "expected_output": "Opens the color picker seeded with the requested hex color and returns the selected color.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Roll multiple six-sided dice.",
+      "user_prompt": "Roll three dice and tell me the total.",
+      "file_attachment_urls": null,
+      "tools_triggered": "dice",
+      "expected_output": "Returns three dice faces and their total, with the dice UI available for re-rolling.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Flip a fair coin.",
+      "user_prompt": "Flip a coin for me.",
+      "file_attachment_urls": null,
+      "tools_triggered": "coin-flip",
+      "expected_output": "Returns either Heads or Tails and opens the coin flip UI.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Spin a wheel with custom labels.",
+      "user_prompt": "Spin a wheel with Pizza, Tacos, Sushi, and Noodles as options.",
+      "file_attachment_urls": null,
+      "tools_triggered": "spin-wheel",
+      "expected_output": "Returns the winning label from the provided options and opens the wheel UI.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Roll a decision die with custom faces.",
+      "user_prompt": "Use a decision die with Yes, No, and Maybe to pick an answer.",
+      "file_attachment_urls": null,
+      "tools_triggered": "decision-dice",
+      "expected_output": "Returns one of the provided decision faces and opens the decision dice UI.",
+      "expected_output_url": null
+    }
+  ],
+  "negative_test_cases": [
+    {
+      "description": "Do not trigger for calendar scheduling.",
+      "user_prompt": "Schedule a meeting with my team tomorrow afternoon.",
+      "file_attachment_urls": null,
+      "tools_triggered": null,
+      "expected_output": "The app should not be invoked because it cannot create or manage calendar events.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Do not trigger for online ordering.",
+      "user_prompt": "Order pizza delivery from the nearest restaurant.",
+      "file_attachment_urls": null,
+      "tools_triggered": null,
+      "expected_output": "The app should not be invoked because it cannot place orders or interact with external services.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Do not trigger for editing stored project files.",
+      "user_prompt": "Update my project theme file to use this new brand color.",
+      "file_attachment_urls": null,
+      "tools_triggered": null,
+      "expected_output": "The app should not be invoked because it can help pick a color but cannot edit files or persist project changes.",
+      "expected_output_url": null
+    }
+  ]
+}

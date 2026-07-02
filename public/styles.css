@@ -1,0 +1,99 @@
+:root {
+  color-scheme: light dark;
+  --bg: light-dark(#ffffff, #0f1115);
+  --bg-soft: light-dark(#f5f6f8, #171a21);
+  --text: light-dark(#1f2937, #e5e7eb);
+  --muted: light-dark(#6b7280, #9ca3af);
+  --border: light-dark(#e5e7eb, #2a2f3a);
+  --accent: light-dark(#2563eb, #60a5fa);
+  --radius: 12px;
+  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.6;
+}
+
+.wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+header.hero { text-align: center; margin-bottom: 40px; }
+.hero .logo { font-size: 3rem; }
+h1 { font-size: 2rem; margin: 12px 0 6px; }
+.subtitle { color: var(--muted); font-size: 1.1rem; margin: 0; }
+
+p, li { color: var(--text); }
+.lead { font-size: 1.05rem; }
+.muted { color: var(--muted); }
+
+h2 { font-size: 1.3rem; margin-top: 40px; }
+h3 { font-size: 1.05rem; margin-bottom: 4px; }
+
+a { color: var(--accent); }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin: 20px 0;
+}
+.card {
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-soft);
+}
+.card .emoji { font-size: 1.4rem; }
+.card b { display: block; margin-top: 4px; }
+.card span { color: var(--muted); font-size: 0.9rem; }
+
+.endpoint {
+  display: inline-block;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-soft);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.95rem;
+}
+
+.callout {
+  margin: 20px 0;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--bg-soft);
+}
+
+footer {
+  margin-top: 56px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.9rem;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.legal { max-width: 720px; }
+.legal h1 { text-align: left; }
+.legal .updated { color: var(--muted); font-size: 0.9rem; margin-top: -4px; }
+.legal h2 { font-size: 1.15rem; }
+.back { display: inline-block; margin-bottom: 20px; }
+
+@media (max-width: 520px) {
+  .grid { grid-template-columns: 1fr; }
+}
