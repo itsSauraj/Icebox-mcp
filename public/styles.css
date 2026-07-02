@@ -28,7 +28,8 @@ body {
 }
 
 header.hero { text-align: center; margin-bottom: 40px; }
-.hero .logo { font-size: 3rem; }
+.hero .logo { color: var(--accent); line-height: 0; }
+.hero .logo svg { width: 56px; height: 56px; }
 h1 { font-size: 2rem; margin: 12px 0 6px; }
 .subtitle { color: var(--muted); font-size: 1.1rem; margin: 0; }
 
@@ -53,8 +54,9 @@ a { color: var(--accent); }
   border-radius: var(--radius);
   background: var(--bg-soft);
 }
-.card .emoji { font-size: 1.4rem; }
-.card b { display: block; margin-top: 4px; }
+.card .icon { color: var(--accent); display: inline-flex; line-height: 0; }
+.card .icon svg { width: 28px; height: 28px; }
+.card b { display: block; margin-top: 8px; }
 .card span { color: var(--muted); font-size: 0.9rem; }
 
 .endpoint {

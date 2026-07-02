@@ -73,7 +73,7 @@ const LOCAL_READONLY_TOOL_ANNOTATIONS = {
  * mini-games — each registered as its own tool + UI resource.
  */
 export function createServer(): McpServer {
-  const server = new McpServer({ name: "MCP Apps: Color Picker & Games", version: "1.0.0" });
+  const server = new McpServer({ name: "IceBox", version: "1.0.0" });
 
   // ---- Color picker ----
   const colorUri = serveHtml(server, "color-picker", "color-picker.html");
