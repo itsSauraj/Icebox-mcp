@@ -5,13 +5,16 @@
   --color-text-primary: light-dark(#1f2937, #f3f4f6);
   --color-text-secondary: light-dark(#6b7280, #9ca3af);
   --color-text-inverse: light-dark(#f3f4f6, #1f2937);
-  --color-text-on-accent: #ffffff;
+  /* Dark text on the light-lavender dark-mode accent; white on the deep-purple
+     light-mode accent. */
+  --color-text-on-accent: light-dark(#ffffff, #241a3a);
   --color-background-primary: light-dark(#ffffff, #1a1a1a);
   --color-background-secondary: light-dark(#f3f4f6, #262626);
   --color-background-inverse: light-dark(#1a1a1a, #ffffff);
   --color-border: light-dark(#e5e7eb, #3f3f46);
-  --color-ring-primary: light-dark(#3b82f6, #60a5fa);
-  --color-accent: light-dark(#2563eb, #3b82f6);
+  /* Brand purple — consistent with the IceBox website. */
+  --color-ring-primary: light-dark(#7c3aed, #ddb7ff);
+  --color-accent: light-dark(#7c3aed, #ddb7ff);
 
   --border-radius-sm: 4px;
   --border-radius-md: 8px;

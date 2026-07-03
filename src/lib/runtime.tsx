@@ -24,14 +24,19 @@ import {
   useState,
   type ComponentType,
   type ReactNode,
+  type RefObject,
 } from "react";
 import { createRoot } from "react-dom/client";
 import ui from "./ui.module.css";
+
+export type DisplayMode = "inline" | "fullscreen" | "pip";
 
 /** The minimal host surface the apps use to talk back to the model. */
 export interface GameHost {
   updateModelContext(params: { content: Array<{ type: "text"; text: string }> }): Promise<unknown>;
   sendMessage(params: { role: "user"; content: Array<{ type: "text"; text: string }> }): Promise<{ isError?: boolean }>;
+  /** Present when connected to a host; absent in standalone preview. */
+  requestDisplayMode?(params: { mode: DisplayMode }): Promise<{ mode: DisplayMode }>;
 }
 
 export interface Runtime {
@@ -90,6 +95,50 @@ export function useFlash(): [string, (message: string) => void] {
   }, []);
   useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
   return [msg, flash];
+}
+
+/**
+ * Fullscreen toggle. In a host it uses `requestDisplayMode` (inline ⇄
+ * fullscreen); standalone it falls back to the browser Fullscreen API on `ref`.
+ * Returns `[isFullscreen, toggle]`.
+ */
+export function useFullscreen(
+  runtime: Runtime,
+  ref: RefObject<HTMLElement | null>,
+): [boolean, () => void] {
+  const [full, setFull] = useState(false);
+
+  // Reflect host display mode.
+  useEffect(() => {
+    const dm = runtime.hostContext?.displayMode;
+    if (dm) setFull(dm === "fullscreen");
+  }, [runtime.hostContext?.displayMode]);
+
+  // Reflect native fullscreen changes (standalone preview).
+  useEffect(() => {
+    const onChange = () => setFull(Boolean(document.fullscreenElement));
+    document.addEventListener("fullscreenchange", onChange);
+    return () => document.removeEventListener("fullscreenchange", onChange);
+  }, []);
+
+  const toggle = useCallback(async () => {
+    const target: DisplayMode = full ? "inline" : "fullscreen";
+    const req = runtime.app.requestDisplayMode;
+    const modes = runtime.hostContext?.availableDisplayModes as DisplayMode[] | undefined;
+    if (req && (!modes || modes.includes(target))) {
+      try {
+        const res = await req({ mode: target });
+        setFull(res?.mode === "fullscreen");
+        return;
+      } catch { /* fall through to native fullscreen */ }
+    }
+    try {
+      if (!document.fullscreenElement) await ref.current?.requestFullscreen?.();
+      else await document.exitFullscreen?.();
+    } catch { /* host or browser denied */ }
+  }, [full, runtime, ref]);
+
+  return [full, toggle];
 }
 
 /** Page container that applies the host's safe-area insets. */

@@ -7,7 +7,7 @@
   "main": "dist/server.js",
   "scripts": {
     "build": "npm run build:apps && npm run bundle:html && tsc --noEmit",
-    "build:apps": "cross-env CLEAN=1 INPUT=color-picker.html vite build && cross-env INPUT=dice.html vite build && cross-env INPUT=coin.html vite build && cross-env INPUT=card.html vite build && cross-env INPUT=wheel.html vite build && cross-env INPUT=decision-dice.html vite build",
+    "build:apps": "cross-env CLEAN=1 INPUT=color-picker.html vite build && cross-env INPUT=dice.html vite build && cross-env INPUT=coin.html vite build && cross-env INPUT=card.html vite build && cross-env INPUT=wheel.html vite build && cross-env INPUT=decision-dice.html vite build && cross-env INPUT=wordle.html vite build && cross-env INPUT=snake.html vite build",
     "bundle:html": "node scripts/bundle-html.mjs",
     "vercel-build": "npm run build:apps && npm run bundle:html",
     "dev:ui": "cross-env NODE_ENV=development vite",

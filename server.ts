@@ -165,5 +165,42 @@ export function createServer(): McpServer {
     return { content: [{ type: "text", text: `The decision die landed on "${result}".` }], structuredContent: { faces: set, result } };
   });
 
+  // ---- Wordle ----
+  const wordleUri = serveHtml(server, "wordle", "wordle.html");
+  registerAppTool(server, "wordle", {
+    title: "Wordle",
+    description:
+      "Play a multi-word Wordle. The user only says how many words (5–40). YOU generate that many real, meaningful English words of VARYING lengths (a mix of ~4–8 letters) from diverse topics, and pass them as `words`. If you cannot, pass just `count` and the app picks words itself.",
+    inputSchema: {
+      count: z.number().int().min(5).max(40).optional().describe("How many words to play (5–40)."),
+      words: z.array(z.string()).min(5).max(40).optional().describe("Real English words of mixed lengths (~4–8 letters) to guess."),
+    },
+    outputSchema: z.object({ words: z.array(z.string()), count: z.number() }),
+    annotations: LOCAL_READONLY_TOOL_ANNOTATIONS,
+    _meta: { ui: { resourceUri: wordleUri } },
+  }, async ({ count, words }): Promise<CallToolResult> => {
+    const clean = (words ?? [])
+      .map((w) => w.toLowerCase().replace(/[^a-z]/g, ""))
+      .filter((w) => w.length >= 3 && w.length <= 10);
+    const unique = [...new Set(clean)].slice(0, 40);
+    const n = Math.min(40, Math.max(5, count ?? (unique.length || 5)));
+    const text = unique.length ? `Starting Wordle with ${unique.length} words.` : `Starting Wordle with ${n} words.`;
+    return { content: [{ type: "text", text }], structuredContent: { words: unique, count: n } };
+  });
+
+  // ---- Snake ----
+  const snakeUri = serveHtml(server, "snake", "snake.html");
+  registerAppTool(server, "snake", {
+    title: "Snake",
+    description: "Opens a playable Snake game (SVG board, keyboard + touch controls, adjustable speed, hard/soft walls, fullscreen). Optionally set the starting speed.",
+    inputSchema: { speed: z.enum(["slow", "normal", "fast"]).optional().describe("Starting speed.") },
+    outputSchema: z.object({ speed: z.string() }),
+    annotations: LOCAL_READONLY_TOOL_ANNOTATIONS,
+    _meta: { ui: { resourceUri: snakeUri } },
+  }, async ({ speed }): Promise<CallToolResult> => {
+    const s = speed ?? "normal";
+    return { content: [{ type: "text", text: `Snake ready (${s}).` }], structuredContent: { speed: s } };
+  });
+
   return server;
 }

@@ -13,6 +13,8 @@ const FILES = [
   "card.html",
   "wheel.html",
   "decision-dice.html",
+  "wordle.html",
+  "snake.html",
 ];
 
 const root = process.cwd();

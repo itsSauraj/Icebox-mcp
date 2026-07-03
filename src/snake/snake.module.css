@@ -1,0 +1,155 @@
+/**
+ * Snake styles. All colors come from the purple brand variables in global.css;
+ * only the food (amber apple) and eyes use literal colors. Theme-driven SVG
+ * fills are applied via classes (not presentation attributes) so `var()` and
+ * `color-mix()` resolve reliably.
+ */
+.root {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  text-align: center;
+}
+
+/* Fullscreen: fill the viewport, scroll if tall, keep content centered. */
+.full {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  max-width: none;
+  overflow: auto;
+  justify-content: flex-start;
+  background: var(--color-background-primary);
+  padding: var(--spacing-lg);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+/* ---- Board ---- */
+.boardWrap {
+  position: relative;
+  width: min(100%, 78vmin);
+  max-width: 440px;
+  aspect-ratio: 1 / 1;
+}
+.full .boardWrap {
+  max-width: min(84vmin, 720px);
+}
+
+.board {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--border-radius-lg);
+  background: var(--color-background-secondary);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* SVG element fills (theme-driven). */
+.cellBg { fill: var(--color-background-secondary); }
+.grid { fill: none; stroke: var(--color-border); stroke-width: 0.03; opacity: 0.6; }
+.frame { fill: none; stroke: var(--color-border); stroke-width: 0.06; }
+.body { fill: var(--color-accent); }
+.head { fill: color-mix(in srgb, var(--color-accent) 72%, white); }
+
+/* ---- Overlays (ready / paused / game over) ---- */
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-lg);
+  background: color-mix(in srgb, var(--color-background-primary) 78%, transparent);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+}
+.big {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+/* ---- D-pad ---- */
+.dpad {
+  display: grid;
+  grid-template-columns: repeat(3, 46px);
+  grid-template-rows: repeat(3, 46px);
+  gap: 6px;
+  justify-content: center;
+  touch-action: manipulation;
+}
+.dbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border-radius: var(--border-radius-md);
+  border: var(--border-width-regular) solid var(--color-border);
+  background: var(--color-background-secondary);
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+.dbtn:hover { border-color: var(--color-ring-primary); }
+.dbtn:active {
+  transform: translateY(1px);
+  background: var(--color-accent);
+  color: var(--color-text-on-accent);
+}
+.dbtn:focus-visible {
+  outline: 2px solid var(--color-ring-primary);
+  outline-offset: 2px;
+}
+.up { grid-area: 1 / 2; }
+.left { grid-area: 2 / 1; }
+.right { grid-area: 2 / 3; }
+.down { grid-area: 3 / 2; }
+
+/* ---- Segmented controls (speed / walls) ---- */
+.seg {
+  display: inline-flex;
+  gap: 3px;
+  padding: 3px;
+  border-radius: var(--border-radius-md);
+  border: var(--border-width-regular) solid var(--color-border);
+  background: var(--color-background-secondary);
+}
+.segBtn {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  font-weight: var(--font-weight-bold);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+.segBtn:hover { color: var(--color-text-primary); }
+.segBtn:focus-visible {
+  outline: 2px solid var(--color-ring-primary);
+  outline-offset: 1px;
+}
+.segOn {
+  background: var(--color-accent);
+  color: var(--color-text-on-accent);
+}
+.segOn:hover { color: var(--color-text-on-accent); }
