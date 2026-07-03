@@ -1,6 +1,6 @@
 /**
  * @file Dice roller. Roll 1–5 numeric dice and see the total. Toggle "Duel"
- * to roll for You vs Opponent — highest total wins. 🎲
+ * to roll for You vs Opponent — highest total wins.
  */
 import { useEffect, useRef, useState } from "react";
 import { randInt } from "../lib/rng";
@@ -13,6 +13,7 @@ import {
   type AppProps,
 } from "../lib/runtime";
 import ui from "../lib/ui.module.css";
+import { DiceIcon } from "../lib/icons";
 import d from "./dice.module.css";
 
 const MAX = 5;
@@ -99,7 +100,7 @@ function DiceApp({ runtime }: AppProps) {
 
   return (
     <Shell runtime={runtime}>
-      <h1 className={ui.title}>🎲 Dice</h1>
+      <h1 className={ui.title}><DiceIcon className={ui.titleIcon} />Dice</h1>
 
       <div className={ui.stage}>
         {duel ? (
@@ -126,7 +127,7 @@ function DiceApp({ runtime }: AppProps) {
 
       {winner && (
         <span className={`${ui.banner} ${winner === "win" ? ui.win : winner === "lose" ? ui.lose : ui.tie}`}>
-          {winner === "win" ? "You win! 🎉" : winner === "lose" ? "Opponent wins" : "Tie"}
+          {winner === "win" ? "You win!" : winner === "lose" ? "Opponent wins" : "Tie"}
         </span>
       )}
 

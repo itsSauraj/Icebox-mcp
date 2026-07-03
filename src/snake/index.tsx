@@ -1,17 +1,25 @@
 /**
- * @file Classic grid Snake, rendered entirely with SVG. 🐍
+ * @file Classic grid Snake with buttery motion.
  *
- * Move on a slow tick, eat food to grow, score = food eaten. Fully self-
- * contained (no network, no images) — food placement uses `Math.random` via
- * `randInt`. Controls: Arrow keys + WASD, on-board swipe, and an SVG D-pad;
- * Space (or a button) pauses. Walls can either end the game or wrap around.
+ * Motion is decoupled from React: a fixed-timestep `requestAnimationFrame` loop
+ * (accumulator) advances the logic ~8fps, while each snake segment is an
+ * absolutely-positioned HTML `<div>` that CSS-transitions its `transform` from
+ * its old cell to its new one — so the browser compositor interpolates the
+ * crawl at 60fps and we only re-render on a logical step. `setInterval` is
+ * avoided on purpose (it gets throttled/jittery inside a host iframe).
  *
- * The live game lives in `gameRef` so the tick reads fresh state without stale
- * closures; `game` React state mirrors it for rendering. Committed direction is
- * held in `dirRef` (updated atomically with each committed frame) and validated
- * against on input, so a 180° reversal into the neck is impossible.
+ * The live game lives in `gameRef` so the loop reads fresh state without stale
+ * closures. Direction input is buffered in a small queue (max 2) and validated
+ * so a 180° reversal into the neck is impossible. Fully self-contained.
  */
-import { useCallback, useEffect, useRef, useState, type TouchEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type TouchEvent,
+} from "react";
 import { randInt } from "../lib/rng";
 import {
   renderApp,
@@ -22,9 +30,10 @@ import {
   type AppProps,
 } from "../lib/runtime";
 import ui from "../lib/ui.module.css";
+import { SnakeIcon } from "../lib/icons";
 import s from "./snake.module.css";
 
-const GRID = 17;
+const GRID = 25;
 
 type Cell = { x: number; y: number };
 type Speed = "slow" | "normal" | "fast";
@@ -38,9 +47,13 @@ const DIR = {
   right: { x: 1, y: 0 },
 } as const;
 
-const SPEED_MS: Record<Speed, number> = { slow: 200, normal: 130, fast: 85 };
+const SPEED_MS: Record<Speed, number> = { slow: 190, normal: 125, fast: 80 };
 
 const isOpposite = (a: Cell, b: Cell) => a.x === -b.x && a.y === -b.y;
+const eq = (a: Cell, b: Cell) => a.x === b.x && a.y === b.y;
+
+/** Custom-property styles (CSS vars) → typed as CSSProperties. */
+const sv = (o: Record<string, string | number>): CSSProperties => o as unknown as CSSProperties;
 
 interface Game {
   snake: Cell[]; // head first
@@ -50,7 +63,7 @@ interface Game {
   status: Status;
 }
 
-/** Deterministic fresh game (avoids random during React init → StrictMode-safe). */
+/** Deterministic fresh game (no random during init → StrictMode-safe). */
 function newGame(status: Status = "ready"): Game {
   const cy = Math.floor(GRID / 2);
   const hx = Math.floor(GRID / 2);
@@ -119,9 +132,10 @@ function SnakeApp({ runtime }: AppProps) {
   const [status, flash] = useFlash();
 
   const [game, setGame] = useState<Game>(() => newGame("ready"));
-  const gameRef = useRef(game); // live authoritative state read by the tick
-  const dirRef = useRef(game.dir); // committed direction (for reversal checks)
-  const nextDirRef = useRef(game.dir); // queued direction for the next tick
+  const gameRef = useRef(game); // live authoritative state read by the loop
+  const dirRef = useRef(game.dir); // committed direction
+  const dirQueueRef = useRef<Cell[]>([]); // buffered turns (max 2)
+  const prevSnakeRef = useRef<Cell[]>(game.snake); // last render's cells (for wrap detection)
 
   const [speed, setSpeed] = useState<Speed>("normal");
   const [borders, setBorders] = useState<Borders>("hard");
@@ -130,6 +144,11 @@ function SnakeApp({ runtime }: AppProps) {
   const reportedOver = useRef(false);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
 
+  // rAF loop bookkeeping.
+  const rafRef = useRef<number | null>(null);
+  const lastTimeRef = useRef(0);
+  const accRef = useRef(0);
+
   // Optional initial speed from the tool input (may arrive after mount).
   useEffect(() => {
     const sp = runtime.toolInput?.speed;
@@ -137,6 +156,7 @@ function SnakeApp({ runtime }: AppProps) {
   }, [runtime.toolInput]);
 
   useEffect(() => { bordersRef.current = borders; }, [borders]);
+  useEffect(() => { prevSnakeRef.current = game.snake; }, [game.snake]);
 
   // Single funnel for every state change → keeps refs and React state in lockstep.
   const commit = useCallback((next: Game) => {
@@ -145,15 +165,40 @@ function SnakeApp({ runtime }: AppProps) {
     setGame(next);
   }, []);
 
-  // Game loop: one interval while playing; its period tracks the chosen speed.
+  // Fixed-timestep game loop on requestAnimationFrame. Steady inside the iframe,
+  // catches up cleanly after a stall, and never renders on idle frames.
   useEffect(() => {
     if (game.status !== "playing") return;
-    const id = window.setInterval(() => {
-      const g = gameRef.current;
-      if (g.status !== "playing") return;
-      commit(step(g, nextDirRef.current, bordersRef.current));
-    }, SPEED_MS[speed]);
-    return () => window.clearInterval(id);
+    const tickMs = SPEED_MS[speed];
+    lastTimeRef.current = performance.now();
+    accRef.current = 0;
+
+    const loop = (now: number) => {
+      const g0 = gameRef.current;
+      if (g0.status !== "playing") return;
+      let dt = now - lastTimeRef.current;
+      lastTimeRef.current = now;
+      if (dt > 250) dt = 250; // drop huge gaps (backgrounded tab)
+      accRef.current += dt;
+
+      let cur = g0;
+      let stepped = false;
+      while (accRef.current >= tickMs && cur.status === "playing") {
+        accRef.current -= tickMs;
+        const q = dirQueueRef.current;
+        if (q.length) dirRef.current = q.shift()!; // apply one buffered turn
+        cur = step(cur, dirRef.current, bordersRef.current);
+        stepped = true;
+      }
+      if (stepped) commit(cur);
+      if (cur.status === "playing") rafRef.current = requestAnimationFrame(loop);
+    };
+
+    rafRef.current = requestAnimationFrame(loop);
+    return () => {
+      if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    };
   }, [game.status, speed, commit]);
 
   useEffect(() => { setBest((b) => (game.score > b ? game.score : b)); }, [game.score]);
@@ -170,17 +215,23 @@ function SnakeApp({ runtime }: AppProps) {
     if (game.status !== "over") reportedOver.current = false;
   }, [game.status, game.score, borders, runtime]);
 
-  const turn = useCallback((d: Cell) => {
+  // Buffer a turn. Validate against the LAST queued dir (or committed dir if the
+  // queue is empty) so quick sequential turns register but a reversal can't.
+  const enqueueTurn = useCallback((dir: Cell) => {
     const g = gameRef.current;
     if (g.status === "over") return;
     if (g.status === "ready") {
-      nextDirRef.current = isOpposite(d, dirRef.current) ? dirRef.current : d;
+      dirQueueRef.current = [];
+      if (!isOpposite(dir, dirRef.current) && !eq(dir, dirRef.current)) dirQueueRef.current.push(dir);
       commit({ ...g, status: "playing" });
       return;
     }
     if (g.status !== "playing") return;
-    if (isOpposite(d, dirRef.current)) return; // never reverse into the neck
-    nextDirRef.current = d;
+    const q = dirQueueRef.current;
+    if (q.length >= 2) return;
+    const last = q.length ? q[q.length - 1] : dirRef.current;
+    if (isOpposite(dir, last) || eq(dir, last)) return;
+    q.push(dir);
   }, [commit]);
 
   const togglePause = useCallback(() => {
@@ -190,14 +241,13 @@ function SnakeApp({ runtime }: AppProps) {
   }, [commit]);
 
   const startFresh = useCallback((play: boolean) => {
-    const g = newGame(play ? "playing" : "ready");
-    nextDirRef.current = g.dir;
+    dirQueueRef.current = [];
     reportedOver.current = false;
-    commit(g);
+    commit(newGame(play ? "playing" : "ready"));
   }, [commit]);
 
   const tell = useCallback(async () => {
-    const ok = await tellModel(runtime, `I scored ${game.score} in Snake! 🐍`, `Snake result: score ${game.score}.`);
+    const ok = await tellModel(runtime, `I scored ${game.score} in Snake!`, `Snake result: score ${game.score}.`);
     flash(runtime.standalone ? "Preview (not sent)" : ok ? "Sent to chat" : "Couldn't send");
   }, [runtime, game.score, flash]);
 
@@ -206,12 +256,11 @@ function SnakeApp({ runtime }: AppProps) {
     const onKey = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       const k = e.key.toLowerCase();
-      if (k === "arrowup" || k === "w") { e.preventDefault(); turn(DIR.up); }
-      else if (k === "arrowdown" || k === "s") { e.preventDefault(); turn(DIR.down); }
-      else if (k === "arrowleft" || k === "a") { e.preventDefault(); turn(DIR.left); }
-      else if (k === "arrowright" || k === "d") { e.preventDefault(); turn(DIR.right); }
+      if (k === "arrowup" || k === "w") { e.preventDefault(); enqueueTurn(DIR.up); }
+      else if (k === "arrowdown" || k === "s") { e.preventDefault(); enqueueTurn(DIR.down); }
+      else if (k === "arrowleft" || k === "a") { e.preventDefault(); enqueueTurn(DIR.left); }
+      else if (k === "arrowright" || k === "d") { e.preventDefault(); enqueueTurn(DIR.right); }
       else if (k === " " || k === "spacebar") {
-        // Let a focused control handle its own Space activation instead.
         const tag = (e.target as HTMLElement | null)?.tagName;
         if (tag === "BUTTON" || tag === "INPUT" || tag === "SELECT") return;
         e.preventDefault();
@@ -220,7 +269,7 @@ function SnakeApp({ runtime }: AppProps) {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [turn, togglePause]);
+  }, [enqueueTurn, togglePause]);
 
   // Touch swipe on the board → direction. `touch-action: none` blocks scrolling.
   const onTouchStart = (e: TouchEvent) => {
@@ -232,23 +281,17 @@ function SnakeApp({ runtime }: AppProps) {
     const t = e.touches[0];
     const dx = t.clientX - touchStart.current.x;
     const dy = t.clientY - touchStart.current.y;
-    const TH = 22;
+    const TH = 20;
     if (Math.abs(dx) < TH && Math.abs(dy) < TH) return;
-    if (Math.abs(dx) > Math.abs(dy)) turn(dx > 0 ? DIR.right : DIR.left);
-    else turn(dy > 0 ? DIR.down : DIR.up);
+    if (Math.abs(dx) > Math.abs(dy)) enqueueTurn(dx > 0 ? DIR.right : DIR.left);
+    else enqueueTurn(dy > 0 ? DIR.down : DIR.up);
     touchStart.current = { x: t.clientX, y: t.clientY }; // allow chained swipes
   };
   const onTouchEnd = () => { touchStart.current = null; };
 
-  // ---- Head geometry (eyes point the way it's travelling) -----------------
-  const head = game.snake[0];
-  const hc = { x: head.x + 0.5, y: head.y + 0.5 };
   const d = game.dir;
-  const perp = { x: d.y, y: -d.x };
-  const eyeF = 0.14, eyeS = 0.17, eyeR = 0.1, pupR = 0.05, pupF = 0.05;
-  const eyeA = { x: hc.x + d.x * eyeF + perp.x * eyeS, y: hc.y + d.y * eyeF + perp.y * eyeS };
-  const eyeB = { x: hc.x + d.x * eyeF - perp.x * eyeS, y: hc.y + d.y * eyeF - perp.y * eyeS };
-
+  const dirName = d.x === 1 ? "right" : d.x === -1 ? "left" : d.y === 1 ? "down" : "up";
+  const prev = prevSnakeRef.current;
   const insets = runtime.hostContext?.safeAreaInsets;
 
   return (
@@ -263,57 +306,51 @@ function SnakeApp({ runtime }: AppProps) {
       }}
     >
       <header className={s.header}>
-        <h1 className={ui.title}>🐍 Snake</h1>
+        <h1 className={ui.title}><SnakeIcon className={ui.titleIcon} />Snake</h1>
         <p className={ui.subtitle}>Score <b>{game.score}</b> · Best <b>{best}</b></p>
       </header>
 
       <div className={s.boardWrap}>
-        <svg
+        <div
           className={s.board}
-          viewBox={`0 0 ${GRID} ${GRID}`}
-          width="100%"
-          height="100%"
+          style={sv({ "--grid": GRID, "--tick": `${SPEED_MS[speed]}ms` })}
           role="img"
           aria-label={`Snake board — score ${game.score}`}
           onTouchStart={onTouchStart}
           onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}
         >
-          <defs>
-            <pattern id="snakeGrid" width="1" height="1" patternUnits="userSpaceOnUse">
-              <path className={s.grid} d="M1 0V1M0 1H1" />
-            </pattern>
-          </defs>
+          {/* Food — a pulsing amber apple. Keyed by cell so each spawn re-pops. */}
+          <div key={`f${game.food.x}-${game.food.y}`} className={s.food} style={sv({ "--x": game.food.x, "--y": game.food.y })}>
+            <svg viewBox="0 0 24 24" className={s.apple} aria-hidden="true">
+              <circle cx="12" cy="14" r="8" fill="#f59e0b" />
+              <rect x="11.1" y="4" width="1.8" height="6" rx="0.9" fill="#7c2d12" />
+              <ellipse cx="16.5" cy="7" rx="3.6" ry="1.9" fill="#22c55e" transform="rotate(-35 16.5 7)" />
+              <circle cx="9.3" cy="12" r="1.7" fill="#ffffff" opacity="0.45" />
+            </svg>
+          </div>
 
-          <rect className={s.cellBg} x="0" y="0" width={GRID} height={GRID} />
-          <rect x="0" y="0" width={GRID} height={GRID} fill="url(#snakeGrid)" />
-
-          {/* Food — a small apple. */}
-          <g>
-            <circle cx={game.food.x + 0.5} cy={game.food.y + 0.56} r={0.33} fill="#f59e0b" />
-            <rect x={game.food.x + 0.47} y={game.food.y + 0.16} width={0.06} height={0.2} rx={0.03} fill="#7c2d12" />
-            <ellipse
-              cx={game.food.x + 0.63}
-              cy={game.food.y + 0.24}
-              rx={0.13}
-              ry={0.07}
-              fill="#22c55e"
-              transform={`rotate(-35 ${game.food.x + 0.63} ${game.food.y + 0.24})`}
-            />
-          </g>
-
-          {/* Snake — body first, head (brighter, with eyes) on top. */}
-          {game.snake.slice(1).map((c, i) => (
-            <rect key={i} className={s.body} x={c.x + 0.08} y={c.y + 0.08} width={0.84} height={0.84} rx={0.22} ry={0.22} />
-          ))}
-          <rect className={s.head} x={head.x + 0.04} y={head.y + 0.04} width={0.92} height={0.92} rx={0.26} ry={0.26} />
-          <circle cx={eyeA.x} cy={eyeA.y} r={eyeR} fill="#ffffff" />
-          <circle cx={eyeB.x} cy={eyeB.y} r={eyeR} fill="#ffffff" />
-          <circle cx={eyeA.x + d.x * pupF} cy={eyeA.y + d.y * pupF} r={pupR} fill="#1f2937" />
-          <circle cx={eyeB.x + d.x * pupF} cy={eyeB.y + d.y * pupF} r={pupR} fill="#1f2937" />
-
-          <rect className={s.frame} x="0.03" y="0.03" width={GRID - 0.06} height={GRID - 0.06} rx={0.2} />
-        </svg>
+          {/* Snake — each segment glides one cell via CSS transition (keyed by
+              index → follow-the-leader crawl). Wrap jumps skip the transition. */}
+          {game.snake.map((c, i) => {
+            const p = prev[i];
+            const jumped = p ? Math.abs(c.x - p.x) > 1 || Math.abs(c.y - p.y) > 1 : false;
+            const style = sv(jumped ? { "--x": c.x, "--y": c.y, transition: "none" } : { "--x": c.x, "--y": c.y });
+            if (i === 0) {
+              return (
+                <div key={i} className={`${s.snakeSeg} ${s.snakeHead}`} style={style}>
+                  <svg viewBox="0 0 24 24" className={s.eyes} style={{ transform: `rotate(${ROT[dirName]}deg)` }} aria-hidden="true">
+                    <circle cx="8" cy="7.5" r="2.6" fill="#ffffff" />
+                    <circle cx="16" cy="7.5" r="2.6" fill="#ffffff" />
+                    <circle cx="8" cy="8.3" r="1.2" fill="#1f2937" />
+                    <circle cx="16" cy="8.3" r="1.2" fill="#1f2937" />
+                  </svg>
+                </div>
+              );
+            }
+            return <div key={i} className={s.snakeSeg} style={style} />;
+          })}
+        </div>
 
         {game.status !== "playing" && (
           <div className={s.overlay}>
@@ -330,7 +367,7 @@ function SnakeApp({ runtime }: AppProps) {
               </>
             ) : (
               <>
-                <p className={s.big}>🐍 Snake</p>
+                <p className={s.big}><SnakeIcon className={ui.titleIcon} />Snake</p>
                 <p className={ui.subtitle}>Arrows / WASD · swipe · D-pad</p>
                 <button className={`${ui.btn} ${ui.primary}`} onClick={() => startFresh(true)}>Play</button>
               </>
@@ -341,10 +378,10 @@ function SnakeApp({ runtime }: AppProps) {
 
       {/* On-screen D-pad (SVG arrows) — great for touch, harmless on desktop. */}
       <div className={s.dpad} role="group" aria-label="Direction pad">
-        <button className={`${s.dbtn} ${s.up}`} aria-label="Up" onClick={() => turn(DIR.up)}><Arrow dir="up" /></button>
-        <button className={`${s.dbtn} ${s.left}`} aria-label="Left" onClick={() => turn(DIR.left)}><Arrow dir="left" /></button>
-        <button className={`${s.dbtn} ${s.right}`} aria-label="Right" onClick={() => turn(DIR.right)}><Arrow dir="right" /></button>
-        <button className={`${s.dbtn} ${s.down}`} aria-label="Down" onClick={() => turn(DIR.down)}><Arrow dir="down" /></button>
+        <button className={`${s.dbtn} ${s.up}`} aria-label="Up" onClick={() => enqueueTurn(DIR.up)}><Arrow dir="up" /></button>
+        <button className={`${s.dbtn} ${s.left}`} aria-label="Left" onClick={() => enqueueTurn(DIR.left)}><Arrow dir="left" /></button>
+        <button className={`${s.dbtn} ${s.right}`} aria-label="Right" onClick={() => enqueueTurn(DIR.right)}><Arrow dir="right" /></button>
+        <button className={`${s.dbtn} ${s.down}`} aria-label="Down" onClick={() => enqueueTurn(DIR.down)}><Arrow dir="down" /></button>
       </div>
 
       <div className={ui.controls}>

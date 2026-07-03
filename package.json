@@ -1,9 +1,18 @@
 {
-  "name": "mcp-app-color-picker",
+  "name": "icebox",
   "version": "1.0.0",
   "type": "module",
-  "description": "MCP server hosting several MCP Apps: a color picker plus dice, coin, card, wheel and decision-dice mini-games",
+  "description": "Icebox — an MCP server of interactive mini apps: color picker, dice, coin flip, card draw, spin wheel, decision die, Wordle, and Snake",
   "license": "MIT",
+  "author": "Saurabh Yadav (https://saurabh-yadav.me)",
+  "homepage": "https://saurabh-yadav.me",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/itsSauraj/Icebox-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/itsSauraj/Icebox-mcp/issues"
+  },
   "main": "dist/server.js",
   "scripts": {
     "build": "npm run build:apps && npm run bundle:html && tsc --noEmit",

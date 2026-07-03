@@ -2,9 +2,9 @@
   "$schema": "https://developers.openai.com/apps-sdk/schemas/chatgpt-app-submission.v1.json",
   "schema_version": 1,
   "app_info": {
-    "display_name": "Color Picker & Mini-Games",
+    "display_name": "Icebox",
     "subtitle": "Pick colors and play",
-    "description": "Color Picker & Mini-Games lets users open interactive mini apps in ChatGPT to choose colors, roll dice, flip coins, draw cards, spin a wheel, and make simple randomized decisions with custom labels.",
+    "description": "Icebox lets users open interactive mini apps in ChatGPT to choose colors, roll dice, flip coins, draw cards, spin a wheel, and make simple randomized decisions with custom labels.",
     "category": "ENTERTAINMENT"
   },
   "tools": {

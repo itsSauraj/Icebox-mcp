@@ -1,7 +1,7 @@
 .main {
   width: 100%;
   max-width: 360px;
-  padding: var(--spacing-md);
+  padding: var(--spacing-lg) var(--spacing-md) var(--spacing-md);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -13,6 +13,15 @@
   margin: 0;
   font-size: 1.25rem;
   font-weight: var(--font-weight-bold);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+}
+.titleIcon {
+  width: 1.3em;
+  height: 1.3em;
+  flex: 0 0 auto;
+  color: var(--color-accent);
 }
 .subtitle {
   margin: 0;

@@ -1,5 +1,5 @@
 /**
- * @file Coin flip with a 3D flip animation and a running Heads/Tails tally. 🪙
+ * @file Coin flip with a 3D flip animation and a running Heads/Tails tally.
  */
 import { useEffect, useRef, useState } from "react";
 import {
@@ -11,6 +11,7 @@ import {
   type AppProps,
 } from "../lib/runtime";
 import ui from "../lib/ui.module.css";
+import { CoinIcon } from "../lib/icons";
 import c from "./coin.module.css";
 
 type Side = "Heads" | "Tails";
@@ -45,7 +46,7 @@ function CoinApp({ runtime }: AppProps) {
       setResult(res);
       setTally((t) => ({ ...t, [res]: t[res] + 1 }));
       setFlipping(false);
-      setLast({ ctx: `Coin flip result: ${res}.`, msg: `The coin landed on ${res}! 🪙` });
+      setLast({ ctx: `Coin flip result: ${res}.`, msg: `The coin landed on ${res}!` });
       void updateContext(runtime, `Coin flip result: ${res}.`); // silent
     }, 950);
   };
@@ -58,7 +59,7 @@ function CoinApp({ runtime }: AppProps) {
 
   return (
     <Shell runtime={runtime}>
-      <h1 className={ui.title}>🪙 Coin Flip</h1>
+      <h1 className={ui.title}><CoinIcon className={ui.titleIcon} />Coin Flip</h1>
 
       <div className={ui.stage}>
         <div className={c.scene}>

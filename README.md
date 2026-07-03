@@ -1,6 +1,6 @@
-# MCP Apps — Color Picker & Mini-Games
+# Icebox MCP
 
-One MCP server that hosts **six separate MCP Apps**, each with its own tool, UI
+One MCP server that hosts **different MCP Apps**, each with its own tool, UI
 resource, and self-contained React bundle. A host (e.g. Claude Desktop) calls a
 tool, renders that app's UI, and the app reports results back to the model.
 

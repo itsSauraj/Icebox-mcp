@@ -1,5 +1,5 @@
 /**
- * @file Draw a card from a shuffled 52-card deck; auto-reshuffles when empty. 🃏
+ * @file Draw a card from a shuffled 52-card deck; auto-reshuffles when empty.
  */
 import { useEffect, useState } from "react";
 import { shuffle } from "../lib/rng";
@@ -12,6 +12,7 @@ import {
   type AppProps,
 } from "../lib/runtime";
 import ui from "../lib/ui.module.css";
+import { CardIcon } from "../lib/icons";
 import cs from "./card.module.css";
 
 const RANKS = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
@@ -48,7 +49,7 @@ function CardApp({ runtime }: AppProps) {
     const next = nextDeck.pop()!;
     setState({ deck: nextDeck, card: next });
     const ctx = `Drew the ${next.rank} of ${SUIT_NAME[next.suit]} (${next.rank}${next.suit}). ${nextDeck.length} cards remaining.`;
-    setLast({ ctx, msg: `I drew the ${next.rank}${next.suit} 🃏.` });
+    setLast({ ctx, msg: `I drew the ${next.rank}${next.suit}.` });
     void updateContext(runtime, ctx); // silent
   };
 
@@ -69,7 +70,7 @@ function CardApp({ runtime }: AppProps) {
 
   return (
     <Shell runtime={runtime}>
-      <h1 className={ui.title}>🃏 Draw a Card</h1>
+      <h1 className={ui.title}><CardIcon className={ui.titleIcon} />Draw a Card</h1>
 
       <div className={ui.stage}>
         <div key={dealKey} className={`${cs.card} ${red ? cs.red : ""}`} aria-label={`${card.rank} of ${SUIT_NAME[card.suit]}`}>

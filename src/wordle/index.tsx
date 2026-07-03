@@ -1,5 +1,5 @@
 /**
- * @file Multi-word sequential Wordle with variable-length words. 🟩
+ * @file Multi-word sequential Wordle with variable-length words.
  *
  * Target words are resolved in priority order:
  *   1. Model-provided words — `toolResult.structuredContent.words` (or
@@ -22,6 +22,7 @@ import {
   type AppProps,
 } from "../lib/runtime";
 import ui from "../lib/ui.module.css";
+import { WordleIcon } from "../lib/icons";
 import s from "./wordle.module.css";
 import { generateTargets } from "./words";
 
@@ -42,6 +43,15 @@ interface WordState {
 }
 
 const KEY_ROWS = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"] as const;
+
+/** Pre-computed CSS-only confetti pieces shown on a perfect finish. */
+const CONFETTI_COLORS = ["#22c55e", "#eab308", "var(--color-accent)", "#ef4444", "#38bdf8"];
+const CONFETTI = Array.from({ length: 18 }, (_, i) => ({
+  left: (i * 100) / 18 + (i % 3) * 3,
+  delay: (i % 9) * 0.16,
+  duration: 2.1 + (i % 5) * 0.4,
+  color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+}));
 
 /** Standard Wordle scoring with correct duplicate-letter handling. */
 function scoreGuess(guess: string, target: string): Mark[] {
@@ -147,6 +157,17 @@ function WordleApp({ runtime }: AppProps) {
   const solvedCount = useMemo(() => words.filter((w) => w.solved).length, [words]);
   const allDone = total > 0 && activeIndex < 0;
 
+  // Row shake for an invalid/too-short Enter. Re-armed via rAF so consecutive
+  // invalid presses replay the animation.
+  const [shaking, setShaking] = useState(false);
+  const shakeRaf = useRef<number | undefined>(undefined);
+  const triggerShake = useCallback(() => {
+    setShaking(false);
+    if (shakeRaf.current) cancelAnimationFrame(shakeRaf.current);
+    shakeRaf.current = requestAnimationFrame(() => setShaking(true));
+  }, []);
+  useEffect(() => () => { if (shakeRaf.current) cancelAnimationFrame(shakeRaf.current); }, []);
+
   // ---- Input handlers -----------------------------------------------------
   const onLetter = useCallback((ch: string) => {
     if (activeIndex < 0) return;
@@ -158,6 +179,7 @@ function WordleApp({ runtime }: AppProps) {
   const onEnter = useCallback(() => {
     if (activeIndex < 0) return;
     if (current.length !== activeLen) {
+      triggerShake();
       flash("Not enough letters");
       return;
     }
@@ -170,7 +192,7 @@ function WordleApp({ runtime }: AppProps) {
       ),
     );
     setCurrent("");
-  }, [activeIndex, activeLen, current, flash]);
+  }, [activeIndex, activeLen, current, flash, triggerShake]);
 
   // Physical keyboard.
   useEffect(() => {
@@ -224,7 +246,7 @@ function WordleApp({ runtime }: AppProps) {
   }, [buildTargets]);
 
   const tell = useCallback(async () => {
-    const msg = `I finished the Wordle challenge and solved ${solvedCount} of ${total} words! 🟩`;
+    const msg = `I finished the Wordle challenge and solved ${solvedCount} of ${total} words!`;
     const ok = await tellModel(runtime, msg, `Wordle result: solved ${solvedCount}/${total}.`);
     flash(runtime.standalone ? "Preview (not sent)" : ok ? "Sent to chat" : "Couldn't send");
   }, [runtime, solvedCount, total, flash]);
@@ -243,8 +265,25 @@ function WordleApp({ runtime }: AppProps) {
         paddingLeft: insets?.left,
       }}
     >
+      {allDone && solvedCount === total && (
+        <div className={s.confetti} aria-hidden="true">
+          {CONFETTI.map((p, i) => (
+            <span
+              key={i}
+              className={s.confettiPiece}
+              style={{
+                left: `${p.left}%`,
+                background: p.color,
+                animationDelay: `${p.delay}s`,
+                animationDuration: `${p.duration}s`,
+              }}
+            />
+          ))}
+        </div>
+      )}
+
       <header className={s.header}>
-        <h1 className={ui.title}>🟩 Wordle</h1>
+        <h1 className={ui.title}><WordleIcon className={ui.titleIcon} />Wordle</h1>
         <p className={ui.subtitle}>
           {allDone
             ? `All done — solved ${solvedCount} of ${total}`
@@ -282,17 +321,30 @@ function WordleApp({ runtime }: AppProps) {
 
       {active && (
         <>
-          <div className={s.board} aria-label={`Guess a ${activeLen}-letter word`}>
+          <div
+            className={s.board}
+            aria-label={`Guess a ${activeLen}-letter word`}
+            style={{ ["--len" as string]: activeLen }}
+          >
             {Array.from({ length: MAX_GUESSES }).map((_, r) => {
               const submitted = r < active.guesses.length;
+              const isCurrentRow = !submitted && r === active.guesses.length;
               const marks = submitted ? scoreGuess(active.guesses[r], active.word) : null;
               const rowText = submitted
                 ? active.guesses[r]
-                : r === active.guesses.length
+                : isCurrentRow
                   ? current
                   : "";
               return (
-                <div className={s.row} key={r}>
+                <div
+                  className={[s.row, isCurrentRow && shaking ? s.shake : ""].filter(Boolean).join(" ")}
+                  key={r}
+                  onAnimationEnd={
+                    isCurrentRow
+                      ? (e) => { if (e.target === e.currentTarget) setShaking(false); }
+                      : undefined
+                  }
+                >
                   {Array.from({ length: activeLen }).map((_, cIdx) => {
                     const ch = rowText[cIdx] ?? "";
                     return (
@@ -302,6 +354,7 @@ function WordleApp({ runtime }: AppProps) {
                           s.tile,
                           submitted && marks ? s[marks[cIdx]] : ch ? s.filled : "",
                         ].filter(Boolean).join(" ")}
+                        style={{ ["--col" as string]: cIdx }}
                       >
                         {ch}
                       </div>
@@ -352,8 +405,15 @@ function WordleApp({ runtime }: AppProps) {
 
       {allDone && (
         <div className={s.summary}>
-          <span className={`${ui.banner} ${solvedCount === total ? ui.win : ui.tie}`}>
-            {solvedCount === total ? "Perfect! 🎉" : "Game over"} — solved {solvedCount} / {total}
+          <span
+            className={[
+              ui.banner,
+              solvedCount === total ? ui.win : ui.tie,
+              s.summaryBanner,
+              solvedCount === total ? s.perfect : "",
+            ].filter(Boolean).join(" ")}
+          >
+            {solvedCount === total ? "Perfect!" : "Game over"} — solved {solvedCount} / {total}
           </span>
         </div>
       )}

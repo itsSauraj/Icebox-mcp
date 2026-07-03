@@ -24,6 +24,8 @@ import {
   type AppProps,
   type Runtime,
 } from "../lib/runtime";
+import ui from "../lib/ui.module.css";
+import { ColorPickerIcon } from "../lib/icons";
 import styles from "./picker.module.css";
 
 const DEFAULT: HSVA = { h: 217, s: 0.83, v: 0.92, a: 1 };
@@ -170,6 +172,7 @@ function ColorPickerApp({ runtime }: AppProps) {
 
   return (
     <Shell runtime={runtime}>
+      <h1 className={ui.title}><ColorPickerIcon className={ui.titleIcon} />Color Picker</h1>
       <section className={styles.picker}>
         <div
           ref={svRef}

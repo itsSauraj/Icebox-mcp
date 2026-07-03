@@ -1,6 +1,6 @@
 /**
  * @file Wheel-of-Fortune style spinner with fully editable labels — add as many
- * segments as you want, then spin. 🎡
+ * segments as you want, then spin.
  */
 import { useEffect, useRef, useState } from "react";
 import { randInt } from "../lib/rng";
@@ -13,6 +13,7 @@ import {
   type AppProps,
 } from "../lib/runtime";
 import ui from "../lib/ui.module.css";
+import { WheelIcon } from "../lib/icons";
 import w from "./wheel.module.css";
 
 const DEFAULT_LABELS = ["100", "200", "300", "400", "500", "Bankrupt", "600", "700", "800", "Free Spin"];
@@ -69,7 +70,7 @@ function WheelApp({ runtime }: AppProps) {
       setWinner(target);
       setSpinning(false);
       const ctx = `Spun the wheel (${n} segments); it landed on "${labels[target]}".`;
-      setLast({ ctx, msg: `The wheel landed on "${labels[target]}"! 🎡` });
+      setLast({ ctx, msg: `The wheel landed on "${labels[target]}"!` });
       void updateContext(runtime, ctx); // silent
     }, 4100);
   };
@@ -93,7 +94,7 @@ function WheelApp({ runtime }: AppProps) {
 
   return (
     <Shell runtime={runtime}>
-      <h1 className={ui.title}>🎡 Spin the Wheel</h1>
+      <h1 className={ui.title}><WheelIcon className={ui.titleIcon} />Spin the Wheel</h1>
 
       <div className={ui.stage}>
         <div className={w.wheelWrap}>

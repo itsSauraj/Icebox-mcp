@@ -1,6 +1,6 @@
 /**
  * @file Decision die — a die whose faces are custom text (Yes / No / Maybe …).
- * Edit the faces to whatever you like, then roll. 🎲
+ * Edit the faces to whatever you like, then roll.
  */
 import { useEffect, useRef, useState } from "react";
 import { pick } from "../lib/rng";
@@ -13,6 +13,7 @@ import {
   type AppProps,
 } from "../lib/runtime";
 import ui from "../lib/ui.module.css";
+import { DecisionIcon } from "../lib/icons";
 import dd from "./decision.module.css";
 
 const DEFAULT_FACES = ["Yes", "No", "Maybe", "Definitely", "No way", "Ask again"];
@@ -52,7 +53,7 @@ function DecisionDiceApp({ runtime }: AppProps) {
       setResult(res);
       setRolling(false);
       const ctx = `Rolled the decision die (faces: ${faces.join(", ")}); it landed on "${res}".`;
-      setLast({ ctx, msg: `The decision die says: "${res}" 🎲` });
+      setLast({ ctx, msg: `The decision die says: "${res}"` });
       void updateContext(runtime, ctx); // silent
     }, 700);
   };
@@ -76,7 +77,7 @@ function DecisionDiceApp({ runtime }: AppProps) {
 
   return (
     <Shell runtime={runtime}>
-      <h1 className={ui.title}>🎲 Decision Die</h1>
+      <h1 className={ui.title}><DecisionIcon className={ui.titleIcon} />Decision Die</h1>
       <p className={ui.subtitle}>A die with your own faces</p>
 
       <div className={ui.stage}>

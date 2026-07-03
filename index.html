@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="light dark">
-  <title>MCP Apps — Preview Launcher</title>
+  <title>Icebox — Preview Launcher</title>
   <link rel="stylesheet" href="/src/global.css">
   <style>
     body { font-family: var(--font-sans); }
@@ -13,29 +13,61 @@
     p.note { color: var(--color-text-secondary); font-size: 0.9rem; }
     ul { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     a.app {
-      display: block; padding: 16px; border-radius: 12px; text-decoration: none;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      column-gap: 12px;
+      row-gap: 2px;
+      align-items: center;
+      padding: 16px;
+      border-radius: 12px;
+      text-decoration: none;
       color: var(--color-text-primary);
       background: var(--color-background-secondary);
       border: 1px solid var(--color-border);
       font-weight: 600;
     }
     a.app:hover { border-color: var(--color-ring-primary); }
-    a.app small { display: block; font-weight: 400; color: var(--color-text-secondary); margin-top: 4px; }
+    .app-ic { grid-row: 1 / 3; width: 26px; height: 26px; color: var(--color-accent); }
+    a.app small { grid-column: 2; font-weight: 400; color: var(--color-text-secondary); }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>MCP Apps — local preview</h1>
+    <h1>Icebox — local preview</h1>
     <p class="note">Standalone preview mode (no MCP host needed). Each link opens one app's UI.</p>
     <ul>
-      <li><a class="app" href="/color-picker.html">🎨 Color Picker<small>Pick a color</small></a></li>
-      <li><a class="app" href="/dice.html">🎲 Dice<small>Roll 1–5 · duel mode</small></a></li>
-      <li><a class="app" href="/coin.html">🪙 Coin Flip<small>Heads or tails</small></a></li>
-      <li><a class="app" href="/card.html">🃏 Draw a Card<small>52-card deck</small></a></li>
-      <li><a class="app" href="/wheel.html">🎡 Spin the Wheel<small>Editable labels</small></a></li>
-      <li><a class="app" href="/decision-dice.html">🎲 Decision Die<small>Custom faces</small></a></li>
-      <li><a class="app" href="/wordle.html">🔤 Wordle<small>Multi-word · variable length</small></a></li>
-      <li><a class="app" href="/snake.html">🐍 Snake<small>Speed · walls · fullscreen</small></a></li>
+      <li><a class="app" href="/color-picker.html">
+        <svg class="app-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s6 6.5 6 10a6 6 0 0 1-12 0c0-3.5 6-10 6-10z"/></svg>
+        <span>Color Picker</span><small>Pick a color</small>
+      </a></li>
+      <li><a class="app" href="/dice.html">
+        <svg class="app-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="8.5" cy="8.5" r="1.15" fill="currentColor" stroke="none"/><circle cx="15.5" cy="8.5" r="1.15" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.15" fill="currentColor" stroke="none"/><circle cx="8.5" cy="15.5" r="1.15" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.15" fill="currentColor" stroke="none"/></svg>
+        <span>Dice</span><small>Roll 1–5 · duel mode</small>
+      </a></li>
+      <li><a class="app" href="/coin.html">
+        <svg class="app-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.3"/></svg>
+        <span>Coin Flip</span><small>Heads or tails</small>
+      </a></li>
+      <li><a class="app" href="/card.html">
+        <svg class="app-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M12 16s-3.6-2.3-3.6-4.7A1.9 1.9 0 0 1 12 9.4a1.9 1.9 0 0 1 3.6 1.9C15.6 13.7 12 16 12 16z" fill="currentColor" stroke="none"/></svg>
+        <span>Draw a Card</span><small>52-card deck</small>
+      </a></li>
+      <li><a class="app" href="/wheel.html">
+        <svg class="app-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 13V5.5M12 13l6.5 3.8M12 13 5.5 16.8"/><path d="M12 2.2l1.9 3.1h-3.8z" fill="currentColor" stroke="none"/><circle cx="12" cy="13" r="1.4" fill="currentColor" stroke="none"/></svg>
+        <span>Spin the Wheel</span><small>Editable labels</small>
+      </a></li>
+      <li><a class="app" href="/decision-dice.html">
+        <svg class="app-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9.6 9.7a2.4 2.4 0 1 1 3.4 2.2c-.8.4-1 .9-1 1.6"/><circle cx="12" cy="16.4" r="1" fill="currentColor" stroke="none"/></svg>
+        <span>Decision Die</span><small>Custom faces</small>
+      </a></li>
+      <li><a class="app" href="/wordle.html">
+        <svg class="app-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="9" width="5.5" height="5.5" rx="1"/><rect x="9.25" y="9" width="5.5" height="5.5" rx="1" fill="currentColor" stroke="none"/><rect x="15.5" y="9" width="5.5" height="5.5" rx="1"/></svg>
+        <span>Wordle</span><small>Multi-word · variable length</small>
+      </a></li>
+      <li><a class="app" href="/snake.html">
+        <svg class="app-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 18h6a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h6"/><circle cx="17.6" cy="6" r="1.4" fill="currentColor" stroke="none"/></svg>
+        <span>Snake</span><small>Speed · walls · fullscreen</small>
+      </a></li>
     </ul>
   </div>
 </body>
