@@ -1,0 +1,145 @@
+/**
+ * Word Search styles.
+ *
+ * The board is a `flex` column of `flex` rows rather than CSS grid, so a
+ * `role="row"` wrapper can sit between the grid and its cells without
+ * breaking column alignment (the same structure as Minesweeper). Cell type
+ * size is in container query units over `--size`, which is the only way to
+ * tie a font size to a cell that has no pixel size of its own.
+ *
+ * Every found word gets its own hue, passed in as `--hue` from index.tsx
+ * (the golden-angle spread keeps adjacent indices visually distinct). It is
+ * never used raw: `color-mix` blends it into the host's own background and
+ * text colours, which is what keeps a lane legible on both a light and a
+ * dark ground without a second palette.
+ */
+
+/* ---- Board ---- */
+.boardWrap {
+  position: relative;
+  width: min(100%, 78vmin);
+  max-width: 440px;
+  margin: 0 auto;
+}
+.fullFrame .boardWrap {
+  max-width: min(84vmin, 640px);
+}
+
+.board {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  padding: 3px;
+  border-radius: var(--border-radius-md);
+  background: var(--color-border);
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.row {
+  display: flex;
+  flex: 1 1 0;
+  gap: 2px;
+}
+
+.cell {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  font-weight: var(--font-weight-bold);
+  font-size: calc(52cqw / var(--size));
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+  background: var(--color-background-secondary);
+  cursor: pointer;
+  transition: background-color 120ms ease, transform 120ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* In-progress drag or keyboard lane, before release. */
+.selecting {
+  background: color-mix(in srgb, var(--color-accent) 45%, var(--color-background-secondary));
+}
+
+/* A locked-in found word. `--hue` arrives per cell from index.tsx; cells that
+   belong to more than one found word already carry the blended average hue,
+   computed there rather than layered here. */
+.found {
+  background: color-mix(in srgb, hsl(var(--hue) 70% 45%) 55%, var(--color-background-primary));
+  animation: wsFoundCell 260ms ease-out;
+}
+
+/* The cell that anchors an in-progress keyboard selection. */
+.anchored {
+  box-shadow: inset 0 0 0 2px var(--color-ring-primary);
+}
+
+/* The keyboard cursor, inset so the ring is never clipped by the cell gap. */
+.cursor {
+  box-shadow: inset 0 0 0 2px var(--color-text-secondary);
+}
+.cell:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--color-ring-primary);
+}
+.anchored.cursor {
+  box-shadow: inset 0 0 0 2px var(--color-ring-primary);
+}
+
+@keyframes wsFoundCell {
+  from { transform: scale(0.85); }
+  to { transform: scale(1); }
+}
+
+/* ---- Word list ---- */
+.wordList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  width: 100%;
+}
+
+.wordChip {
+  padding: 5px 11px;
+  font-size: 0.82rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  border: var(--border-width-regular) solid var(--color-border);
+  background: var(--color-background-secondary);
+  color: var(--color-text-primary);
+}
+
+.wordFound {
+  color: var(--color-text-secondary);
+  text-decoration: line-through;
+  border-color: transparent;
+  background: color-mix(in srgb, hsl(var(--hue) 70% 45%) 30%, var(--color-background-secondary));
+  animation: wsPop 320ms ease-out;
+}
+
+@keyframes wsPop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cell { transition: none; }
+  .found { animation: none; }
+  .wordFound { animation: none; }
+}
