@@ -1,0 +1,249 @@
+/**
+ * Blackjack styles.
+ *
+ * Suit red and black are content colour, so they are literals, but both are
+ * checked against a light and a dark ground. Everything else, including the
+ * felt, derives from host tokens so the table follows the host theme rather
+ * than insisting on casino green.
+ *
+ * Cards deal in with a stagger set inline by index, so a round has rhythm
+ * instead of appearing all at once.
+ */
+
+.root {
+  gap: var(--spacing-sm);
+}
+
+.table {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  width: 100%;
+  padding: var(--spacing-md) var(--spacing-sm);
+  border-radius: var(--border-radius-lg);
+  border: var(--border-width-regular) solid var(--color-border);
+  background-color: var(--color-background-secondary);
+  background-image: radial-gradient(
+    130% 90% at 50% 0%,
+    color-mix(in srgb, var(--color-accent) 7%, transparent),
+    transparent 70%
+  );
+  min-height: 250px;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.sideLabel {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6em;
+  margin: 0;
+  font-size: 0.65rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.total {
+  font-size: 0.85rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--color-text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.muted {
+  font-size: 0.7rem;
+  font-weight: var(--font-weight-normal);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--color-text-secondary);
+}
+
+.cards {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  justify-content: center;
+  min-height: 74px;
+}
+
+.handRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-md);
+  width: 100%;
+}
+
+.hand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 6px;
+  border-radius: var(--border-radius-md);
+  border: var(--border-width-regular) solid transparent;
+}
+.handActive {
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+}
+
+.handMeta {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+  margin: 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ---- Card ---- */
+.card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 72px;
+  border-radius: 6px;
+  border: var(--border-width-regular) solid var(--color-border);
+  background: light-dark(#ffffff, #f4f4f5);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  animation: bjDeal 260ms ease-out both;
+}
+.red { color: #c81e1e; }
+.black { color: #18181b; }
+
+.corner {
+  position: absolute;
+  top: 4px;
+  left: 5px;
+  font-size: 0.72rem;
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+}
+.pip {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.down {
+  background: var(--color-accent);
+  border-color: color-mix(in srgb, var(--color-accent) 60%, black);
+}
+.backPattern {
+  position: absolute;
+  inset: 5px;
+  border-radius: 3px;
+  background-image: repeating-linear-gradient(
+    45deg,
+    color-mix(in srgb, white 34%, transparent) 0 3px,
+    transparent 3px 6px
+  );
+}
+
+@keyframes bjDeal {
+  from { opacity: 0; transform: translateY(-14px) rotate(-4deg); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---- Outcome chips ---- */
+.outcome {
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.blackjack,
+.win {
+  color: light-dark(#065f46, #d1fae5);
+  background: light-dark(#d1fae5, #065f46);
+}
+.push {
+  color: var(--color-text-secondary);
+  background: var(--color-border);
+}
+.lose,
+.bust {
+  color: light-dark(#7f1d1d, #fee2e2);
+  background: light-dark(#fee2e2, #7f1d1d);
+}
+
+.message {
+  margin: 0;
+  min-height: 1.2em;
+  font-size: 0.85rem;
+  color: var(--color-text-primary);
+  max-width: 40ch;
+}
+
+.prompt {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+/* ---- Betting ---- */
+.betRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+.betLabel {
+  font-size: 0.65rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+.betValue {
+  min-width: 2.5em;
+  font-size: 1.15rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Chips read as discs, not numbers in a box. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 3px dashed rgba(255, 255, 255, 0.7);
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-bold);
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  font-variant-numeric: tabular-nums;
+}
+.chip:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.chip:not(:disabled):hover { transform: translateY(-2px); }
+.chip:focus-visible {
+  outline: 2px solid var(--color-ring-primary);
+  outline-offset: 2px;
+}
+.chip5 { background: #2563eb; }
+.chip25 { background: #16a34a; }
+.chip100 { background: #1f2937; }
+
+@media (prefers-reduced-motion: reduce) {
+  .card { animation: none; }
+  .chip:not(:disabled):hover { transform: none; }
+}
