@@ -1,0 +1,125 @@
+/**
+ * Higher or Lower styles.
+ *
+ * Two cards on a stage with a small "vs" between them. On a narrow iframe the
+ * stage stacks; given room it sits side by side. The right-hand card carries
+ * the whole state of the round, so it is the one that changes colour on a
+ * verdict; the left one stays neutral throughout.
+ */
+
+.root {
+  gap: var(--spacing-md);
+}
+
+.stage {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: stretch;
+  gap: var(--spacing-sm);
+  width: 100%;
+  min-height: 210px;
+}
+
+/* Below the fold of a narrow host, stack instead of squeezing two cards. */
+@media (max-width: 420px) {
+  .stage {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto 1fr;
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md) var(--spacing-sm);
+  border-radius: var(--border-radius-lg);
+  border: var(--border-width-regular) solid var(--color-border);
+  background: var(--color-background-secondary);
+  min-height: 150px;
+  transition: border-color 220ms ease, background-color 220ms ease;
+}
+
+.known {
+  background: var(--color-background-secondary);
+}
+
+.mystery {
+  border-color: color-mix(in srgb, var(--color-accent) 45%, var(--color-border));
+}
+
+/* Verdict colours. Green and red are the meaning here, not decoration, so they
+   are literals, checked against both grounds. */
+.right {
+  border-color: light-dark(#047857, #34d399);
+  background: color-mix(in srgb, light-dark(#047857, #34d399) 12%, var(--color-background-secondary));
+}
+.wrong {
+  border-color: light-dark(#b91c1c, #f87171);
+  background: color-mix(in srgb, light-dark(#b91c1c, #f87171) 12%, var(--color-background-secondary));
+}
+
+.label {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  max-width: 22ch;
+  color: var(--color-text-primary);
+}
+
+.value {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  font-size: 1.9rem;
+  font-weight: var(--font-weight-bold);
+  line-height: 1.05;
+  /* The count-up changes width every frame; tabular figures stop the card
+     jittering while it runs. */
+  font-variant-numeric: tabular-nums;
+}
+
+.unit {
+  font-size: 0.7rem;
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text-secondary);
+  letter-spacing: 0.04em;
+}
+
+.versus {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  width: 100%;
+  max-width: 160px;
+}
+
+/* The carousel: a new challenger arrives from the right. */
+.slideIn {
+  animation: hlSlide 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes hlSlide {
+  from { opacity: 0; transform: translateX(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slideIn { animation: none; }
+  .card { transition: none; }
+}
