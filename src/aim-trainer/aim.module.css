@@ -1,0 +1,198 @@
+/**
+ * Aim Trainer styles.
+ *
+ * The board is percentage-sized (`.boardWrap`) so it fits a narrow iframe and
+ * fullscreen alike. The target sits on top of it positioned by percentage of
+ * the board (`--x`/`--y`, unitless, via `calc(var(--x) * 1%)`) but sized in
+ * real CSS pixels (`--size`), which is what lets the 44px floor in index.tsx
+ * guarantee a phone-tappable target no matter how small the board itself is.
+ *
+ * Hit and miss feedback are small absolutely-positioned markers dropped at
+ * the pointer's coordinates and animated with plain CSS keyframes, then
+ * removed from state once their animation has finished. Under
+ * prefers-reduced-motion the animations are switched off and the markers
+ * simply hold their resting look for their lifetime, which reads as an
+ * instant flash rather than a motion effect.
+ */
+
+.boardWrap {
+  position: relative;
+  width: min(100%, 84vmin);
+  aspect-ratio: 4 / 3;
+}
+.fullBoard .boardWrap {
+  width: min(100%, 88vmin);
+  aspect-ratio: 16 / 10;
+}
+
+.board {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--border-radius-lg);
+  background: var(--color-background-secondary);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ---- Target ---- */
+.target {
+  position: absolute;
+  left: calc(var(--x) * 1%);
+  top: calc(var(--y) * 1%);
+  width: var(--size);
+  height: var(--size);
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  background: var(--color-accent);
+  box-shadow:
+    inset 0 0 0 2px color-mix(in srgb, var(--color-text-on-accent) 35%, transparent),
+    0 2px 10px color-mix(in srgb, var(--color-accent) 55%, transparent);
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  z-index: 2;
+}
+.target:focus-visible {
+  outline: 2px solid var(--color-ring-primary);
+  outline-offset: 3px;
+}
+
+.targetStart {
+  width: max(var(--size), 88px);
+  height: max(var(--size), 88px);
+  animation: aimReady 1.6s ease-in-out infinite;
+}
+.targetLabel {
+  font-size: 0.85rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.04em;
+  color: var(--color-text-on-accent);
+}
+@keyframes aimReady {
+  0%, 100% {
+    box-shadow:
+      inset 0 0 0 2px color-mix(in srgb, var(--color-text-on-accent) 35%, transparent),
+      0 0 0 0 color-mix(in srgb, var(--color-accent) 45%, transparent);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 0 2px color-mix(in srgb, var(--color-text-on-accent) 35%, transparent),
+      0 0 0 14px color-mix(in srgb, var(--color-accent) 0%, transparent);
+  }
+}
+
+/* ---- Hit / miss feedback markers ---- */
+.ripple,
+.missFlash {
+  position: absolute;
+  left: calc(var(--x) * 1%);
+  top: calc(var(--y) * 1%);
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
+.ripple {
+  background: var(--color-accent);
+  opacity: 0.9;
+  animation: aimPop 220ms ease-out forwards;
+}
+.ripple::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--color-accent);
+  animation: aimRing 480ms ease-out forwards;
+}
+.missFlash {
+  background: color-mix(in srgb, var(--color-text-secondary) 55%, transparent);
+  opacity: 0.55;
+  animation: aimMiss 240ms ease-out forwards;
+}
+@keyframes aimPop {
+  from { opacity: 0.9; transform: translate(-50%, -50%) scale(0.9); }
+  to { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+}
+@keyframes aimRing {
+  from { opacity: 0.6; transform: scale(1); }
+  to { opacity: 0; transform: scale(2.2); }
+}
+@keyframes aimMiss {
+  from { opacity: 0.55; transform: translate(-50%, -50%) scale(0.6); }
+  to { opacity: 0; transform: translate(-50%, -50%) scale(1.3); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .targetStart { animation: none; }
+  .ripple,
+  .missFlash {
+    animation: none;
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .ripple::after {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---- Results ---- */
+.resultGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-xs) var(--spacing-md);
+  width: 100%;
+  max-width: 300px;
+}
+.resultStat {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  padding: 4px 2px;
+  border-bottom: var(--border-width-regular) solid var(--color-border);
+}
+.resultStat span {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+}
+.resultStat b {
+  font-size: 0.92rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-primary);
+}
+
+.sparkline {
+  width: 100%;
+  max-width: 300px;
+  height: 56px;
+}
+.sparkLine {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.sparkMean {
+  stroke: var(--color-text-secondary);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  opacity: 0.6;
+}
