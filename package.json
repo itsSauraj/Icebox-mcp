@@ -16,10 +16,12 @@
   "main": "dist/server.js",
   "scripts": {
     "gen": "node scripts/gen-entries.mjs",
+    "gen:submission": "tsx scripts/gen-submission.mts",
     "build:apps": "node scripts/build-apps.mjs",
     "build:apps:dev": "node scripts/build-apps.mjs --dev",
     "bundle:html": "node scripts/bundle-html.mjs",
     "typecheck": "tsc --noEmit",
+    "smoke": "tsx scripts/smoke.mts",
     "build": "npm run gen && npm run build:apps && npm run bundle:html && npm run typecheck",
     "build:dev": "npm run gen && npm run build:apps:dev && npm run bundle:html",
     "vercel-build": "npm run gen && npm run build:apps && npm run bundle:html",

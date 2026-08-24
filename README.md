@@ -9,19 +9,61 @@ single self-contained HTML files with Vite.
 
 ## The apps
 
-| Tool | UI | What it does |
-|------|----|--------------|
-| `color-picker` | 🎨 | HSV area + hue/opacity sliders, HEX/RGB/HSL, swatches, eyedropper |
-| `dice` | 🎲 | Roll 1–5 dice with total; **Duel** mode = You vs Opponent, highest total wins |
-| `coin-flip` | 🪙 | Flip a coin with a 3D animation + running Heads/Tails tally |
-| `draw-card` | 🃏 | Draw from a shuffled 52-card deck; auto-reshuffles |
-| `spin-wheel` | 🎡 | Wheel-of-Fortune spinner with **editable labels — add as many as you want** |
-| `decision-dice` | 🎲 | A die with **custom text faces** (Yes/No/Maybe…), fully editable |
+Thirty apps behind fifteen tools. The eight originals keep their own tools, six
+headline games get their own, and `play` opens the other eighteen.
 
-Each tool accepts optional input to seed the UI (e.g. `color-picker` →
-`{ "initialColor": "#2563eb" }`, `spin-wheel` → `{ "labels": ["Pizza","Tacos","Sushi"] }`,
-`decision-dice` → `{ "faces": ["Yes","No"] }`, `dice` → `{ "count": 2 }`) and
-returns a text + structured result for non-UI hosts.
+### Mini apps
+
+| Tool | What it does |
+|------|--------------|
+| `color-picker` | HSV area + hue/opacity sliders, HEX/RGB/HSL, swatches, eyedropper |
+| `dice` | Roll 1 to 5 dice with total; **Duel** mode = You vs Opponent |
+| `coin-flip` | Flip a coin with a 3D animation and a running tally |
+| `draw-card` | Draw from a shuffled 52-card deck; auto-reshuffles |
+| `spin-wheel` | Wheel-of-Fortune spinner with **editable labels** |
+| `decision-dice` | A die with **custom text faces** (Yes/No/Maybe), fully editable |
+
+### Games with their own tool
+
+| Tool | What it does |
+|------|--------------|
+| `snake` | The classic crawl, adjustable speed, hard or wrapping walls |
+| `wordle` | Multi-word Wordle; **the model supplies the words** |
+| `tetris` | SRS rotation with wall kicks, 7-bag, hold, ghost piece, T-spins |
+| `2048` | Slide and merge, 3x3 to 6x6, animated tiles, one-step undo |
+| `minesweeper` | Three presets, chording, first click always safe |
+| `quiz-duel` | Timed trivia on **any topic you name**, written by the model |
+| `story-quest` | A branching adventure **the model writes one beat at a time** |
+| `codenames` | Solo Codenames with **the model as spymaster** |
+
+### The arcade, behind `play`
+
+Eighteen more games in one shared bundle, with a picker. Passing `game` opens
+one directly; omitting it shows the menu.
+
+| Group | Games |
+|-------|-------|
+| Model writes it | `twenty-questions`, `hangman`, `emoji-riddle`, `higher-lower`, `word-search` |
+| Arcade | `breakout`, `flappy`, `stack-tower`, `aim-trainer` |
+| Puzzle | `sudoku`, `nonogram`, `sokoban`, `mastermind` |
+| Versus | `connect-four`, `ultimate-ttt`, `blackjack`, `battleship`, `yahtzee` |
+
+A tool's UI resource is bound when the tool is registered and cannot be swapped
+per call, which is why everything behind `play` shares one bundle. That turned
+out better than the alternative: every game is already loaded, so the picker is
+instant and costs no model turn, and eighteen games occupy 751 KB rather than
+the 10 MB they would need as separate bundles.
+
+## Adding a game
+
+One entry in [games/apps.mjs](games/apps.mjs) and one folder under `src/`. The
+build inputs, the bundled file list, the registered tools, the arcade picker and
+the submission JSON are all derived from that manifest.
+
+Read [games/CONTRIBUTING.md](games/CONTRIBUTING.md) first: it is the contract,
+covering the shared game shell in [src/lib/game.tsx](src/lib/game.tsx), styling
+and accessibility rules, and the constraints that matter when eighteen games
+share a bundle and the page has no network access.
 
 ## Project layout
 
@@ -30,13 +72,14 @@ Everything runnable lives in this directory:
 ```
 *.html                 One HTML entry per app (color-picker.html, dice.html, …)
 index.html             Dev-only launcher linking to every app's preview
-server.ts              Registers all 6 tools + UI resources
+server.ts              Registers every tool from games/registry.ts
 main.ts                Local server — Streamable HTTP (default) or stdio (--stdio)
 api/mcp.ts             Vercel serverless function exposing the MCP endpoint
 vercel.json            Vercel config (static pages + /mcp rewrite)
 public/                Base-domain pages: index.html, privacy.html, terms.html, styles.css
-scripts/bundle-html.mjs   Inlines built app HTML → generated/html.js
-generated/html.js      Inlined app HTML (generated; imported by server.ts)
+games/                 The manifest, tool registry and content validators
+scripts/               Build, bundling and scaffolding, all driven by the manifest
+generated/html/        One module per app, imported on demand (generated)
 src/
   lib/
     runtime.tsx        Shared MCP App runtime: connect, theming, preview, reporting
@@ -49,9 +92,7 @@ src/
 dist/                  Built single-file HTML per app (generated)
 ```
 
-Adding another app = one HTML entry + one `src/<name>/index.tsx` calling
-`renderApp(...)` + one `serveHtml`/`registerAppTool` pair in `server.ts` + one
-line in `build:apps` + one line in `scripts/bundle-html.mjs`.
+Adding another app = one entry in `games/apps.mjs` plus one folder under `src/`.
 
 ## Pages served on the base domain
 
@@ -95,15 +136,17 @@ npm start                       # build all apps + start HTTP server on :3001/mc
 npm run build && npm run serve:stdio   # stdio transport (subprocess hosts)
 ```
 
-`npm run build` bundles all six apps into `dist/`, then inlines them into
-`generated/html.js`. `npm run serve` reads that module (no filesystem at runtime),
+`npm run build` bundles all fifteen entry points into `dist/`, then inlines them into
+`generated/html/`, one module per app. `npm run serve` imports those on demand
+(no filesystem at runtime),
 so build first (or use `npm start`). Set `PORT` to change the port (default `3001`).
 
 ## Deploy to Vercel
 
 The server is serverless-ready:
 
-- App HTML is **inlined** at build time (`generated/html.js`) — no runtime
+- App HTML is **inlined** at build time (`generated/html/`), one module per app
+  and imported on demand, so a cold start parses one app rather than fifteen. No runtime
   filesystem access, so it works in a Vercel Function.
 - The transport is **stateless** (`sessionIdGenerator: undefined`) — no session
   storage or sticky routing needed.
