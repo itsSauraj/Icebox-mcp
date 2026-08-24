@@ -1,0 +1,128 @@
+/**
+ * Emoji Riddle styles. The emoji row is intentionally huge, since it is the
+ * whole puzzle and carries the most visual weight in the frame. Every
+ * animation (the stagger-in, the wrong-guess shake, the reveal pop) is
+ * disabled under prefers-reduced-motion.
+ */
+
+.headerIcon {
+  font-size: 1.3em;
+  line-height: 1;
+}
+
+.boardWrap {
+  position: relative;
+  width: 100%;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.stage {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) 0;
+}
+
+/* ---- The puzzle itself ---- */
+.emojiRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(6px, 2vw, 14px);
+  width: 100%;
+  min-height: clamp(3.5rem, 14vmin, 5.5rem);
+}
+.emojiChar {
+  display: inline-block;
+  font-size: clamp(2.4rem, 11vmin, 4.25rem);
+  line-height: 1;
+  animation: emojiIn 0.42s ease both;
+  animation-delay: calc(var(--i) * 90ms);
+}
+
+/* ---- Guess form ---- */
+.guessForm {
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+}
+.guessLabel {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  text-align: left;
+}
+.inputRow {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+.inputRow input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.shake {
+  animation: shakeX 0.4s ease-in-out both;
+}
+
+/* ---- Hint ---- */
+.hintText {
+  margin: 0;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  background: var(--color-background-secondary);
+  border: var(--border-width-regular) solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  max-width: 34ch;
+}
+
+/* ---- Reveal ---- */
+.reveal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  animation: revealPop 0.3s ease both;
+}
+.answerText {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: var(--font-weight-bold);
+  max-width: 34ch;
+}
+
+/* ---- Keyframes ---- */
+@keyframes emojiIn {
+  0% { opacity: 0; transform: translateY(10px) scale(0.7); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes shakeX {
+  0%, 100% { transform: translateX(0); }
+  15% { transform: translateX(-7px); }
+  30% { transform: translateX(7px); }
+  45% { transform: translateX(-6px); }
+  60% { transform: translateX(6px); }
+  75% { transform: translateX(-3px); }
+  90% { transform: translateX(3px); }
+}
+@keyframes revealPop {
+  0% { opacity: 0; transform: scale(0.85); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .emojiChar,
+  .shake,
+  .reveal {
+    animation: none !important;
+  }
+}
