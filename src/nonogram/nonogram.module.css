@@ -1,0 +1,172 @@
+/**
+ * Nonogram styles.
+ *
+ * The layout is a 2x2 grid: an empty corner, the column clues along the top,
+ * the row clues down the left, and the board itself. Clue tracks are sized
+ * from the longest clue in each direction, passed in as custom properties, so
+ * a puzzle with long clues gets the room it needs without squeezing the board.
+ *
+ * Every fifth line gets a heavier edge, which is the standard reading aid and
+ * the reason nonograms are usually drawn in blocks of five.
+ */
+
+.root {
+  gap: var(--spacing-sm);
+}
+
+.boardWrap {
+  position: relative;
+  width: min(100%, 84vmin);
+  max-width: 440px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: calc(var(--rc) * 1.15em) 1fr;
+  grid-template-rows: calc(var(--cc) * 1.15em) 1fr;
+  gap: 3px;
+  width: 100%;
+  font-size: clamp(0.55rem, 2.4vmin, 0.78rem);
+}
+
+.corner {
+  grid-area: 1 / 1;
+}
+
+/* ---- Clues ---- */
+.colClues {
+  grid-area: 1 / 2;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 1fr);
+  gap: 1px;
+  align-items: end;
+}
+.colClue {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1px;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-primary);
+}
+
+.rowClues {
+  grid-area: 2 / 1;
+  display: grid;
+  grid-template-rows: repeat(var(--rows), 1fr);
+  gap: 1px;
+  justify-items: end;
+}
+.rowClue {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.35em;
+  height: 100%;
+  padding-right: 0.35em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-primary);
+}
+
+/* A satisfied line dims, which is the main feedback loop in a nonogram. */
+.clueDone {
+  color: var(--color-text-secondary);
+  opacity: 0.45;
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+/* ---- Grid ---- */
+.grid {
+  grid-area: 2 / 2;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 1fr);
+  grid-template-rows: repeat(var(--rows), 1fr);
+  gap: 1px;
+  aspect-ratio: var(--cols) / var(--rows);
+  background: color-mix(in srgb, var(--color-border) 60%, transparent);
+  padding: 1px;
+  border-radius: 2px;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.cell {
+  position: relative;
+  padding: 0;
+  border: none;
+  border-radius: 1px;
+  background: var(--color-background-primary);
+  cursor: pointer;
+  aspect-ratio: 1 / 1;
+}
+.cell:focus-visible {
+  outline: 2px solid var(--color-ring-primary);
+  outline-offset: -1px;
+  z-index: 3;
+}
+
+/* Every fifth line reads heavier, the standard block-of-five aid. */
+.blockCol { box-shadow: inset -2px 0 0 color-mix(in srgb, var(--color-text-primary) 26%, transparent); }
+.blockRow { box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--color-text-primary) 26%, transparent); }
+.blockRow.blockCol {
+  box-shadow:
+    inset -2px 0 0 color-mix(in srgb, var(--color-text-primary) 26%, transparent),
+    inset 0 -2px 0 color-mix(in srgb, var(--color-text-primary) 26%, transparent);
+}
+
+.filled {
+  background: var(--color-text-primary);
+}
+
+/* Marked blank is a cross, so it is never confused with an empty cell. */
+.marked::after {
+  content: "";
+  position: absolute;
+  inset: 26%;
+  background:
+    linear-gradient(45deg, transparent 40%, var(--color-text-secondary) 40% 60%, transparent 60%),
+    linear-gradient(-45deg, transparent 40%, var(--color-text-secondary) 40% 60%, transparent 60%);
+  opacity: 0.7;
+}
+
+.cursor {
+  box-shadow: inset 0 0 0 2px var(--color-ring-primary);
+  z-index: 2;
+}
+
+/**
+ * The win reveal: the clues and grid lines drop away and the picture stands on
+ * its own for a moment. That reveal is the payoff of the whole puzzle.
+ */
+.revealed .colClues,
+.revealed .rowClues {
+  opacity: 0;
+  transition: opacity 420ms ease;
+}
+.revealed .grid {
+  gap: 0;
+  background: transparent;
+  transition: gap 420ms ease, background-color 420ms ease;
+}
+.revealed .cell {
+  border-radius: 0;
+  box-shadow: none;
+  transition: border-radius 420ms ease;
+}
+.revealed .marked::after {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .revealed .colClues,
+  .revealed .rowClues,
+  .revealed .grid,
+  .revealed .cell {
+    transition: none;
+  }
+}
