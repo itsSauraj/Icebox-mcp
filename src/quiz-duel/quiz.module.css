@@ -1,0 +1,553 @@
+/**
+ * Quiz Duel styles.
+ *
+ * The brief is "game show, not form", so the question sits on a lit stage: a
+ * bordered panel with an accent spotlight across the top, one oversized
+ * question line, and options as slabs with letter badges. Verdict colour is the
+ * only literal colour here (green right, red wrong, amber for a timer running
+ * out) because there the colour is the content. Everything structural comes
+ * from the host tokens.
+ *
+ * Motion is deliberately cheap: the timer bar transitions its own width once a
+ * second, the score pop and the streak break are one-shot keyframes, and all of
+ * them are switched off under prefers-reduced-motion.
+ */
+
+.icon {
+  font-size: 1.15em;
+  line-height: 1;
+}
+
+/* ---- Topic line and question pips ---- */
+.topic {
+  margin: 0;
+  font-size: 0.65rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.pips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+}
+.pip {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-border);
+  transition: transform 200ms ease, background-color 200ms ease;
+}
+.pipRight { background: light-dark(#16a34a, #4ade80); }
+.pipWrong { background: light-dark(#dc2626, #f87171); }
+.pipSkip { background: var(--color-text-secondary); }
+.pipNow {
+  background: var(--color-accent);
+  transform: scale(1.5);
+}
+
+/* ---- Stage ---- */
+.stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  width: 100%;
+  padding: var(--spacing-md);
+  text-align: left;
+  border-radius: var(--border-radius-lg);
+  border: var(--border-width-regular) solid var(--color-border);
+  background-color: var(--color-background-secondary);
+  background-image: radial-gradient(
+    130% 70% at 50% 0%,
+    color-mix(in srgb, var(--color-accent) 10%, transparent),
+    transparent 68%
+  );
+}
+
+/* ---- Waiting on the model ---- */
+.waiting {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg) 0;
+  text-align: center;
+}
+.dots {
+  display: inline-flex;
+  gap: 5px;
+}
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  animation: qdDot 1.1s ease-in-out infinite;
+}
+.dot:nth-child(2) { animation-delay: 0.15s; }
+.dot:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes qdDot {
+  0%, 100% { opacity: 0.25; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-3px); }
+}
+
+.waitText {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  max-width: 40ch;
+}
+
+/* ---- Timer ---- */
+.timerRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+.timerTrack {
+  position: relative;
+  flex: 1 1 auto;
+  height: 10px;
+  min-width: 60px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--color-border);
+}
+.timerFill {
+  display: block;
+  width: var(--pct, 100%);
+  height: 100%;
+  border-radius: 999px;
+  background: currentColor;
+  transition: width 1s linear;
+}
+.timerNum {
+  min-width: 2.4em;
+  font-size: 1.05rem;
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* Bands. The row carries the colour so the bar and the number stay in step. */
+.calm { color: var(--color-accent); }
+.warn { color: light-dark(#b45309, #f59e0b); }
+.crit { color: light-dark(#b91c1c, #f87171); }
+.crit .timerTrack { animation: qdPulse 900ms ease-in-out infinite; }
+
+@keyframes qdPulse {
+  0%, 100% { box-shadow: 0 0 0 0 transparent; }
+  50% { box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 28%, transparent); }
+}
+
+/* ---- Question ---- */
+.qMeta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  font-size: 0.68rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+.qText {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: var(--font-weight-bold);
+  line-height: 1.35;
+  animation: qdRise 300ms ease-out;
+}
+
+@keyframes qdRise {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---- Options ---- */
+.options {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-sm);
+}
+/* Four short answers read best as a game-show quadrant. */
+.two {
+  grid-template-columns: 1fr 1fr;
+}
+@media (max-width: 400px) {
+  .two { grid-template-columns: 1fr; }
+}
+
+.opt {
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  width: 100%;
+  min-height: 52px;
+  padding: 11px 14px;
+  text-align: left;
+  font: inherit;
+  font-size: 0.95rem;
+  border-radius: var(--border-radius-md);
+  border: 2px solid var(--color-border);
+  background: var(--color-background-primary);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: border-color 140ms ease, transform 140ms ease, background-color 140ms ease;
+}
+.opt:hover:not(:disabled) {
+  border-color: var(--color-ring-primary);
+  transform: translateY(-1px);
+}
+.opt:focus-visible {
+  outline: 2px solid var(--color-ring-primary);
+  outline-offset: 2px;
+}
+.opt:disabled { cursor: default; }
+
+.optKey {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 1.7em;
+  height: 1.7em;
+  border-radius: var(--border-radius-sm);
+  background: var(--color-background-secondary);
+  color: var(--color-text-secondary);
+  font-size: 0.78rem;
+  font-weight: var(--font-weight-bold);
+}
+.optText { line-height: 1.35; }
+
+/* Revealed states. */
+.right {
+  border-color: light-dark(#16a34a, #4ade80);
+  background: color-mix(in srgb, light-dark(#16a34a, #4ade80) 16%, var(--color-background-primary));
+  animation: qdPop 320ms ease-out;
+}
+.right .optKey {
+  background: light-dark(#16a34a, #4ade80);
+  color: light-dark(#ffffff, #062a12);
+}
+.wrong {
+  border-color: light-dark(#dc2626, #f87171);
+  background: color-mix(in srgb, light-dark(#dc2626, #f87171) 14%, var(--color-background-primary));
+}
+.wrong .optKey {
+  background: light-dark(#dc2626, #f87171);
+  color: light-dark(#ffffff, #2b0707);
+}
+.faded { opacity: 0.5; }
+/* Struck out by 50/50. Left in place so the layout does not jump. */
+.removed {
+  opacity: 0.32;
+  text-decoration: line-through;
+  border-style: dashed;
+  border-width: var(--border-width-regular);
+}
+
+@keyframes qdPop {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+/* ---- Verdict and note ---- */
+.verdict {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-height: 1.9em;
+  margin: 0;
+}
+.tag {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: var(--font-weight-bold);
+}
+.tagRight { color: light-dark(#065f46, #d1fae5); background: light-dark(#d1fae5, #064e3b); }
+.tagWrong { color: light-dark(#7f1d1d, #fee2e2); background: light-dark(#fee2e2, #7f1d1d); }
+.tagFlat { color: var(--color-text-secondary); background: var(--color-background-primary); }
+
+.gain {
+  font-size: 0.95rem;
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-accent);
+  animation: qdGain 900ms ease-out;
+}
+
+@keyframes qdGain {
+  0% { opacity: 0; transform: translateY(8px) scale(0.9); }
+  35% { opacity: 1; transform: translateY(0) scale(1.06); }
+  100% { opacity: 1; transform: none; }
+}
+
+.note {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  border-left: 2px solid var(--color-accent);
+  padding-left: var(--spacing-sm);
+}
+
+/* ---- Streak and lifelines ---- */
+.streakRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+}
+.streak {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: var(--border-width-regular) solid var(--color-border);
+  background: var(--color-background-primary);
+  font-size: 0.82rem;
+  font-weight: var(--font-weight-bold);
+  transition: transform 200ms ease, border-color 200ms ease, background-color 200ms ease;
+}
+.streakOn {
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 14%, var(--color-background-primary));
+  transform: scale(1.06);
+}
+.streakHot {
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 26%, var(--color-background-primary));
+  transform: scale(1.12);
+}
+.mult {
+  font-variant-numeric: tabular-nums;
+  color: var(--color-accent);
+}
+/* One-shot shake when a run of correct answers ends. */
+.broke {
+  border-color: light-dark(#dc2626, #f87171);
+  animation: qdBreak 620ms ease-out;
+}
+
+@keyframes qdBreak {
+  0% { transform: translateX(0) scale(1.1); }
+  20% { transform: translateX(-5px) scale(1); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+  100% { transform: none; }
+}
+
+.lifelines {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.lifeline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 6px 11px;
+  border-radius: 999px;
+  border: var(--border-width-regular) solid var(--color-border);
+  background: var(--color-background-primary);
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition: border-color 140ms ease, opacity 200ms ease;
+}
+.lifeline:hover:not(:disabled) { border-color: var(--color-ring-primary); }
+.lifeline:focus-visible {
+  outline: 2px solid var(--color-ring-primary);
+  outline-offset: 2px;
+}
+.lifeline:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+/* Spent for the rest of the round, and it should look like it. Written as a
+   compound selector so it outranks the plain disabled state above. */
+.lifeline.spent {
+  opacity: 0.38;
+  text-decoration: line-through;
+}
+
+/* ---- Row under the stage ---- */
+.nextRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+.hintLine {
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
+}
+
+/* ---- Results ---- */
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  width: 100%;
+  text-align: left;
+}
+.scoreBig {
+  margin: 0;
+  font-size: 2.6rem;
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  color: var(--color-accent);
+  animation: qdRise 380ms ease-out;
+}
+.scoreLabel {
+  margin: 0;
+  font-size: 0.66rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+.tally {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-sm);
+  text-align: center;
+}
+.tallyCell {
+  padding: var(--spacing-sm) 4px;
+  border-radius: var(--border-radius-md);
+  border: var(--border-width-regular) solid var(--color-border);
+  background: var(--color-background-secondary);
+}
+.tallyNum {
+  display: block;
+  font-size: 1.15rem;
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+.tallyLabel {
+  display: block;
+  font-size: 0.6rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.reviewLabel {
+  margin: 0;
+  font-size: 0.65rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+.review {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  max-height: 260px;
+  overflow-y: auto;
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius-md);
+  border: var(--border-width-regular) solid var(--color-border);
+}
+.review:focus-visible {
+  outline: 2px solid var(--color-ring-primary);
+  outline-offset: 2px;
+}
+.revItem {
+  display: flex;
+  gap: 0.6em;
+  padding-bottom: var(--spacing-sm);
+  border-bottom: var(--border-width-regular) solid var(--color-border);
+}
+.revItem:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+.revMark {
+  flex: 0 0 auto;
+  width: 1.5em;
+  height: 1.5em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 0.72rem;
+  font-weight: var(--font-weight-bold);
+}
+.markRight { color: light-dark(#ffffff, #062a12); background: light-dark(#16a34a, #4ade80); }
+.markWrong { color: light-dark(#ffffff, #2b0707); background: light-dark(#dc2626, #f87171); }
+.markSkip { color: var(--color-text-primary); background: var(--color-border); }
+.revBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.revQ {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: var(--font-weight-medium);
+  line-height: 1.4;
+}
+.revAns {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+}
+.revAns b { color: var(--color-text-primary); }
+.revNote {
+  margin: 0;
+  font-size: 0.75rem;
+  font-style: italic;
+  color: var(--color-text-secondary);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot,
+  .qText,
+  .gain,
+  .right,
+  .broke,
+  .scoreBig,
+  .crit .timerTrack {
+    animation: none;
+  }
+  .timerFill,
+  .opt,
+  .pip,
+  .streak,
+  .lifeline {
+    transition: none;
+  }
+  .opt:hover:not(:disabled) { transform: none; }
+  .streakOn,
+  .streakHot { transform: none; }
+}
