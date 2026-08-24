@@ -124,22 +124,32 @@ export function useFrameLoop(running: boolean, onFrame: (dtMs: number) => void):
 export function useCountdown(seconds: number, running: boolean, onExpire?: () => void) {
   const [left, setLeft] = useState(seconds);
   const expire = useLatest(onExpire);
-  const reset = useCallback((to = seconds) => setLeft(to), [seconds]);
+  const fired = useRef(false);
+
+  const reset = useCallback(
+    (to = seconds) => {
+      fired.current = false;
+      setLeft(to);
+    },
+    [seconds],
+  );
 
   useEffect(() => {
     if (!running) return;
-    const id = window.setInterval(() => {
-      setLeft((n) => {
-        if (n <= 1) {
-          window.clearInterval(id);
-          expire.current?.();
-          return 0;
-        }
-        return n - 1;
-      });
-    }, 1000);
+    const id = window.setInterval(() => setLeft((n) => (n > 0 ? n - 1 : 0)), 1000);
     return () => window.clearInterval(id);
-  }, [running, expire]);
+  }, [running]);
+
+  // `onExpire` fires from an effect, never from inside the state updater above.
+  // React may invoke an updater more than once for the same transition, and
+  // StrictMode deliberately does, so a side effect in there runs twice: a timed
+  // game would score one timeout as two. The ref makes it once per round, and
+  // `reset` re-arms it.
+  useEffect(() => {
+    if (!running || left > 0 || fired.current) return;
+    fired.current = true;
+    expire.current?.();
+  }, [running, left, expire]);
 
   return [left, reset] as const;
 }
