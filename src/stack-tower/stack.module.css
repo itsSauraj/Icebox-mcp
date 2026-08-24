@@ -1,0 +1,139 @@
+/**
+ * Stack Tower styles.
+ *
+ * Coordinate system: every block is positioned with `left` / `width` as
+ * percentages of a fixed virtual width (`VW` in index.tsx) and `bottom` /
+ * `height` as percentages of one row (`ROWPCT`). Each block element is
+ * therefore always exactly one row tall, which is what lets the falling
+ * block's landing animation be a single fixed keyframe (`translateY(-200%)`)
+ * instead of a value computed fresh for every drop.
+ *
+ * The camera is one `transform: translateY()` on `.world`: as the tower
+ * grows, index.tsx pushes that translation further down so the newest block
+ * keeps landing at the same screen height, and the transition on `.world`
+ * is what makes that glide instead of jump.
+ *
+ * Block colour is a computed HSL set inline per block, the one place a
+ * literal colour belongs here: on this board the colour is the content, the
+ * same rule 2048's tile ramp follows. Everything structural reads off the
+ * host tokens.
+ */
+
+.boardWrap {
+  position: relative;
+  width: min(100%, 62vmin);
+  aspect-ratio: 3 / 4;
+}
+.fullBoard .boardWrap {
+  width: min(100%, 56vmin);
+  aspect-ratio: 3 / 4.6;
+}
+
+.board {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--border-radius-lg);
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-accent) 12%, var(--color-background-secondary)),
+    var(--color-background-secondary)
+  );
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.world {
+  position: absolute;
+  inset: 0;
+  transition: transform 240ms ease;
+}
+
+.block {
+  position: absolute;
+  left: 0;
+  border-radius: var(--border-radius-sm);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.16),
+    0 1px 2px rgba(0, 0, 0, 0.18);
+}
+
+/* The falling block: it already sits at its final trimmed shape (left/width
+   are the sliced values), and this plays a fixed one-row drop on top of
+   that, so the slice and the fall read as one motion. */
+.landing {
+  z-index: 2;
+  animation: towerFall 260ms cubic-bezier(0.3, 0.7, 0.4, 1) both;
+}
+@keyframes towerFall {
+  from { transform: translateY(-200%); }
+  to { transform: translateY(0); }
+}
+
+/* A miss: the active block keeps falling past the tower and fades. */
+.miss {
+  animation: towerMiss 650ms ease-in both;
+}
+@keyframes towerMiss {
+  to { transform: translateY(260%); opacity: 0; }
+}
+
+/* The sliced-off offcut tumbles away toward the side it was cut from. */
+.offcutLeft {
+  z-index: 3;
+  transform-origin: right center;
+  animation: towerOffcutLeft 700ms ease-in both;
+}
+.offcutRight {
+  z-index: 3;
+  transform-origin: left center;
+  animation: towerOffcutRight 700ms ease-in both;
+}
+@keyframes towerOffcutLeft {
+  to { transform: translateY(240%) rotate(-20deg); opacity: 0; }
+}
+@keyframes towerOffcutRight {
+  to { transform: translateY(240%) rotate(20deg); opacity: 0; }
+}
+
+.perfectBanner {
+  position: absolute;
+  top: 12%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-weight: var(--font-weight-bold);
+  font-size: 0.9rem;
+  white-space: nowrap;
+  color: var(--color-text-on-accent);
+  background: var(--color-accent);
+  box-shadow: 0 2px 10px color-mix(in srgb, var(--color-accent) 50%, transparent);
+  z-index: 5;
+  pointer-events: none;
+  animation: towerPop 320ms cubic-bezier(0.3, 1.4, 0.4, 1) both;
+}
+@keyframes towerPop {
+  0% { transform: translateX(-50%) scale(0.6); opacity: 0; }
+  60% { transform: translateX(-50%) scale(1.08); opacity: 1; }
+  100% { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Lose the camera glide: cut straight to the new position. */
+  .world {
+    transition: none;
+  }
+  /* Lose the falling offcut entirely, keep the tap responsive without the
+     distraction. The drop (`.landing`) and the miss (`.miss`) stay: they
+     carry gameplay information (where the block landed, that the run
+     ended), not just decoration. */
+  .offcutLeft,
+  .offcutRight {
+    animation: none;
+    opacity: 0;
+  }
+}
