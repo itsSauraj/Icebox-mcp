@@ -60,7 +60,11 @@ function buildOne(input) {
 
 async function run() {
   const started = Date.now();
-  await fs.rm(path.join(root, "dist"), { recursive: true, force: true });
+  // Only a full build owns dist/. A targeted build (`build-apps.mjs snake.html`)
+  // must leave the other bundles alone: several people, or several agents, may
+  // be verifying different games against the same tree at once, and clearing
+  // dist/ here would delete work that is not ours.
+  if (!only.length) await fs.rm(path.join(root, "dist"), { recursive: true, force: true });
   await fs.mkdir(path.join(root, "dist"), { recursive: true });
 
   console.log(`Building ${inputs.length} bundles, ${limit} at a time (${dev ? "development" : "production"})`);
