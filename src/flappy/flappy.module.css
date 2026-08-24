@@ -1,0 +1,232 @@
+/**
+ * Flappy styles. The board is a fixed 360x480 virtual playfield (see
+ * VW/VH in index.tsx); every moving piece is positioned with a plain
+ * left/top/width/height percentage computed in JS each frame, not CSS
+ * transitions, because gravity accelerates and a linear CSS transition
+ * cannot track that. CSS instead owns everything that loops on its own
+ * clock: the parallax scenery, the ground scroll, the idle bob and the
+ * wing flap all run as independent animations so the compositor drives
+ * them, and the React-driven bird and pipes never fight over `transform`
+ * with a CSS animation (the bob and rotation live on separate nested
+ * elements for exactly that reason).
+ *
+ * All colour comes from the host tokens except the bird, which is the
+ * one place the guide allows a literal palette, and the small red death
+ * flash, matching the literal reds already used for the shared lose
+ * banner in ui.module.css.
+ */
+
+.boardWrap {
+  position: relative;
+  width: min(100%, 58vmin, 340px);
+  aspect-ratio: 3 / 4;
+  margin: 0 auto;
+}
+.fullBoard .boardWrap {
+  width: min(70vmin, 460px);
+}
+
+.board {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--border-radius-lg);
+  background: var(--color-background-secondary);
+  box-shadow:
+    inset 0 0 0 1px var(--color-border),
+    inset 0 2px 16px rgba(0, 0, 0, 0.16);
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ---- Parallax scenery: two gradient layers, far slower than near ---- */
+.skyFar,
+.skyNear {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.skyFar {
+  background-image: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--color-text-primary) 12%, transparent) 0 16px,
+    transparent 17px
+  );
+  background-size: 150px 130px;
+  background-position: 10px 20px;
+  opacity: 0.5;
+  animation: flappyDrift 34s linear infinite;
+}
+.skyNear {
+  background-image: radial-gradient(
+    ellipse 90px 46px at center,
+    color-mix(in srgb, var(--color-accent) 16%, transparent) 0 90px,
+    transparent 91px
+  );
+  background-size: 190px 160px;
+  background-position: 60px 120px;
+  opacity: 0.55;
+  animation: flappyDrift 15s linear infinite;
+}
+
+/* ---- Ground ---- */
+.ground {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 4;
+  background-color: var(--color-background-secondary);
+  background-image: repeating-linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-border) 80%, transparent) 0 10px,
+    transparent 10px 24px
+  );
+  border-top: 3px solid var(--color-border);
+  box-shadow: inset 0 6px 10px -6px rgba(0, 0, 0, 0.25);
+  animation: flappyGround 1.1s linear infinite;
+}
+
+/* ---- Pipes ---- */
+.pipePair {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+}
+.pipeTop,
+.pipeBottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: color-mix(in srgb, var(--color-accent) 42%, var(--color-background-secondary));
+  box-shadow:
+    inset 2px 0 0 color-mix(in srgb, var(--color-text-primary) 12%, transparent),
+    inset -2px 0 0 color-mix(in srgb, var(--color-text-primary) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-accent) 60%, var(--color-text-primary));
+}
+.pipeTop {
+  top: 0;
+}
+.pipeBottom {
+  bottom: 0;
+}
+.pipeLip {
+  position: absolute;
+  left: -16%;
+  right: -16%;
+  height: 9%;
+  min-height: 10px;
+  background: color-mix(in srgb, var(--color-accent) 55%, var(--color-background-secondary));
+  border: 1px solid color-mix(in srgb, var(--color-accent) 60%, var(--color-text-primary));
+  border-radius: 3px;
+}
+.pipeTop .pipeLip {
+  bottom: -1px;
+}
+.pipeBottom .pipeLip {
+  top: -1px;
+}
+
+/* ---- Bird ----
+ * .birdPos only positions the centre point (left/top/width/height are set
+ * inline from the physics state) and carries a static, never-animated
+ * centring transform. .birdRotate carries the inline rotation. The two are
+ * kept apart so the CSS hover-bob animation (which targets `transform` on
+ * `.birdRotate` while `.hover` is on) never has to fight an inline style. */
+.birdPos {
+  position: absolute;
+  z-index: 5;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.birdRotate {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 50%;
+}
+.birdRotate.hover {
+  animation: flappyBob 1.6s ease-in-out infinite;
+}
+.birdRotate svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.25));
+}
+.wing {
+  transform-origin: 60% 45%;
+  animation: flappyWing 420ms ease-in-out infinite alternate;
+}
+
+/* ---- Death flash ---- */
+.hit {
+  position: relative;
+}
+.hit::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  background: radial-gradient(circle, transparent 55%, color-mix(in srgb, #ef4444 55%, transparent) 100%);
+  animation: flappyFlash 550ms ease-out forwards;
+}
+
+/* ---- Score pop ---- */
+.scorePop {
+  display: inline-block;
+  animation: flappyScorePop 260ms ease-out;
+}
+
+/* ---- Keyframes ---- */
+@keyframes flappyDrift {
+  from { background-position-x: 0; }
+  to { background-position-x: -190px; }
+}
+@keyframes flappyGround {
+  from { background-position-x: 0; }
+  to { background-position-x: -24px; }
+}
+@keyframes flappyBob {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(-8%) rotate(3deg); }
+}
+@keyframes flappyWing {
+  from { transform: rotate(-18deg); }
+  to { transform: rotate(22deg); }
+}
+@keyframes flappyFlash {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+@keyframes flappyScorePop {
+  0% { transform: scale(1.6); opacity: 0.5; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skyFar,
+  .skyNear,
+  .ground {
+    animation: none;
+  }
+  .birdRotate.hover {
+    animation: none;
+  }
+  .wing {
+    animation: none;
+  }
+  .hit::after {
+    animation: none;
+    opacity: 0;
+  }
+  .scorePop {
+    animation: none;
+  }
+}
