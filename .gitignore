@@ -1,6 +1,6 @@
 node_modules/
 dist/
 .vercel/
-generated/html.js
+generated/html/
 .env
 .env*.local

@@ -1,0 +1,187 @@
+/**
+ * Shared game chrome. Everything a board sits inside: the frame, the header
+ * and stat row, the overlay, the d-pad, and the segmented control.
+ *
+ * All colour comes from the host style variables with the brand purple as
+ * fallback (see global.css), so a game never hardcodes a theme. Board-specific
+ * styling belongs in each game's own module, not here.
+ */
+
+/* ---- Frame ---- */
+.frame {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: var(--spacing-lg) var(--spacing-md) var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  text-align: center;
+}
+
+/* Grid and board games need more room than the utility apps. */
+.wide {
+  max-width: 480px;
+}
+
+/* Fullscreen: fill the viewport, scroll if tall, keep content top-aligned. */
+.full {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  max-width: none;
+  overflow: auto;
+  justify-content: flex-start;
+  background: var(--color-background-primary);
+  padding: var(--spacing-lg);
+}
+
+/* ---- Header ---- */
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.stats {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs) var(--spacing-md);
+}
+.stat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35em;
+}
+.statLabel {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+.statValue {
+  font-size: 0.95rem;
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Overlay (ready / paused / over / won) ---- */
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-lg);
+  background: color-mix(in srgb, var(--color-background-primary) 76%, transparent);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  z-index: 10;
+}
+.overlayTitle {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+}
+.overlayDetail {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  max-width: 30ch;
+}
+
+/* ---- D-pad ---- */
+.dpad {
+  display: grid;
+  grid-template-columns: repeat(3, 46px);
+  grid-template-rows: repeat(3, 46px);
+  gap: 6px;
+  justify-content: center;
+  touch-action: manipulation;
+}
+/* Paddle games only need left and right, so collapse to a single row. */
+.dpadFlat {
+  grid-template-rows: 46px;
+}
+.dpadFlat .left { grid-area: 1 / 1; }
+.dpadFlat .right { grid-area: 1 / 3; }
+
+.dbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border-radius: var(--border-radius-md);
+  border: var(--border-width-regular) solid var(--color-border);
+  background: var(--color-background-secondary);
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+.dbtn:hover { border-color: var(--color-ring-primary); }
+.dbtn:active {
+  transform: translateY(1px);
+  background: var(--color-accent);
+  color: var(--color-text-on-accent);
+}
+.dbtn:focus-visible {
+  outline: 2px solid var(--color-ring-primary);
+  outline-offset: 2px;
+}
+.up { grid-area: 1 / 2; }
+.left { grid-area: 2 / 1; }
+.right { grid-area: 2 / 3; }
+.down { grid-area: 3 / 2; }
+
+/* ---- Segmented control ---- */
+.seg {
+  display: inline-flex;
+  gap: 3px;
+  padding: 3px;
+  border-radius: var(--border-radius-md);
+  border: var(--border-width-regular) solid var(--color-border);
+  background: var(--color-background-secondary);
+}
+.segBtn {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  font-weight: var(--font-weight-bold);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.segBtn:hover { color: var(--color-text-primary); }
+.segBtn:focus-visible {
+  outline: 2px solid var(--color-ring-primary);
+  outline-offset: 1px;
+}
+.segOn {
+  background: var(--color-accent);
+  color: var(--color-text-on-accent);
+}
+.segOn:hover { color: var(--color-text-on-accent); }
+
+/* ---- Notice ---- */
+.notice {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  max-width: 34ch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dbtn:active { transform: none; }
+}

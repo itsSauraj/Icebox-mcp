@@ -1,0 +1,102 @@
+/**
+ * The arcade picker. Deliberately quiet: it is a menu the player passes
+ * through, not a destination, so it borrows the shell's type scale and adds
+ * only a card grid and the section headings.
+ */
+
+.head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  width: 100%;
+}
+
+.groupTitle {
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  text-align: left;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--spacing-sm);
+  width: 100%;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  text-align: left;
+  border-radius: var(--border-radius-md);
+  border: var(--border-width-regular) solid var(--color-border);
+  background: var(--color-background-secondary);
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+.card:hover {
+  border-color: var(--color-ring-primary);
+}
+.card:focus-visible {
+  outline: 2px solid var(--color-ring-primary);
+  outline-offset: 2px;
+}
+.card:active {
+  transform: translateY(1px);
+}
+
+.cardTitle {
+  font-size: 0.9rem;
+  font-weight: var(--font-weight-bold);
+}
+.cardBlurb {
+  font-size: 0.75rem;
+  line-height: 1.35;
+  color: var(--color-text-secondary);
+}
+
+/* Return link shown under a game opened from the picker. */
+.backRow {
+  display: flex;
+  justify-content: center;
+  padding: 0 var(--spacing-md) var(--spacing-md);
+}
+
+/* Error-boundary fallback. One game crashing must not take the arcade down. */
+.crash {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  max-width: 340px;
+  margin: 0 auto;
+  padding: var(--spacing-lg) var(--spacing-md);
+  text-align: center;
+}
+.crashTitle {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: var(--font-weight-bold);
+}
+.crashBody {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card:active { transform: none; }
+}

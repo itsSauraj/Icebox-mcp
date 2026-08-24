@@ -16,5 +16,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "server.ts", "main.ts", "api"]
+  "include": ["src", "games", "server.ts", "main.ts", "api"]
 }

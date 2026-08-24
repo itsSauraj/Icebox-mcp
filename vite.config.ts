@@ -29,9 +29,9 @@ export default defineConfig(({ command }) => {
         input: INPUT,
       },
       outDir: "dist",
-      // Each app is built in its own pass; the first pass (CLEAN=1) wipes dist,
-      // the rest append their single-file HTML.
-      emptyOutDir: process.env.CLEAN === "1",
+      // Passes run concurrently (scripts/build-apps.mjs), so none of them may
+      // empty dist/. The script clears it once before fanning out.
+      emptyOutDir: false,
     },
   };
 });

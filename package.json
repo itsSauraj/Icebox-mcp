@@ -1,8 +1,8 @@
 {
   "name": "icebox",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
-  "description": "Icebox — an MCP server of interactive mini apps: color picker, dice, coin flip, card draw, spin wheel, decision die, Wordle, and Snake",
+  "description": "Icebox - an MCP server of interactive mini apps and 24 games: Tetris, 2048, Minesweeper, Quiz Duel, Story Quest, Codenames and a full arcade",
   "license": "MIT",
   "author": "Saurabh Yadav (https://saurabh-yadav.me)",
   "homepage": "https://saurabh-yadav.me",
@@ -15,14 +15,18 @@
   },
   "main": "dist/server.js",
   "scripts": {
-    "build": "npm run build:apps && npm run bundle:html && tsc --noEmit",
-    "build:apps": "cross-env CLEAN=1 INPUT=color-picker.html vite build && cross-env INPUT=dice.html vite build && cross-env INPUT=coin.html vite build && cross-env INPUT=card.html vite build && cross-env INPUT=wheel.html vite build && cross-env INPUT=decision-dice.html vite build && cross-env INPUT=wordle.html vite build && cross-env INPUT=snake.html vite build",
+    "gen": "node scripts/gen-entries.mjs",
+    "build:apps": "node scripts/build-apps.mjs",
+    "build:apps:dev": "node scripts/build-apps.mjs --dev",
     "bundle:html": "node scripts/bundle-html.mjs",
-    "vercel-build": "npm run build:apps && npm run bundle:html",
-    "dev:ui": "cross-env NODE_ENV=development vite",
+    "typecheck": "tsc --noEmit",
+    "build": "npm run gen && npm run build:apps && npm run bundle:html && npm run typecheck",
+    "build:dev": "npm run gen && npm run build:apps:dev && npm run bundle:html",
+    "vercel-build": "npm run gen && npm run build:apps && npm run bundle:html",
+    "dev:ui": "npm run gen && cross-env NODE_ENV=development vite",
     "serve": "tsx main.ts",
     "serve:stdio": "tsx main.ts --stdio",
-    "start": "cross-env NODE_ENV=development npm run build && npm run serve"
+    "start": "npm run build && npm run serve"
   },
   "engines": {
     "node": ">=20"
