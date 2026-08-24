@@ -1,0 +1,144 @@
+/**
+ * 2048 styles. The tile ramp lives in `index.tsx` and arrives here as `--bg`
+ * and `--ink` per tile, because on this board the colour is the content.
+ * Everything structural comes from the host tokens.
+ *
+ * Geometry: `.boardWrap` pins the board size to one variable so the tile font
+ * can be derived from it. A percentage font-size would resolve against the
+ * parent font rather than the width, so a variable in real units is the only
+ * way to make the numbers scale with the board.
+ *
+ * Motion: `.slot` owns the position and transitions `transform`, `.tile` owns
+ * the face and animates `scale`, so a slide and a pop never touch the same
+ * property. Every tile keeps a stable React key, which is what lets the
+ * compositor tween the move rather than snapping it.
+ */
+
+.boardWrap {
+  position: relative;
+  --board: min(78vmin, 420px);
+  --slide: 130ms;
+  width: min(100%, var(--board));
+  aspect-ratio: 1 / 1;
+}
+.fullBoard .boardWrap {
+  --board: min(84vmin, 620px);
+}
+
+.board {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--border-radius-lg);
+  background: var(--color-background-secondary);
+  box-shadow:
+    inset 0 0 0 1px var(--color-border),
+    inset 0 2px 14px rgba(0, 0, 0, 0.14);
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Inset frame, so the gutter at the board edge matches the gap between two
+   tiles (each tile already holds back 6% of a cell on every side). */
+.pad {
+  position: absolute;
+  inset: calc(6% / var(--grid));
+}
+
+/* ---- Cells ---- */
+.slot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(100% / var(--grid));
+  height: calc(100% / var(--grid));
+  transform: translate(calc(var(--c) * 100%), calc(var(--r) * 100%));
+  transition: transform var(--slide) cubic-bezier(0.22, 0.61, 0.24, 1);
+  will-change: transform;
+  z-index: 2;
+  pointer-events: none;
+}
+/* Absorbed tiles slide in under the merge result, which pops in over them. */
+.under { z-index: 1; }
+.over { z-index: 3; }
+
+.hole {
+  position: absolute;
+  inset: 6%;
+  border-radius: 12%;
+  background: color-mix(in srgb, var(--color-text-primary) 9%, transparent);
+}
+
+.tile {
+  position: absolute;
+  inset: 6%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12%;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: calc(var(--board) / var(--grid) * var(--fs));
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.14),
+    0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* 1024 and up earn a glow in their own colour. */
+.milestone {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.24),
+    0 0 12px color-mix(in srgb, var(--bg) 70%, transparent),
+    0 1px 3px rgba(0, 0, 0, 0.22);
+}
+
+/* ---- Motion ---- */
+
+/* The merge result waits out the slide, then pops. `both` holds the 0% frame
+   during the delay, so it stays invisible until the two sources have landed. */
+.pop {
+  animation: g2048Pop 210ms ease-out var(--slide) both;
+}
+@keyframes g2048Pop {
+  0% { transform: scale(0.66); opacity: 0; }
+  30% { opacity: 1; }
+  58% { transform: scale(1.14); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* A spawned tile arrives after the slide too, so the board settles first. */
+.appear {
+  animation: g2048Appear 180ms ease-out var(--slide) both;
+}
+@keyframes g2048Appear {
+  0% { transform: scale(0.35); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* The two sources cross-fade out as the result grows over them. */
+.ghost {
+  animation: g2048Hide 90ms linear var(--slide) forwards;
+}
+@keyframes g2048Hide {
+  to { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slot {
+    transition: none;
+  }
+  .pop,
+  .appear,
+  .ghost {
+    animation: none;
+  }
+  /* No cross-fade to hide them, so take them out directly. */
+  .ghost {
+    opacity: 0;
+  }
+}
