@@ -1,0 +1,300 @@
+/**
+ * 20 Questions styles.
+ *
+ * The whole game is one line of text at a time, so the current question gets
+ * the size and the silence around it: everything else, the meter, the
+ * transcript, the buttons, is deliberately quieter so the eye lands on the
+ * question first. Yes leans on the accent fill, No stays muted like a plain
+ * button, Sometimes sits between the two as an accent outline.
+ */
+
+.icon {
+  font-size: 1.15em;
+  line-height: 1;
+}
+
+/* ---- Question meter ---- */
+.meter {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+.meterTrack {
+  position: relative;
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-border);
+  overflow: hidden;
+}
+.meterFill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--color-accent);
+  width: var(--pct, 0%);
+  transition: width 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.meterFill.endgame {
+  background: var(--color-text-primary);
+}
+.meterLabel {
+  margin: 0;
+  font-size: 0.7rem;
+  color: var(--color-text-secondary);
+}
+.meterLabel.endgame {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+/* ---- Empty state ---- */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) 0;
+}
+.emptyLead {
+  margin: 0;
+  max-width: 42ch;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* ---- Waiting on the model ---- */
+.thinking {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  padding-top: var(--spacing-xs);
+}
+.dots {
+  display: inline-flex;
+  gap: 4px;
+}
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  animation: tqDot 1.1s ease-in-out infinite;
+}
+.dot:nth-child(2) { animation-delay: 0.15s; }
+.dot:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes tqDot {
+  0%, 100% { opacity: 0.25; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-3px); }
+}
+
+.thinkingText {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+/* ---- The current question ---- */
+.question {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  width: 100%;
+  padding: var(--spacing-lg) var(--spacing-md);
+  border-radius: var(--border-radius-lg);
+  border: var(--border-width-regular) solid var(--color-border);
+  background-color: var(--color-background-secondary);
+  background-image: radial-gradient(
+    120% 100% at 50% 0%,
+    color-mix(in srgb, var(--color-accent) 6%, transparent),
+    transparent 70%
+  );
+}
+.questionLabel {
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+.questionLabel.endgame {
+  color: var(--color-accent);
+}
+.questionText {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: var(--font-weight-medium);
+  line-height: 1.4;
+  max-width: 32ch;
+  animation: tqFade 320ms ease-out;
+}
+
+@keyframes tqFade {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---- Answer buttons ---- */
+.answers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  width: 100%;
+}
+.answerBtn {
+  flex: 1 1 30%;
+  min-width: 92px;
+  min-height: 64px;
+  padding: 10px;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: var(--font-weight-bold);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: transform 120ms ease;
+}
+.answerBtn:hover:not(:disabled) { transform: translateY(-1px); }
+.answerBtn:active:not(:disabled) { transform: translateY(0); }
+.answerBtn:focus-visible {
+  outline: 2px solid var(--color-ring-primary);
+  outline-offset: 2px;
+}
+.answerBtn:disabled {
+  opacity: 0.5;
+  cursor: default;
+  transform: none;
+}
+.yes {
+  border: none;
+  background: var(--color-accent);
+  color: var(--color-text-on-accent);
+}
+.no {
+  border: var(--border-width-regular) solid var(--color-border);
+  background: var(--color-background-secondary);
+  color: var(--color-text-primary);
+}
+.sometimes {
+  border: 2px solid var(--color-accent);
+  background: transparent;
+  color: var(--color-accent);
+}
+
+/* ---- Give up / that's it row ---- */
+.endRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+}
+
+/* ---- Transcript ---- */
+.transcript {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  width: 100%;
+  text-align: left;
+}
+.transcriptLabel {
+  margin: 0;
+  font-size: 0.65rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+.transcriptEmpty {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+}
+.qaList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 180px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 2px 2px 2px 0;
+  list-style: none;
+  border-left: 2px solid var(--color-border);
+}
+.qa {
+  display: flex;
+  gap: 0.6em;
+  padding: 0 0 0 var(--spacing-sm);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+.qaN {
+  flex: 0 0 auto;
+  min-width: 1.4em;
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.qaBody {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.qaQ {
+  color: var(--color-text-primary);
+}
+.qaA {
+  color: var(--color-text-secondary);
+  font-size: 0.76rem;
+}
+.qaFinal .qaA {
+  color: var(--color-accent);
+  font-weight: var(--font-weight-bold);
+}
+
+/* ---- Ending ---- */
+.endPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-lg);
+  border: var(--border-width-regular) solid var(--color-border);
+  background: var(--color-background-secondary);
+}
+.endTitle {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: var(--font-weight-bold);
+}
+.endDetail {
+  margin: 0;
+  max-width: 38ch;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.hintLine {
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .questionText,
+  .dot {
+    animation: none;
+  }
+  .meterFill,
+  .answerBtn {
+    transition: none;
+  }
+  .answerBtn:hover:not(:disabled) {
+    transform: none;
+  }
+}
