@@ -1,0 +1,154 @@
+/**
+ * Sudoku styles.
+ *
+ * The grid is sized in vmin so it fits a narrow host, and the digit pad below
+ * it is the primary input on touch, so its keys stay large enough to hit.
+ *
+ * Peer highlighting is the quality-of-life feature that matters most: selecting
+ * a cell tints its row, column and box, and every other cell holding the same
+ * digit lights up. Both are tints rather than borders, so they never compete
+ * with the box rules or the focus ring.
+ */
+
+.root {
+  gap: var(--spacing-sm);
+}
+
+.boardWrap {
+  position: relative;
+  width: min(100%, 82vmin);
+  max-width: 420px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  border: 2px solid var(--color-text-primary);
+  border-radius: 3px;
+  overflow: hidden;
+  background: var(--color-background-primary);
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  border-right: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
+  background: transparent;
+  color: var(--color-accent);
+  cursor: pointer;
+  aspect-ratio: 1 / 1;
+  font-variant-numeric: tabular-nums;
+}
+.cell:focus-visible {
+  outline: 2px solid var(--color-ring-primary);
+  outline-offset: -2px;
+  z-index: 4;
+}
+
+/* The heavy 3x3 rules. */
+.boxRight { border-right: 2px solid var(--color-text-primary); }
+.boxBottom { border-bottom: 2px solid var(--color-text-primary); }
+
+.value {
+  font-size: clamp(0.9rem, 4.2vmin, 1.35rem);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+}
+
+/* Givens are the puzzle, entries are the player's. Weight, not just colour. */
+.given {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-bold);
+}
+
+/* ---- Highlighting ---- */
+.peer {
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+}
+.same {
+  background: color-mix(in srgb, var(--color-accent) 22%, transparent);
+}
+.cursor {
+  background: color-mix(in srgb, var(--color-accent) 32%, transparent);
+  z-index: 2;
+}
+.conflict {
+  background: color-mix(in srgb, light-dark(#dc2626, #f87171) 26%, transparent);
+}
+
+/* ---- Pencil marks ---- */
+.marks {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  width: 100%;
+  height: 100%;
+  padding: 1px;
+}
+/* A candidate always sits in the same corner, so the eye learns the layout. */
+.markOn,
+.markOff {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(0.35rem, 1.5vmin, 0.55rem);
+  line-height: 1;
+  color: var(--color-text-secondary);
+}
+
+/* ---- Digit pad ---- */
+.pad {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 5px;
+  width: 100%;
+  max-width: 340px;
+}
+
+.padKey {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border-radius: var(--border-radius-md);
+  border: var(--border-width-regular) solid var(--color-border);
+  background: var(--color-background-secondary);
+  color: var(--color-text-primary);
+  font-size: 1.05rem;
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+.padKey:hover:not(:disabled) { border-color: var(--color-ring-primary); }
+.padKey:disabled { opacity: 0.5; cursor: default; }
+.padKey:focus-visible {
+  outline: 2px solid var(--color-ring-primary);
+  outline-offset: 2px;
+}
+
+/* A digit with all nine placed is done, and says so quietly. */
+.padDone {
+  color: var(--color-text-secondary);
+  background: transparent;
+  border-style: dashed;
+}
+
+.padCount {
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  font-size: 0.55rem;
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text-secondary);
+}
