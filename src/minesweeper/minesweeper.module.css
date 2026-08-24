@@ -1,0 +1,163 @@
+/**
+ * Minesweeper styles.
+ *
+ * Structure and every neutral come from the host tokens. There are exactly two
+ * literal colours in the whole game: the one danger red declared on `.board`
+ * below, and the 1 to 8 number hues, which live in one map in `index.tsx` and
+ * arrive per cell as `--ink`. Both are mixed into the host's own ink and ground
+ * rather than used raw, which is what keeps them legible whichever way the host
+ * is themed, and means neither needs a second dark-mode palette.
+ *
+ * Sizing: rows of `flex: 1 1 0` cells with `aspect-ratio: 1`, inside a wrapper
+ * capped at a per-cell pixel width. Cells stay square from a 320px iframe up to
+ * a fullscreen tab without one fixed dimension anywhere. Cell type size is in
+ * container query units (`cqw` over the column count), which is the only way to
+ * tie a font size to a cell that has no pixel size of its own.
+ */
+
+.icon {
+  font-size: 1.05em;
+  line-height: 1;
+}
+
+/* ---- Board ---- */
+.boardWrap {
+  position: relative;
+  width: min(100%, calc(var(--cols) * 34px));
+  margin: 0 auto;
+}
+
+/* Fullscreen earns bigger cells, capped so 16 rows still fit a laptop. */
+.fullFrame .boardWrap {
+  width: min(100%, calc(var(--cols) * 46px), calc(66vh * var(--cols) / var(--rows)));
+}
+
+.board {
+  /* The one literal in this file. Tinted into the host ground and ink below. */
+  --ms-danger: #dc2626;
+  --ms-danger-bg: color-mix(in srgb, var(--ms-danger) 34%, var(--color-background-primary));
+  --ms-danger-ink: color-mix(in srgb, var(--ms-danger) 70%, var(--color-text-primary));
+
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: 100%;
+  padding: 2px;
+  border-radius: var(--border-radius-md);
+  background: var(--color-border);
+  overflow: hidden;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.row {
+  display: flex;
+  gap: 1px;
+}
+
+.cell {
+  flex: 1 1 0;
+  min-width: 0;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 2px;
+  appearance: none;
+  font-family: inherit;
+  font-weight: var(--font-weight-bold);
+  font-size: calc(56cqw / var(--cols));
+  line-height: 1;
+  color: var(--color-text-primary);
+  background: var(--color-background-secondary);
+  transition: background-color 110ms ease;
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Unopened, and flagged: a raised tile. */
+.shut {
+  background-color: color-mix(in srgb, var(--color-border) 62%, var(--color-background-secondary));
+  background-image: linear-gradient(color-mix(in srgb, white 18%, transparent), transparent 60%);
+  cursor: pointer;
+}
+/* Hover affordances are scoped to a live board: once the game is decided the
+   cells are a record, not controls, and should not invite a click. */
+.board:not(.done) .shut:hover {
+  background-color: color-mix(in srgb, var(--color-accent) 22%, var(--color-background-secondary));
+}
+.shut:active {
+  background-image: none;
+}
+.done .cell {
+  cursor: default;
+}
+
+/* Opened: flat, sunk into the grid lines. */
+.open {
+  background-color: var(--color-background-primary);
+  background-image: none;
+}
+/* A revealed number is clickable, because chording is a click on a number. The
+   hue arrives as `--ink` from the map in index.tsx; mixing it into the theme's
+   own text colour is what gives all eight one legible ramp on either ground. */
+.num {
+  color: color-mix(in srgb, var(--ink) 62%, var(--color-text-primary));
+  cursor: pointer;
+}
+.board:not(.done) .num:hover {
+  background-color: color-mix(in srgb, var(--color-accent) 12%, var(--color-background-primary));
+}
+
+/* The mine that went off. */
+.blast {
+  color: var(--ms-danger-ink);
+  background-color: var(--ms-danger-bg);
+  background-image: none;
+  animation: msBlast 200ms ease-out;
+}
+
+/* A flag on a safe square, shown only once the game is lost. */
+.wrong {
+  position: relative;
+  background-color: var(--ms-danger-bg);
+  background-image: none;
+}
+.wrong::after {
+  content: "";
+  position: absolute;
+  inset: 10%;
+  background: linear-gradient(
+    to bottom right,
+    transparent 43%,
+    var(--ms-danger-ink) 43%,
+    var(--ms-danger-ink) 57%,
+    transparent 57%
+  );
+}
+
+/* The keyboard cursor. Inset so the ring is never clipped by the 1px gaps. */
+.cursor {
+  box-shadow: inset 0 0 0 2px var(--color-ring-primary);
+}
+.cell:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--color-ring-primary);
+}
+
+@keyframes msBlast {
+  from { transform: scale(0.6); }
+  to { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cell { transition: none; }
+  .blast { animation: none; }
+}
