@@ -1,0 +1,134 @@
+/**
+ * Breakout styles.
+ *
+ * Everything inside the field is positioned in virtual units and converted to
+ * percentages with calc, so one set of physics constants drives any rendered
+ * size. `--x` and `--y` are unitless numbers; the CSS turns them into
+ * percentages of the field.
+ *
+ * Brick hit points are content colour, so those three are literals, chosen to
+ * stay distinct on a light and a dark ground.
+ */
+
+.root {
+  gap: var(--spacing-sm);
+}
+
+.fieldWrap {
+  width: min(100%, 72vmin);
+  max-width: 400px;
+}
+
+.field {
+  position: relative;
+  width: 100%;
+  aspect-ratio: var(--vw) / var(--vh);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  background-color: var(--color-background-secondary);
+  background-image: linear-gradient(
+    var(--color-background-secondary),
+    color-mix(in srgb, var(--color-accent) 8%, var(--color-background-secondary))
+  );
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  touch-action: none;
+  cursor: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.brick {
+  position: absolute;
+  left: calc(var(--x) / var(--vw) * 100%);
+  top: calc(var(--y) / var(--vh) * 100%);
+  width: calc(var(--w) / var(--vw) * 100%);
+  height: calc(var(--h) / var(--vh) * 100%);
+  border-radius: 2px;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+/* Hit points read by colour and, for damaged bricks, by a crack overlay. */
+.hp1 { background: #38bdf8; }
+.hp2 { background: #a78bfa; }
+.hp3 { background: #fb7185; }
+
+.cracked {
+  background-image: repeating-linear-gradient(
+    58deg,
+    rgba(0, 0, 0, 0.32) 0 1px,
+    transparent 1px 5px
+  );
+}
+
+.ball {
+  position: absolute;
+  left: calc(var(--x) / var(--vw) * 100%);
+  top: calc(var(--y) / var(--vh) * 100%);
+  width: calc(var(--r) * 2 / var(--vw) * 100%);
+  aspect-ratio: 1 / 1;
+  margin-left: calc(var(--r) / var(--vw) * -100%);
+  margin-top: calc(var(--r) / var(--vh) * -100%);
+  border-radius: 50%;
+  background: var(--color-text-primary);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--color-text-primary) 55%, transparent);
+}
+
+.paddle {
+  position: absolute;
+  left: calc(var(--x) / var(--vw) * 100%);
+  top: calc(var(--y) / var(--vh) * 100%);
+  width: calc(var(--w) / var(--vw) * 100%);
+  height: calc(var(--h) / var(--vh) * 100%);
+  margin-left: calc(var(--w) / var(--vw) * -50%);
+  border-radius: 999px;
+  background: var(--color-accent);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--color-accent) 55%, transparent);
+  transition: width 180ms ease;
+}
+
+.drop {
+  position: absolute;
+  left: calc(var(--x) / var(--vw) * 100%);
+  top: calc(var(--y) / var(--vh) * 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin-left: -9px;
+  margin-top: -9px;
+  border-radius: 4px;
+  font-size: 0.6rem;
+  font-weight: var(--font-weight-bold);
+  color: #0b1220;
+  animation: bkSpin 1.6s linear infinite;
+}
+.wide { background: #34d399; }
+.multi { background: #fbbf24; }
+.slow { background: #60a5fa; }
+
+@keyframes bkSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.powerRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+  margin: 0;
+}
+.powerChip {
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: var(--font-weight-bold);
+  color: #0b1220;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drop { animation: none; }
+  .paddle { transition: none; }
+  .cracked { background-image: none; opacity: 0.72; }
+}
