@@ -1,0 +1,342 @@
+/**
+ * Tetris styles. The seven piece colours are the content, so they live in one
+ * map in `index.tsx` and arrive here as `--c` on each cell. Everything
+ * structural is a host token.
+ *
+ * Geometry: one variable, `--cell`, drives the whole layout. The well is ten by
+ * twenty cells, the rail is four preview cells wide, and both are sized off the
+ * shorter viewport axis so the game fits a narrow iframe and grows in a
+ * fullscreen tab without a media query.
+ *
+ * Motion: `.slot` owns the position, `.face` owns the colour and every
+ * animation, so a lock pop and a collapse settle never fight over `transform`.
+ * A cell only animates when its node mounts, and a node only mounts when the
+ * cell was empty before (a lock) or when the whole board was rekeyed (a
+ * collapse), which is what keeps the effects free of timers.
+ */
+
+.playfield {
+  --cell: max(13px, min(2.7vh, 6.2vmin, 28px));
+  --mini: calc(var(--cell) * 0.58);
+  --clear: 220ms;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+}
+.fullSize .playfield {
+  --cell: max(16px, min(3.2vh, 7.4vmin, 38px));
+}
+
+/* ---- Title icon ---- */
+.icon {
+  width: 1.3em;
+  height: 1.3em;
+  flex: 0 0 auto;
+  color: var(--color-accent);
+}
+
+/* ---- The well ---- */
+.wellWrap {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.well {
+  position: relative;
+  width: calc(var(--cell) * 10);
+  height: calc(var(--cell) * 20);
+  overflow: hidden;
+  border-radius: var(--border-radius-md);
+  background-color: var(--color-background-secondary);
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--color-border) 55%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--color-border) 55%, transparent) 1px, transparent 1px);
+  background-size: var(--cell) var(--cell);
+  box-shadow:
+    inset 0 0 0 1px var(--color-border),
+    inset 0 2px 14px rgba(0, 0, 0, 0.16);
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: pointer;
+}
+
+.slot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--cell);
+  height: var(--cell);
+  transform: translate(calc(var(--x) * var(--cell)), calc(var(--y) * var(--cell)));
+  pointer-events: none;
+  z-index: 2;
+}
+/* The ghost sits under the stack so a landed cell always wins. */
+.ghost {
+  z-index: 1;
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+  border-radius: 3px;
+  background: var(--c);
+  /* A dark ring plus a lit top edge, so all seven colours read as raised
+     whether the host theme is light or dark. */
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.4),
+    inset 0 2px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.16);
+}
+
+/* Hollow outline in the piece colour, with a theme-aware inner edge so the
+   pale yellow O is still visible against a light board. */
+.ghostFace {
+  position: absolute;
+  inset: 1px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--c) 18%, transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-text-primary) 26%, transparent),
+    inset 0 0 0 2px color-mix(in srgb, var(--c) 80%, transparent);
+}
+
+/* ---- Motion ---- */
+
+/* A cell that just locked. Mounts fresh, so the animation plays once. */
+.pop {
+  animation: tetrisPop 170ms ease-out;
+}
+@keyframes tetrisPop {
+  0% {
+    transform: scale(1.24);
+    filter: brightness(1.8);
+  }
+  100% {
+    transform: scale(1);
+    filter: none;
+  }
+}
+
+/* The stack after a collapse: every cell is rekeyed, so the whole board falls
+   into its new place at once. */
+.drop {
+  animation: tetrisDrop 190ms cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+@keyframes tetrisDrop {
+  0% {
+    transform: translateY(-42%);
+    opacity: 0.45;
+  }
+  100% {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/* A completed row: blaze white, then squash out of the way. */
+.flash {
+  animation: tetrisFlash var(--clear) linear both;
+}
+@keyframes tetrisFlash {
+  0% {
+    filter: brightness(2.2) saturate(0.25);
+  }
+  45% {
+    filter: brightness(2.7) saturate(0);
+  }
+  100% {
+    transform: scaleY(0.1);
+    opacity: 0.15;
+    filter: brightness(2.7) saturate(0);
+  }
+}
+
+/* ---- Clear announcement ---- */
+.toast {
+  position: absolute;
+  left: 50%;
+  top: 10%;
+  z-index: 5;
+  margin: 0;
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--color-text-on-accent);
+  background: var(--color-accent);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.28);
+  pointer-events: none;
+  transform: translateX(-50%);
+  animation: tetrisToast 1000ms ease-out both;
+}
+@keyframes tetrisToast {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 10px) scale(0.9);
+  }
+  16% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+  72% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -14px);
+  }
+}
+
+/* ---- Hold and next rail ---- */
+.rail {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: calc(var(--mini) * 4 + 12px);
+  flex: 0 0 auto;
+}
+.railLabel {
+  display: block;
+  padding-top: var(--spacing-xs);
+  font-size: 0.6rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+.railBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(var(--mini) * 2.5);
+  border-radius: var(--border-radius-sm);
+  border: var(--border-width-regular) solid var(--color-border);
+  background: color-mix(in srgb, var(--color-background-secondary) 65%, transparent);
+}
+/* The two further-out previews are smaller, so the eye reads the order. */
+.railBoxSm {
+  height: calc(var(--mini) * 2);
+  opacity: 0.72;
+}
+/* Hold is spent until the next piece locks. */
+.spent {
+  opacity: 0.38;
+}
+
+.mini {
+  position: relative;
+  width: calc(var(--mini) * 4);
+  height: calc(var(--mini) * 2);
+}
+.railBoxSm .mini {
+  transform: scale(0.8);
+}
+.miniCell {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--mini);
+  height: var(--mini);
+  transform: translate(calc(var(--x) * var(--mini)), calc(var(--y) * var(--mini)));
+}
+.miniFace {
+  position: absolute;
+  inset: 1px;
+  border-radius: 2px;
+  background: var(--c);
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.36),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+/* ---- Touch controls ---- */
+.pads {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+.actions {
+  display: grid;
+  grid-template-columns: repeat(2, 64px);
+  grid-auto-rows: 46px;
+  gap: 6px;
+}
+.act {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: var(--font-weight-bold);
+  border-radius: var(--border-radius-md);
+  border: var(--border-width-regular) solid var(--color-border);
+  background: var(--color-background-secondary);
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+.act:hover:not(:disabled) {
+  border-color: var(--color-ring-primary);
+}
+.act:active:not(:disabled) {
+  transform: translateY(1px);
+  background: var(--color-accent);
+  color: var(--color-text-on-accent);
+}
+.act:focus-visible {
+  outline: 2px solid var(--color-ring-primary);
+  outline-offset: 2px;
+}
+.act:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.spin {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+/* ---- Ready-screen key legend ---- */
+.legend {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px var(--spacing-sm);
+  max-width: 30ch;
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
+}
+.legend kbd {
+  padding: 1px 5px;
+  border-radius: var(--border-radius-sm);
+  border: var(--border-width-regular) solid var(--color-border);
+  background: var(--color-background-secondary);
+  color: var(--color-text-primary);
+  font-size: 0.68rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pop,
+  .drop,
+  .flash,
+  .toast {
+    animation: none;
+  }
+  /* No flash animation, so mark the row statically instead: it still has to be
+     obvious which lines went. */
+  .flash {
+    filter: brightness(2) saturate(0.15);
+  }
+  .act:active:not(:disabled) {
+    transform: none;
+  }
+}
