@@ -1,0 +1,221 @@
+/**
+ * Hangman styles. The figure is plain inline SVG: static gallows plus six
+ * strokes that draw themselves in via a normalised stroke-dasharray (every
+ * part uses pathLength="1", so the same 0-to-1 offset works for the circular
+ * head and the straight limbs alike). All colour comes from the host tokens,
+ * since the drawing is line art, not content with an intrinsic colour.
+ */
+
+.icon {
+  font-size: 1.15em;
+  line-height: 1;
+}
+
+.topic {
+  margin: 0;
+  font-size: 0.65rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+/* ---- Waiting on the model ---- */
+.waiting {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg) 0;
+}
+.dots {
+  display: inline-flex;
+  gap: 5px;
+}
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  animation: hmDot 1.1s ease-in-out infinite;
+}
+.dot:nth-child(2) { animation-delay: 0.15s; }
+.dot:nth-child(3) { animation-delay: 0.3s; }
+@keyframes hmDot {
+  0%, 100% { opacity: 0.25; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-3px); }
+}
+.waitText {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+/* ---- Board: gallows, word, overlay ---- */
+.boardWrap {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.gallows {
+  width: min(48vw, 176px);
+  height: auto;
+  overflow: visible;
+}
+.gallowsPost {
+  fill: none;
+  stroke: var(--color-text-secondary);
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+.part {
+  fill: none;
+  stroke: var(--color-text-primary);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.4s ease;
+}
+.partOn {
+  stroke-dashoffset: 0;
+}
+
+/* ---- Masked word ---- */
+.wordRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  max-width: 100%;
+}
+.tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(24px, 8vw, 34px);
+  height: clamp(30px, 9vw, 40px);
+  border-bottom: 3px solid var(--color-border);
+  font-family: var(--font-mono);
+  font-size: clamp(1rem, 4vw, 1.3rem);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  text-transform: uppercase;
+}
+.tile.filled {
+  border-color: var(--color-accent);
+  animation: hmPop 0.22s ease;
+}
+@keyframes hmPop {
+  0% { transform: scale(0.7); opacity: 0; }
+  60% { transform: scale(1.12); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+/* ---- Live guess status ---- */
+.guessStatus {
+  margin: 0;
+  min-height: 1.1em;
+  font-size: 0.8rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+/* ---- On-screen keyboard ---- */
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  max-width: 30rem;
+}
+.krow {
+  display: flex;
+  justify-content: center;
+  gap: clamp(3px, 1vw, 6px);
+}
+.key {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 2.6rem;
+  height: clamp(38px, 10vw, 48px);
+  padding: 0;
+  border-radius: var(--border-radius-md);
+  border: var(--border-width-regular) solid var(--color-border);
+  background: var(--color-background-secondary);
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: clamp(0.7rem, 3.2vw, 0.9rem);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.05s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+.key:hover { border-color: var(--color-ring-primary); }
+.key:active { transform: translateY(1px); }
+.key:focus-visible {
+  outline: 2px solid var(--color-ring-primary);
+  outline-offset: 1px;
+}
+.key:disabled { cursor: default; }
+.key.correct {
+  color: var(--color-text-on-accent);
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+.key.wrong {
+  color: var(--color-text-secondary);
+  background: color-mix(in srgb, var(--color-background-secondary) 55%, var(--color-border));
+  text-decoration: line-through;
+  opacity: 0.65;
+}
+
+/* ---- Hint ---- */
+.hintRow {
+  display: flex;
+  justify-content: center;
+}
+
+.hintLine {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+/* ---- Results ---- */
+.results {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+}
+.resultBig {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+.resultLabel {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot { animation: none; }
+  .part { transition: none; }
+  .tile.filled { animation: none; }
+  .key { transition: none; }
+}
