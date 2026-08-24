@@ -1,0 +1,194 @@
+/**
+ * Mastermind styles. Peg colours are content colour (the whole game is colour
+ * matching) so they live as a literal map in index.tsx and arrive here as
+ * `--bg` / `--ink` custom properties, same pattern as the 2048 tile ramp.
+ * Every peg also carries a letter, so no state is colour-only.
+ *
+ * The feedback "black"/"white" dots are genuinely fixed tones (they mean
+ * something specific in Mastermind and must not flip with the theme), so each
+ * gets a literal ring in the opposite tone to stay legible on any background,
+ * the same trick 2048 uses on its tile highlight/shadow pairs.
+ *
+ * Layout is a simple vertical flex column rather than a grid: history rows on
+ * top (oldest first), the current guess row pinned at the bottom so the eye
+ * never has to travel far between the guess just scored and the next one.
+ */
+
+.difficultyRow {
+  display: flex;
+  justify-content: center;
+}
+
+/* ---- Board ---- */
+.boardWrap {
+  position: relative;
+  width: 100%;
+}
+
+.board {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius-lg);
+  background: var(--color-background-secondary);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.history {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 46vh;
+  overflow-y: auto;
+  padding: 2px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  padding: 4px 6px;
+  border-radius: var(--border-radius-md);
+  background: color-mix(in srgb, var(--color-background-primary) 55%, transparent);
+}
+
+.currentRow {
+  padding-top: var(--spacing-sm);
+  border-top: var(--border-width-regular) dashed var(--color-border);
+}
+
+/* ---- Pegs (guessed and revealed colours) ---- */
+.pegRow {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  flex: 1 1 auto;
+}
+
+.peg,
+.slot {
+  flex: 0 0 auto;
+  width: clamp(30px, 9vmin, 46px);
+  height: clamp(30px, 9vmin, 46px);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--font-weight-bold);
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.peg {
+  background: var(--bg);
+  color: var(--ink);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.18),
+    0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+/* ---- Current guess slots (buttons) ---- */
+.slot {
+  border: var(--border-width-regular) dashed var(--color-border);
+  background: var(--color-background-primary);
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+.slotFilled {
+  border-style: solid;
+  border-color: transparent;
+  background: var(--bg);
+  color: var(--ink);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.18),
+    0 1px 2px rgba(0, 0, 0, 0.25);
+}
+.slot:hover { border-color: var(--color-ring-primary); }
+.slot:focus-visible {
+  outline: 2px solid var(--color-ring-primary);
+  outline-offset: 2px;
+}
+.slot:disabled { cursor: default; opacity: 0.7; }
+.slotActive {
+  box-shadow:
+    0 0 0 2px var(--color-ring-primary),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+/* ---- Palette ---- */
+.palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+.swatch {
+  flex: 0 0 auto;
+  width: clamp(32px, 10vmin, 44px);
+  height: clamp(32px, 10vmin, 44px);
+  border-radius: 50%;
+  border: none;
+  background: var(--bg);
+  color: var(--ink);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+.swatch:hover { transform: translateY(-1px); }
+.swatch:focus-visible {
+  outline: 2px solid var(--color-ring-primary);
+  outline-offset: 2px;
+}
+.swatch:disabled { cursor: default; opacity: 0.6; transform: none; }
+.swatchOn {
+  box-shadow:
+    0 0 0 3px var(--color-ring-primary),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+/* ---- Feedback dots (blacks first, order otherwise meaningless) ---- */
+.feedback {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  gap: 3px;
+  width: 28px;
+}
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+/* Fixed tones on purpose: these mean something specific in Mastermind and
+   must read the same in both themes. The opposite-tone ring is what keeps
+   each one visible whatever it lands on. */
+.dotBlack {
+  background: #1f2937;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4);
+}
+.dotWhite {
+  background: #f3f4f6;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
+}
+.dotEmpty {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+/* ---- Win flourish: revealed code pops in with a stagger ---- */
+.reveal .peg {
+  animation: mmPop 420ms cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+  animation-delay: calc(var(--i, 0) * 90ms);
+}
+@keyframes mmPop {
+  from { transform: scale(0.35); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal .peg { animation: none; }
+}
