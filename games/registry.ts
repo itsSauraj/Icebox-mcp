@@ -436,7 +436,12 @@ export const PLAY_SPEC: ToolSpec = {
   title: "Play a Game",
   file: ARCADE_FILE,
   description:
-    `Opens one of the Icebox arcade games. Pass \`game\` to launch a specific one, or omit it to show the picker. Available: ${arcadeList}. ` +
+    `Opens the Icebox game library, or one game from it.\n\n` +
+    `CALL THIS WITH NO ARGUMENTS whenever the user asks what games are available, what they can play, to see the list, or to browse. ` +
+    `It renders a visual grid of every game with its icon and name, which is the right answer to those questions. ` +
+    `Show that UI rather than describing the games in text.\n\n` +
+    `Pass \`game\` to open one directly. Available: ${arcadeList}. ` +
+    `Tetris, 2048, Minesweeper, Quiz Duel, Story Quest, Codenames, Snake and Wordle have their own tools; call those by name instead.\n\n` +
     `Some games play better when you supply the content: ${CONTENT_HINTS}. Everything else needs at most a \`difficulty\`.`,
   inputSchema: {
     game: z
@@ -508,7 +513,7 @@ export const PLAY_SPEC: ToolSpec = {
     const supplied = Object.keys(config).filter((k) => k !== "difficulty");
     const text = entry
       ? `${entry.title} ready.${supplied.length ? ` Using the ${supplied.join(" and ")} you sent.` : ""}`
-      : `Arcade open. ${ARCADE_GAMES.length} games to choose from.`;
+      : `Showing the Icebox game library: ${ARCADE_GAMES.length} games in the arcade plus eight with their own tools. The grid is on screen, so let the user pick from it.`;
 
     return { text, data: { game, config } };
   },
