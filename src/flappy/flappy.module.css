@@ -111,9 +111,14 @@
 .pipeTop {
   top: 0;
 }
-.pipeBottom {
-  bottom: 0;
-}
+/**
+ * The lower pipe is anchored by `top` from the inline style, not by `bottom`.
+ * `.pipePair` spans the whole field including the ground strip, so anchoring
+ * this to the bottom put its top edge a full ground-height below the real gap
+ * boundary: the gap looked taller than it was and flying into that band was an
+ * invisible death. Positioning from the top means the drawn edge and the
+ * collision edge are the same number.
+ */
 .pipeLip {
   position: absolute;
   left: -16%;

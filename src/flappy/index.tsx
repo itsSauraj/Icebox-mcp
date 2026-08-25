@@ -341,7 +341,10 @@ export default function Flappy({ runtime }: AppProps) {
                 </div>
                 <div
                   className={s.pipeBottom}
-                  style={{ height: `${((PLAY_BOTTOM - gapBottom) / VH) * 100}%` }}
+                  style={{
+                    top: `${(gapBottom / VH) * 100}%`,
+                    height: `${((PLAY_BOTTOM - gapBottom) / VH) * 100}%`,
+                  }}
                 >
                   <div className={s.pipeLip} />
                 </div>
