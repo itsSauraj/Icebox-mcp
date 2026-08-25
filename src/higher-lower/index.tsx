@@ -149,7 +149,7 @@ type Phase = "ready" | "asking" | "revealing" | "over";
 
 export default function HigherLower({ runtime }: AppProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [isFull, toggleFull] = useFullscreen(runtime, rootRef);
+  const [isFull] = useFullscreen(runtime, rootRef);
   const [shareStatus, share] = useShare(runtime);
   const seedRaw = useSeed(runtime);
   const seed = useMemo(() => seedArray<unknown>(seedRaw, "pairs"), [seedRaw]);
@@ -358,9 +358,6 @@ export default function HigherLower({ runtime }: AppProps) {
       <ControlBar>
         <button className={ui.btn} onClick={start}>
           Restart
-        </button>
-        <button className={ui.btn} onClick={toggleFull}>
-          {isFull ? "Exit fullscreen" : "Fullscreen"}
         </button>
         <button className={ui.btn} onClick={askMore} disabled={phase === "asking"}>
           More pairs

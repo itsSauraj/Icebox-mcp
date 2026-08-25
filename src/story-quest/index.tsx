@@ -27,7 +27,6 @@
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
-  ControlBar,
   GameFrame,
   GameHeader,
   Notice,
@@ -179,7 +178,7 @@ function History({
 
 export default function StoryQuest({ runtime }: AppProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [isFull, toggleFull] = useFullscreen(runtime, rootRef);
+  const [isFull] = useFullscreen(runtime, rootRef);
   const [shareStatus, share] = useShare(runtime);
   const seed = useSeed(runtime);
 
@@ -457,12 +456,6 @@ export default function StoryQuest({ runtime }: AppProps) {
       {current && !current.ending && current.choices.length > 0 && (
         <p className={s.hintLine}>Press 1 to {current.choices.length} to choose, H folds the log.</p>
       )}
-
-      <ControlBar>
-        <button className={ui.btn} onClick={toggleFull}>
-          {isFull ? "Exit fullscreen" : "Fullscreen"}
-        </button>
-      </ControlBar>
 
       <StatusLine>{shareStatus}</StatusLine>
     </GameFrame>

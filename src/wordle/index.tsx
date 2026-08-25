@@ -108,7 +108,7 @@ function makeWords(targets: string[]): WordState[] {
 
 function WordleApp({ runtime }: AppProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [isFull, toggleFull] = useFullscreen(runtime, rootRef);
+  const [isFull] = useFullscreen(runtime, rootRef);
   const [status, flash] = useFlash();
 
   // Priority 1: words supplied by the model (tool result, else tool input).
@@ -421,7 +421,6 @@ function WordleApp({ runtime }: AppProps) {
       <div className={ui.controls}>
         <button className={`${ui.btn} ${ui.primary}`} onClick={newGame}>New game</button>
         <button className={ui.btn} onClick={tell} disabled={!allDone}>Tell the model</button>
-        <button className={ui.btn} onClick={toggleFull}>{isFull ? "Exit fullscreen" : "Fullscreen"}</button>
       </div>
 
       <p className={ui.status} role="status" aria-live="polite">{status}</p>

@@ -553,16 +553,12 @@ export function StandardControls({
   status,
   onPause,
   onRestart,
-  fullscreen,
-  onFullscreen,
   onShare,
   shareLabel = "Tell the model",
 }: {
   status: GameStatus;
   onPause?: () => void;
   onRestart: () => void;
-  fullscreen: boolean;
-  onFullscreen: () => void;
   onShare?: () => void;
   shareLabel?: string;
 }) {
@@ -575,9 +571,6 @@ export function StandardControls({
       )}
       <button className={ui.btn} onClick={onRestart}>
         Restart
-      </button>
-      <button className={ui.btn} onClick={onFullscreen}>
-        {fullscreen ? "Exit fullscreen" : "Fullscreen"}
       </button>
       {onShare && (
         <button className={ui.btn} onClick={onShare} disabled={!isTerminal(status)}>

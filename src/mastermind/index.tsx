@@ -193,7 +193,7 @@ function FeedbackDots({ feedback, length }: { feedback: Feedback; length: number
 
 export default function Mastermind({ runtime }: AppProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [isFull, toggleFull] = useFullscreen(runtime, rootRef);
+  const [isFull] = useFullscreen(runtime, rootRef);
   const seed = useSeed(runtime);
   const seedDifficulty = seedString(seed, "difficulty", "normal");
   const initialDifficulty: Difficulty = isDifficulty(seedDifficulty) ? seedDifficulty : "normal";
@@ -464,8 +464,6 @@ export default function Mastermind({ runtime }: AppProps) {
       <StandardControls
         status={game.status}
         onRestart={() => reset(game.difficulty)}
-        fullscreen={isFull}
-        onFullscreen={toggleFull}
         onShare={tell}
       />
 

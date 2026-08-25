@@ -239,7 +239,7 @@ const snapshot = (g: Game): Game => ({
 
 export default function Game2048({ runtime }: AppProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [isFull, toggleFull] = useFullscreen(runtime, rootRef);
+  const [isFull] = useFullscreen(runtime, rootRef);
   const seed = useSeed(runtime);
   const size = seedNumber(seed, "size", 4, 3, 6);
 
@@ -326,7 +326,6 @@ export default function Game2048({ runtime }: AppProps) {
     <GameFrame
       runtime={runtime}
       innerRef={rootRef}
-      fullscreen={isFull}
       wide
       className={isFull ? s.fullBoard : ""}
     >
@@ -409,9 +408,6 @@ export default function Game2048({ runtime }: AppProps) {
         </button>
         <button className={ui.btn} onClick={() => reset(game.size)}>
           New game
-        </button>
-        <button className={ui.btn} onClick={toggleFull}>
-          {isFull ? "Exit fullscreen" : "Fullscreen"}
         </button>
         <button className={ui.btn} onClick={tell} disabled={!isTerminal(game.status)}>
           Tell the model

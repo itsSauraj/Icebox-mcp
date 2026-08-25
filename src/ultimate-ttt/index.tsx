@@ -331,7 +331,7 @@ const Glyph = ({ mark, big }: { mark: Mark; big?: boolean }) =>
 
 export default function UltimateTtt({ runtime }: AppProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [isFull, toggleFull] = useFullscreen(runtime, rootRef);
+  const [isFull] = useFullscreen(runtime, rootRef);
   const [shareStatus, share] = useShare(runtime);
   const seed = useSeed(runtime);
 
@@ -552,9 +552,6 @@ export default function UltimateTtt({ runtime }: AppProps) {
       <ControlBar>
         <button className={`${ui.btn} ${ui.primary}`} onClick={reset}>
           Restart
-        </button>
-        <button className={ui.btn} onClick={toggleFull}>
-          {isFull ? "Exit fullscreen" : "Fullscreen"}
         </button>
         <button className={ui.btn} onClick={tell} disabled={!isTerminal(game.status)}>
           Tell the model

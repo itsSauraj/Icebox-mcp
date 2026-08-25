@@ -128,7 +128,7 @@ function Arrow({ dir }: { dir: keyof typeof ROT }) {
 
 function SnakeApp({ runtime }: AppProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [isFull, toggleFull] = useFullscreen(runtime, rootRef);
+  const [isFull] = useFullscreen(runtime, rootRef);
   const [status, flash] = useFlash();
 
   const [game, setGame] = useState<Game>(() => newGame("ready"));
@@ -389,7 +389,6 @@ function SnakeApp({ runtime }: AppProps) {
           {game.status === "playing" ? "Pause" : game.status === "paused" ? "Resume" : "Play"}
         </button>
         <button className={ui.btn} onClick={() => startFresh(false)}>Restart</button>
-        <button className={ui.btn} onClick={toggleFull}>{isFull ? "Exit fullscreen" : "Fullscreen"}</button>
         <button className={ui.btn} onClick={tell} disabled={game.status !== "over"}>Tell the model</button>
       </div>
 

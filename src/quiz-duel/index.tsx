@@ -213,7 +213,7 @@ function Review({ deck, answers }: { deck: Question[]; answers: Answer[] }) {
 
 export default function QuizDuel({ runtime }: AppProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [isFull, toggleFull] = useFullscreen(runtime, rootRef);
+  const [isFull] = useFullscreen(runtime, rootRef);
   const [shareStatus, share] = useShare(runtime);
   const seed = useSeed(runtime);
 
@@ -496,9 +496,6 @@ export default function QuizDuel({ runtime }: AppProps) {
             <button className={ui.btn} onClick={replay}>
               Play again
             </button>
-            <button className={ui.btn} onClick={toggleFull}>
-              {isFull ? "Exit fullscreen" : "Fullscreen"}
-            </button>
           </div>
         </div>
       ) : (
@@ -676,9 +673,6 @@ export default function QuizDuel({ runtime }: AppProps) {
               </button>
               <button className={ui.btn} onClick={replay}>
                 Restart
-              </button>
-              <button className={ui.btn} onClick={toggleFull}>
-                {isFull ? "Exit fullscreen" : "Fullscreen"}
               </button>
             </div>
           )}

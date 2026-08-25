@@ -157,7 +157,7 @@ function grandTotal(card: Card, yahtzeeBonus: number): number {
 
 export default function Yahtzee({ runtime }: AppProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [isFull, toggleFull] = useFullscreen(runtime, rootRef);
+  const [isFull] = useFullscreen(runtime, rootRef);
   const [shareStatus, share] = useShare(runtime);
 
   // Dice start unrolled: no randomness in an initialiser.
@@ -303,9 +303,6 @@ export default function Yahtzee({ runtime }: AppProps) {
         </button>
         <button className={ui.btn} onClick={reset}>
           New game
-        </button>
-        <button className={ui.btn} onClick={toggleFull}>
-          {isFull ? "Exit fullscreen" : "Fullscreen"}
         </button>
       </ControlBar>
 

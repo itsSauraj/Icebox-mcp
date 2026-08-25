@@ -191,7 +191,7 @@ function blockStyle(x: number, width: number, row: number, hue: number): CSSProp
 
 export default function StackTower({ runtime }: AppProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [isFull, toggleFull] = useFullscreen(runtime, rootRef);
+  const [isFull] = useFullscreen(runtime, rootRef);
   const [flashMsg, flash] = useFlash();
 
   const [game, setGame] = useState<Game>(() => initialGame());
@@ -372,9 +372,6 @@ export default function StackTower({ runtime }: AppProps) {
         </button>
         <button className={ui.btn} onClick={restart}>
           Restart
-        </button>
-        <button className={ui.btn} onClick={toggleFull}>
-          {isFull ? "Exit fullscreen" : "Fullscreen"}
         </button>
         <button className={ui.btn} onClick={tell} disabled={!isTerminal(game.status)}>
           Tell the model

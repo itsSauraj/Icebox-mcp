@@ -103,7 +103,7 @@ const newHand = (bet: number, fromSplitAce = false): Hand => ({
 
 export default function Blackjack({ runtime }: AppProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [isFull, toggleFull] = useFullscreen(runtime, rootRef);
+  const [isFull] = useFullscreen(runtime, rootRef);
   const [shareStatus, share] = useShare(runtime);
 
   const [shoe, setShoe] = useState<Card[]>([]);
@@ -554,12 +554,6 @@ export default function Blackjack({ runtime }: AppProps) {
           </button>
         </ControlBar>
       )}
-
-      <ControlBar>
-        <button className={ui.btn} onClick={toggleFull}>
-          {isFull ? "Exit fullscreen" : "Fullscreen"}
-        </button>
-      </ControlBar>
 
       <Notice>
         Six decks. Dealer stands on all 17. Blackjack pays 3:2, insurance 2:1. One split, and split aces

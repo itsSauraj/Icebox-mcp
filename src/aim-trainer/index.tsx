@@ -139,7 +139,7 @@ function Sparkline({ samples }: { samples: number[] }) {
 export default function AimTrainer({ runtime }: AppProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const boardRef = useRef<HTMLDivElement>(null);
-  const [isFull, toggleFull] = useFullscreen(runtime, rootRef);
+  const [isFull] = useFullscreen(runtime, rootRef);
 
   const [game, setGame] = useState<Game>(() => initialGame());
   const gameRef = useRef(game); // read fresh state from pointer handlers without stale closures
@@ -319,8 +319,6 @@ export default function AimTrainer({ runtime }: AppProps) {
       <StandardControls
         status={game.status}
         onRestart={restart}
-        fullscreen={isFull}
-        onFullscreen={toggleFull}
         onShare={tell}
       />
       <StatusLine>{shareStatus}</StatusLine>

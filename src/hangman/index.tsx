@@ -120,7 +120,7 @@ const pickHouseWords = () => shuffle(HOUSE_WORDS).slice(0, HOUSE_COUNT);
 
 export default function Hangman({ runtime }: AppProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [isFull, toggleFull] = useFullscreen(runtime, rootRef);
+  const [isFull] = useFullscreen(runtime, rootRef);
   const [shareStatus, share] = useShare(runtime);
   const seed = useSeed(runtime);
 
@@ -384,9 +384,6 @@ export default function Hangman({ runtime }: AppProps) {
             <button className={ui.btn} onClick={restart}>
               Restart
             </button>
-            <button className={ui.btn} onClick={toggleFull}>
-              {isFull ? "Exit fullscreen" : "Fullscreen"}
-            </button>
           </ControlBar>
 
           <p className={s.hintLine}>Type a letter to guess it, or use the keyboard above.</p>
@@ -409,9 +406,6 @@ export default function Hangman({ runtime }: AppProps) {
             </button>
             <button className={ui.btn} onClick={restart}>
               Play again
-            </button>
-            <button className={ui.btn} onClick={toggleFull}>
-              {isFull ? "Exit fullscreen" : "Fullscreen"}
             </button>
           </div>
         </div>

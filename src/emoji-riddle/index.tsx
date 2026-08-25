@@ -166,7 +166,7 @@ function readRiddles(raw: unknown[]): Riddle[] {
 
 export default function EmojiRiddle({ runtime }: AppProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [isFull, toggleFull] = useFullscreen(runtime, rootRef);
+  const [isFull] = useFullscreen(runtime, rootRef);
   const seed = useSeed(runtime);
   const [shareStatus, share] = useShare(runtime);
 
@@ -421,8 +421,6 @@ export default function EmojiRiddle({ runtime }: AppProps) {
       <StandardControls
         status={status}
         onRestart={replay}
-        fullscreen={isFull}
-        onFullscreen={toggleFull}
         onShare={askForMore}
         shareLabel="Ask for more"
       />

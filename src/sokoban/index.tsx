@@ -317,7 +317,7 @@ function stuckCrate(level: Level, pos: Position): Pos | null {
 
 export default function Sokoban({ runtime }: AppProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [isFull, toggleFull] = useFullscreen(runtime, rootRef);
+  const [isFull] = useFullscreen(runtime, rootRef);
   const [shareStatus, share] = useShare(runtime);
 
   const [levelIndex, setLevelIndex] = useState(0);
@@ -462,9 +462,6 @@ export default function Sokoban({ runtime }: AppProps) {
         </button>
         <button className={ui.btn} onClick={() => setPicker((v) => !v)} aria-pressed={picker}>
           Levels
-        </button>
-        <button className={ui.btn} onClick={toggleFull}>
-          {isFull ? "Exit fullscreen" : "Fullscreen"}
         </button>
         <button className={ui.btn} onClick={tell} disabled={!isTerminal(status)}>
           Tell the model

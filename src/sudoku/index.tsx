@@ -267,7 +267,7 @@ const cloneMarks = (m: Marks): Marks => m.map((set) => new Set(set));
 
 export default function Sudoku({ runtime }: AppProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [isFull, toggleFull] = useFullscreen(runtime, rootRef);
+  const [isFull] = useFullscreen(runtime, rootRef);
   const [shareStatus, share] = useShare(runtime);
   const seed = useSeed(runtime);
 
@@ -597,9 +597,6 @@ export default function Sudoku({ runtime }: AppProps) {
           <ControlBar>
             <button className={ui.btn} onClick={() => build(difficulty)}>
               New puzzle
-            </button>
-            <button className={ui.btn} onClick={toggleFull}>
-              {isFull ? "Exit fullscreen" : "Fullscreen"}
             </button>
             <button className={ui.btn} onClick={tell} disabled={!solved}>
               Tell the model

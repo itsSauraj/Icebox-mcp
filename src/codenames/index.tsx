@@ -106,7 +106,7 @@ const SpyIcon = () => (
 
 export default function Codenames({ runtime }: AppProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [isFull, toggleFull] = useFullscreen(runtime, rootRef);
+  const [isFull] = useFullscreen(runtime, rootRef);
   const [shareStatus, share] = useShare(runtime);
   const seed = useSeed(runtime);
 
@@ -434,9 +434,6 @@ export default function Codenames({ runtime }: AppProps) {
         )}
         <button className={ui.btn} onClick={askForBoard}>
           New board
-        </button>
-        <button className={ui.btn} onClick={toggleFull}>
-          {isFull ? "Exit fullscreen" : "Fullscreen"}
         </button>
       </ControlBar>
 

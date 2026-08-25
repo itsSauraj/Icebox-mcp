@@ -297,7 +297,7 @@ function chooseAiMove(board: Board, difficulty: Difficulty): number {
 
 export default function ConnectFour({ runtime }: AppProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [isFull, toggleFull] = useFullscreen(runtime, rootRef);
+  const [isFull] = useFullscreen(runtime, rootRef);
   const seed = useSeed(runtime);
   const seedDifficulty = seedString(seed, "difficulty", "normal");
   const initialDifficulty: Difficulty = isDifficulty(seedDifficulty) ? seedDifficulty : "normal";
@@ -523,8 +523,6 @@ export default function ConnectFour({ runtime }: AppProps) {
       <StandardControls
         status={game.status}
         onRestart={reset}
-        fullscreen={isFull}
-        onFullscreen={toggleFull}
         onShare={tell}
       />
 

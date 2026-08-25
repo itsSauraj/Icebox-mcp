@@ -22,7 +22,6 @@
  */
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  ControlBar,
   GameFrame,
   GameHeader,
   StatusLine,
@@ -89,7 +88,7 @@ function QaRow({ item }: { item: QA }) {
 
 export default function TwentyQuestions({ runtime }: AppProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [isFull, toggleFull] = useFullscreen(runtime, rootRef);
+  const [isFull] = useFullscreen(runtime, rootRef);
   const [shareStatus, share] = useShare(runtime);
   const seed = useSeed(runtime);
   const topic = seedString(seed, "topic").trim();
@@ -395,12 +394,6 @@ export default function TwentyQuestions({ runtime }: AppProps) {
           </div>
         </>
       )}
-
-      <ControlBar>
-        <button className={ui.btn} onClick={toggleFull}>
-          {isFull ? "Exit fullscreen" : "Fullscreen"}
-        </button>
-      </ControlBar>
 
       <StatusLine>{shareStatus}</StatusLine>
     </GameFrame>

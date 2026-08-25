@@ -281,7 +281,7 @@ type Phase = "placing" | "battle" | "done";
 
 export default function Battleship({ runtime }: AppProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [isFull, toggleFull] = useFullscreen(runtime, rootRef);
+  const [isFull] = useFullscreen(runtime, rootRef);
   const [shareStatus, share] = useShare(runtime);
   const seed = useSeed(runtime);
 
@@ -573,9 +573,6 @@ export default function Battleship({ runtime }: AppProps) {
           <ControlBar>
             <button className={ui.btn} onClick={reset}>
               New game
-            </button>
-            <button className={ui.btn} onClick={toggleFull}>
-              {isFull ? "Exit fullscreen" : "Fullscreen"}
             </button>
             <button className={ui.btn} onClick={tell} disabled={!isTerminal(status)}>
               Tell the model

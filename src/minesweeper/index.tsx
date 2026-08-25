@@ -316,7 +316,7 @@ function Timer({ startedAt, stopped }: { startedAt: number | null; stopped: numb
 export default function Minesweeper({ runtime }: AppProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
-  const [isFull, toggleFull] = useFullscreen(runtime, rootRef);
+  const [isFull] = useFullscreen(runtime, rootRef);
 
   const seed = useSeed(runtime);
   const seeded = asDifficulty(seedString(seed, "difficulty", "normal"));
@@ -510,7 +510,6 @@ export default function Minesweeper({ runtime }: AppProps) {
     <GameFrame
       runtime={runtime}
       innerRef={rootRef}
-      fullscreen={isFull}
       wide
       className={isFull ? s.fullFrame : ""}
     >
@@ -612,9 +611,6 @@ export default function Minesweeper({ runtime }: AppProps) {
         </button>
         <button className={ui.btn} onClick={() => reset(diff)}>
           New game
-        </button>
-        <button className={ui.btn} onClick={toggleFull}>
-          {isFull ? "Exit fullscreen" : "Fullscreen"}
         </button>
         <button className={ui.btn} onClick={tell} disabled={!isTerminal(board.status)}>
           Tell the model

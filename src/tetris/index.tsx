@@ -431,7 +431,7 @@ function Mini({
 
 export default function Tetris({ runtime }: AppProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [isFull, toggleFull] = useFullscreen(runtime, rootRef);
+  const [isFull] = useFullscreen(runtime, rootRef);
   const seed = useSeed(runtime);
   const startLevel = seedNumber(seed, "level", 1, 1, 10);
 
@@ -793,8 +793,6 @@ export default function Tetris({ runtime }: AppProps) {
         status={game.status}
         onPause={togglePause}
         onRestart={() => reset(startLevel, false)}
-        fullscreen={isFull}
-        onFullscreen={toggleFull}
         onShare={tell}
       />
 

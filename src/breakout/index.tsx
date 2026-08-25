@@ -284,7 +284,7 @@ function sweep(ball: Ball, dx: number, dy: number, bricks: Brick[]): Hit | null 
 
 export default function Breakout({ runtime }: AppProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [isFull, toggleFull] = useFullscreen(runtime, rootRef);
+  const [isFull] = useFullscreen(runtime, rootRef);
   const [shareStatus, share] = useShare(runtime);
   const seed = useSeed(runtime);
   const topic = seedString(seed, "topic");
@@ -597,9 +597,6 @@ export default function Breakout({ runtime }: AppProps) {
         </button>
         <button className={ui.btn} onClick={restart}>
           Restart
-        </button>
-        <button className={ui.btn} onClick={toggleFull}>
-          {isFull ? "Exit fullscreen" : "Fullscreen"}
         </button>
         <button className={ui.btn} onClick={tell} disabled={!isTerminal(game.status)}>
           Tell the model

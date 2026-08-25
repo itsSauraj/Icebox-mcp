@@ -106,7 +106,7 @@ show an error because the model sent nothing.
 
 ```tsx
 const rootRef = useRef<HTMLDivElement>(null);
-const [isFull, toggleFull] = useFullscreen(runtime, rootRef);
+const [isFull] = useFullscreen(runtime, rootRef); // reflects the host, no button
 
 <GameFrame runtime={runtime} innerRef={rootRef} fullscreen={isFull} wide>
   <GameHeader title="Tetris" stats={[{ label: "Score", value: score }, { label: "Best", value: best }]} />
@@ -117,8 +117,7 @@ const [isFull, toggleFull] = useFullscreen(runtime, rootRef);
   </div>
 
   <DPad onDirection={move} />
-  <StandardControls status={status} onPause={togglePause} onRestart={restart}
-                    fullscreen={isFull} onFullscreen={toggleFull} onShare={share} />
+  <StandardControls status={status} onPause={togglePause} onRestart={restart} onShare={share} />
   <StatusLine>{shareStatus}</StatusLine>
 </GameFrame>
 ```
@@ -126,6 +125,13 @@ const [isFull, toggleFull] = useFullscreen(runtime, rootRef);
 `Overlay` renders nothing while `status === "playing"` and handles ready,
 paused, over and won. Give it `position: relative` ancestor: put it inside your
 `boardWrap`.
+
+**Do not add a fullscreen button.** Hosts commonly refuse
+`requestDisplayMode`, and the browser Fullscreen API is blocked inside the
+sandboxed iframe, so the control did nothing where it mattered and has been
+removed everywhere. `useFullscreen`'s first value is still worth reading: when
+the host expands the app through its own chrome, that is how your layout finds
+out.
 
 Also available: `Segmented` for difficulty and mode pills, `ControlBar` for a
 custom button row, `Notice` for a quiet line of explanation, `Arrow`, `sv` for

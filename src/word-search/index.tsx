@@ -303,7 +303,7 @@ function cellAt(target: EventTarget | null): Cell | null {
 export default function WordSearch({ runtime }: AppProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
-  const [isFull, toggleFull] = useFullscreen(runtime, rootRef);
+  const [isFull] = useFullscreen(runtime, rootRef);
 
   const seed = useSeed(runtime);
   const rawWords = seedArray<unknown>(seed, "words");
@@ -577,8 +577,6 @@ export default function WordSearch({ runtime }: AppProps) {
       <StandardControls
         status={status}
         onRestart={() => regenerate(finalWords)}
-        fullscreen={isFull}
-        onFullscreen={toggleFull}
       />
       <StatusLine>{shareStatus}</StatusLine>
     </GameFrame>

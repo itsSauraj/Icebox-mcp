@@ -234,7 +234,7 @@ function BirdIcon() {
 
 export default function Flappy({ runtime }: AppProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [isFull, toggleFull] = useFullscreen(runtime, rootRef);
+  const [isFull] = useFullscreen(runtime, rootRef);
 
   const [game, setGame] = useState<Game>(() => newGame());
   const gameRef = useRef(game);
@@ -392,8 +392,6 @@ export default function Flappy({ runtime }: AppProps) {
         status={overlayStatus}
         onPause={onPlayPause}
         onRestart={restart}
-        fullscreen={isFull}
-        onFullscreen={toggleFull}
         onShare={tell}
       />
       <StatusLine>{shareStatus}</StatusLine>
