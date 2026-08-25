@@ -121,13 +121,46 @@ a:hover { filter: brightness(1.15); text-decoration: underline; }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
-  margin: 22px 0;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 12px;
+  margin: 10px 0 26px;
+}
+
+/* Section headings for the catalogue. Thirty-two cards in one undifferentiated
+   grid is a wall; three labelled groups is a list you can scan. */
+.group-head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 26px 0 2px;
+}
+.group-title {
+  margin: 0;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.group-count {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 1px 8px;
+  border-radius: 999px;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  background: var(--glass);
+}
+.group-note {
+  margin: 0 0 4px;
+  font-size: 0.85rem;
+  color: var(--muted);
 }
 
 .card {
-  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  padding: 13px 15px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--glass);
@@ -143,9 +176,9 @@ a:hover { filter: brightness(1.15); text-decoration: underline; }
   transform: translateY(-2px);
 }
 .card .icon { color: var(--accent); display: inline-flex; line-height: 0; }
-.card .icon svg { width: 28px; height: 28px; }
-.card b { display: block; margin-top: 10px; }
-.card span { color: var(--muted); font-size: 0.9rem; }
+.card .icon svg { width: 24px; height: 24px; }
+.card b { display: block; margin-top: 8px; font-size: 0.95rem; }
+.card span { color: var(--muted); font-size: 0.82rem; line-height: 1.4; }
 
 .endpoint {
   display: inline-block;

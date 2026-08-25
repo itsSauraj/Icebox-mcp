@@ -9,7 +9,7 @@ single self-contained HTML files with Vite.
 
 ## The apps
 
-Thirty apps behind fifteen tools. The eight originals keep their own tools, six
+Thirty-two apps behind fifteen tools. The eight originals keep their own tools, six
 headline games get their own, and `play` opens the other eighteen.
 
 ### Mini apps
@@ -73,7 +73,7 @@ Everything runnable lives in this directory:
 *.html                 One HTML entry per app (color-picker.html, dice.html, …)
 index.html             Dev-only launcher linking to every app's preview
 server.ts              Registers every tool from games/registry.ts
-main.ts                Local server — Streamable HTTP (default) or stdio (--stdio)
+main.ts                Local server: Streamable HTTP (default) or stdio (--stdio)
 api/mcp.ts             Vercel serverless function exposing the MCP endpoint
 vercel.json            Vercel config (static pages + /mcp rewrite)
 public/                Base-domain pages: index.html, privacy.html, terms.html, styles.css
@@ -148,12 +148,12 @@ The server is serverless-ready:
 - App HTML is **inlined** at build time (`generated/html/`), one module per app
   and imported on demand, so a cold start parses one app rather than fifteen. No runtime
   filesystem access, so it works in a Vercel Function.
-- The transport is **stateless** (`sessionIdGenerator: undefined`) — no session
+- The transport is **stateless** (`sessionIdGenerator: undefined`), so no session
   storage or sticky routing needed.
 - [api/mcp.ts](api/mcp.ts) is the Function (reuses the same transport as local);
   [vercel.json](vercel.json) rewrites `/mcp` → `/api/mcp` and serves `public/`.
 
-Deployment (you run these — accounts/auth are yours):
+Deployment (you run these, since accounts and auth are yours):
 
 ```bash
 npm i -g vercel     # if needed
@@ -168,7 +168,7 @@ deploy you get:
 |-----|---------|
 | `https://<app>.vercel.app/` | Landing page |
 | `https://<app>.vercel.app/privacy` | Privacy Policy (use this in the submission) |
-| `https://<app>.vercel.app/mcp` | **MCP connector URL** — point Claude/ChatGPT here |
+| `https://<app>.vercel.app/mcp` | **MCP connector URL**, point Claude/ChatGPT here |
 
 Point your connector at `…/mcp` and drop the local tunnel. For submission, set
 `APP_DOMAIN` in the Vercel project's Environment Variables (see below).
@@ -193,18 +193,18 @@ SERVERS='["http://localhost:3001/mcp"]' npm run start
 
 Each app's UI resource sets its metadata in `contents[]._meta.ui`:
 
-- **`csp`** — a locked-down Content Security Policy (`connectDomains: []`,
+- **`csp`** is a locked-down Content Security Policy (`connectDomains: []`,
   `resourceDomains: []`). These apps are fully self-contained (JS/CSS inlined,
-  no network), so no external origins are allowed. Host-agnostic — the same
+  no network), so no external origins are allowed. Host-agnostic, so the same
   policy is correct for Claude and OpenAI.
-- **`domain`** — **omitted by default.** The sandbox domain is *computed by the
+- **`domain`** is **omitted by default.** The sandbox domain is *computed by the
   host* from your server URL; you don't invent it. Declaring a value the host
   doesn't expect causes a `ui.domain mismatch` error, so omitting it lets each
   host use its own default origin. This is why **one running instance serves
   both Claude and OpenAI**.
 
 For app submission, when a host requires the domain declared, set `APP_DOMAIN`
-to the exact value that host expects — no rebuild, no separate instance:
+to the exact value that host expects, with no rebuild, no separate instance:
 
 ```bash
 npm start                                              # dev/runtime: domain omitted

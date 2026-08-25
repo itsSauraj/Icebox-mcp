@@ -6,7 +6,7 @@
  * 120Hz. The whole game lives in one plain object (`Game`) that is
  * recomputed once per frame by the pure `tick` function and pushed into
  * both a ref (read by the loop, so it never closes over stale state) and
- * React state (so it renders) — the same authoritative-ref pattern Snake
+ * React state (so it renders), the same authoritative-ref pattern Snake
  * and 2048 use.
  *
  * A virtual playfield of 360 by 480 units (`VW`/`VH`) is the only

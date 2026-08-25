@@ -58,7 +58,15 @@ export default function Arcade({ runtime }: AppProps) {
 
   // A game chosen from the picker overrides whatever the tool call named, so
   // the player can move on without asking the model for anything.
-  const [chosen, setChosen] = useState<string | null>(null);
+  //
+  // Standalone preview has no tool call at all, so it falls back to a `?game=`
+  // query parameter. That is what lets the dev launcher link straight to one
+  // arcade game instead of dropping every link on the picker.
+  const [chosen, setChosen] = useState<string | null>(() => {
+    if (!runtime.standalone) return null;
+    const wanted = new URLSearchParams(window.location.search).get("game");
+    return wanted && ARCADE_BY_NAME[wanted] ? wanted : null;
+  });
   const requested = seedString(seed, "game");
   const active = chosen ?? (requested && ARCADE_BY_NAME[requested] ? requested : null);
   const entry = active ? ARCADE_BY_NAME[active] : undefined;

@@ -15,7 +15,8 @@
   },
   "main": "dist/server.js",
   "scripts": {
-    "gen": "node scripts/gen-entries.mjs",
+    "gen": "node scripts/gen-entries.mjs && node scripts/gen-pages.mjs",
+    "gen:pages": "node scripts/gen-pages.mjs",
     "gen:submission": "tsx scripts/gen-submission.mts",
     "build:apps": "node scripts/build-apps.mjs",
     "build:apps:dev": "node scripts/build-apps.mjs --dev",

@@ -4,3 +4,10 @@ dist/
 generated/html/
 .env
 .env*.local
+
+# Local tool artifacts, not part of the project
+.claude-flow/
+.swarm/
+agentdb.rvf
+agentdb.rvf.lock
+ruvector.db

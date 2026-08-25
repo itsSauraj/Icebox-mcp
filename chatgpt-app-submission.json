@@ -3,7 +3,7 @@
   "schema_version": 1,
   "app_info": {
     "display_name": "Icebox",
-    "subtitle": "Thirty small things to play",
+    "subtitle": "Thirty-two small things to play",
     "description": "Icebox opens interactive mini apps and games inside ChatGPT: pick a colour, roll dice, flip a coin, draw a card, spin a wheel, and play Tetris, 2048, Minesweeper, Snake, Wordle, Sudoku, Blackjack and eighteen more. Several games are written by the model as you play, including trivia on any topic you name, a branching adventure, and Codenames with the model as your spymaster.",
     "category": "ENTERTAINMENT"
   },

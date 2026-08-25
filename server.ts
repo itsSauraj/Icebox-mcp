@@ -11,7 +11,7 @@ import { loadHtml } from "./generated/html/index.js";
 // ---- App-submission metadata (per-resource CSP + sandbox domain) ----
 //
 // One instance serves BOTH Claude and OpenAI: the CSP below is host-agnostic,
-// and the sandbox `domain` is COMPUTED BY THE HOST from your server URL — you
+// and the sandbox `domain` is COMPUTED BY THE HOST from your server URL, so you
 // don't invent it. Declaring a value that disagrees with the host triggers a
 // "ui.domain mismatch" error, so by default we OMIT `domain` and each host uses
 // its own default origin (which is why the same server works for both).

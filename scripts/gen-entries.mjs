@@ -1,6 +1,6 @@
 /**
  * Generates the mechanical scaffolding around each game so nobody hand-writes
- * it thirty times:
+ * it thirty-two times:
  *
  *  - `<hero>.html` and `arcade.html`, the Vite entry documents
  *  - `src/<hero>/main.tsx`, which mounts the hero's component
