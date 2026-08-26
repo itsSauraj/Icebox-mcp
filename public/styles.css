@@ -82,10 +82,10 @@ body::after {
 .wrap {
   position: relative;
   z-index: 1;
-  max-width: 1600px;
-  margin: 0 auto;
-  /* Top padding clears the fixed navbar. */
-  padding: calc(var(--nav-h) + 40px) clamp(16px, 4vw, 48px) 80px;
+  /* No cap: the grid is meant to run the full width of the display, so the
+     only thing between the cards and the screen edge is the gutter. */
+  width: 100%;
+  padding: calc(var(--nav-h) + 40px) clamp(16px, 2.5vw, 40px) 80px;
 }
 
 /**
@@ -228,7 +228,7 @@ a:hover { filter: brightness(1.15); text-decoration: underline; }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
   gap: 12px;
   margin: 10px 0 26px;
 }
@@ -363,7 +363,13 @@ footer {
 .dev-link svg { width: 15px; height: 15px; }
 
 /* Legal pages */
-.legal { max-width: 720px; }
+/* The legal pages share .wrap but have no navbar, so they opt out of both the
+   full-width layout and the space reserved for the bar. */
+.legal {
+  max-width: 720px;
+  margin-inline: auto;
+  padding-top: 48px;
+}
 .legal h1 { text-align: left; font-size: 2.1rem; }
 .legal .updated { color: var(--muted); font-size: 0.85rem; margin-top: 0; font-family: var(--font-mono); }
 .legal h2 { font-size: 1.2rem; }
