@@ -407,10 +407,14 @@ export default function Sokoban({ runtime }: AppProps) {
         hint={level.name}
       />
 
-      <div className={s.boardWrap}>
+      {/* The level dimensions live on the wrapper, not the board. The wrapper
+          sizes itself from them, and custom properties only inherit downward,
+          so setting them on the board left the wrapper with an invalid width
+          calc and collapsed the whole thing to nothing. The board reads the
+          same two values by inheritance. */}
+      <div className={s.boardWrap} style={sv({ "--cols": level.cols, "--rows": level.rows })}>
         <div
           className={s.board}
-          style={sv({ "--cols": level.cols, "--rows": level.rows })}
           role="img"
           aria-label={`Sokoban level ${levelIndex + 1}, ${onTarget} of ${level.targetCount} crates placed`}
           {...swipe}
