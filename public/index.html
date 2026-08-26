@@ -17,7 +17,32 @@
 </head>
 <body>
   <div class="fx" aria-hidden="true"></div>
-  <div class="wrap">
+  <nav class="topbar">
+    <a class="brand" href="#top">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 2 3 7v10l9 5 9-5V7z"/>
+        <path d="M3 7l9 5 9-5"/>
+        <path d="M12 12v10"/>
+      </svg>
+      <span>Icebox</span>
+    </a>
+    <div class="endpoint-row">
+      <span class="nav-label">MCP</span>
+      <span class="endpoint" id="mcp-endpoint">https://icebox.saurabh-yadav.me/mcp</span>
+      <button class="copy-btn" type="button" data-copy-target="#mcp-endpoint" aria-label="Copy the MCP endpoint URL">
+        <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true">
+          <rect x="9" y="9" width="11" height="11" rx="2"/>
+          <path d="M6 15H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1"/>
+        </svg>
+        <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 6 9 17l-5-5"/>
+        </svg>
+        <span class="copy-label">Copy</span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="wrap" id="top">
     <header class="hero">
       <div class="logo">
         <!-- Icebox cube -->
@@ -195,21 +220,12 @@
       <!-- APPS:END -->
 
     <h2>Connect it</h2>
-    <p>Add this server to your MCP-enabled host as a connector named <strong>Icebox</strong>, using its endpoint:</p>
-    <p class="endpoint-row">
-      <span class="endpoint" id="mcp-endpoint">https://icebox.saurabh-yadav.me/mcp</span>
-      <button class="copy-btn" type="button" data-copy-target="#mcp-endpoint" aria-label="Copy endpoint URL">
-        <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true">
-          <rect x="9" y="9" width="11" height="11" rx="2"/>
-          <path d="M6 15H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1"/>
-        </svg>
-        <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M20 6 9 17l-5-5"/>
-        </svg>
-        <span class="copy-label">Copy</span>
-      </button>
+    <p>
+      Add this server to your MCP-enabled host as a connector named
+      <strong>Icebox</strong>, using the endpoint pinned at the top of this page.
+      Then ask for a game: “play tetris”, “quiz me on Roman history”, or just
+      “what can I play” to see the whole grid.
     </p>
-    <p class="muted">Then ask, for example, “play tetris”, “quiz me on Roman history” or “roll three dice”.</p>
 
     <div class="callout">
       <strong>No account, no data collection.</strong> Every app runs locally in the

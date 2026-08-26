@@ -19,8 +19,10 @@
   --scrollbar:    light-dark(#c9c6de, #2d3449);
   --selection:    light-dark(rgba(124, 58, 237, 0.22), rgba(221, 183, 255, 0.30));
   --card-shadow:  light-dark(0 6px 20px rgba(17, 24, 51, 0.06), none);
+  --nav-bg:       light-dark(rgba(245, 245, 251, 0.82), rgba(11, 19, 38, 0.82));
 
   --radius: 12px;
+  --nav-h: 56px;
   --font-display: 'Anton', system-ui, sans-serif;
   --font-body: 'Geist', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -28,7 +30,11 @@
 
 * { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  /* Anchors must land below the fixed navbar, not under it. */
+  scroll-padding-top: calc(var(--nav-h) + 12px);
+}
 
 body {
   margin: 0;
@@ -76,9 +82,110 @@ body::after {
 .wrap {
   position: relative;
   z-index: 1;
-  max-width: 760px;
+  max-width: 1600px;
   margin: 0 auto;
-  padding: 48px 24px 80px;
+  /* Top padding clears the fixed navbar. */
+  padding: calc(var(--nav-h) + 40px) clamp(16px, 4vw, 48px) 80px;
+}
+
+/**
+ * The grid gets the full width; running text does not. A 1600px line of prose
+ * is unreadable, so paragraphs, headings and callouts keep a measure and centre
+ * themselves inside the wide column while the card grid spans all of it.
+ */
+.wrap > p,
+.wrap > h2,
+.wrap > .callout {
+  max-width: 68ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+.wrap > .lead {
+  max-width: 72ch;
+}
+
+
+
+/* ---- Fixed navbar ----
+ * Carries the MCP endpoint, which is the one thing a visitor came for. Pinning
+ * it means they never have to scroll to find it, and the copy button is always
+ * a click away.
+ */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: var(--nav-h);
+  padding: 0 clamp(12px, 3vw, 28px);
+  background: var(--nav-bg);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  flex: 0 0 auto;
+  color: var(--text);
+  text-decoration: none;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+}
+.brand svg {
+  width: 24px;
+  height: 24px;
+  color: var(--accent);
+  filter: drop-shadow(0 0 10px var(--glow));
+}
+.brand:hover { color: var(--accent); }
+
+.nav-label {
+  flex: 0 0 auto;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+}
+
+/* The endpoint must be allowed to shrink, or a long URL pushes the copy button
+   off a narrow screen. min-width:0 is what lets the ellipsis engage. */
+.topbar .endpoint-row {
+  flex: 0 1 auto;
+  min-width: 0;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+.topbar .endpoint {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 7px 12px;
+  font-size: 0.8rem;
+  box-shadow: none;
+}
+.topbar .copy-btn {
+  flex: 0 0 auto;
+  padding: 0 11px;
+  font-size: 0.78rem;
+}
+
+@media (max-width: 560px) {
+  .brand span { display: none; }
+  .nav-label { display: none; }
+  .topbar .endpoint { font-size: 0.72rem; }
+  .topbar .copy-label { display: none; }
+  .topbar .copy-btn { padding: 0 9px; }
 }
 
 header.hero { text-align: center; margin-bottom: 40px; }
@@ -263,7 +370,6 @@ footer {
 .back { display: inline-block; margin-bottom: 20px; font-family: var(--font-mono); font-size: 0.85rem; }
 
 @media (max-width: 520px) {
-  .grid { grid-template-columns: 1fr; }
   h1 { font-size: 2.1rem; }
 }
 
