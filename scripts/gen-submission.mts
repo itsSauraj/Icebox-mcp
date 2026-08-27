@@ -35,6 +35,8 @@ const READ_ONLY: Record<string, string> = {
   "quiz-duel": "Validates the supplied quiz questions and opens a local game without changing stored or external data.",
   "story-quest": "Validates the supplied story beat and opens a local reader without changing stored or external data.",
   codenames: "Validates the supplied words and clue and opens a local game without changing stored or external data.",
+  "music-keyboard":
+    "Validates an optional song and instrument setting and opens a local synthesised piano without changing stored or external data.",
   play: "Validates optional game settings and opens a local game without changing stored or external data.",
 };
 

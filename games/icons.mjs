@@ -40,6 +40,8 @@ export const ICONS = {
   "story-quest": '<path d="M3 5.5A12 12 0 0 1 12 7a12 12 0 0 1 9-1.5v13A12 12 0 0 0 12 20a12 12 0 0 0-9-1.5z"/><path d="M12 7v13"/>',
   codenames: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M9 5v14M15 5v14M3 12h18"/><rect x="9" y="5" width="6" height="7" fill="currentColor" stroke="none" opacity="0.85"/>',
 
+  "music-keyboard": '<rect x="2.5" y="7" width="19" height="11" rx="1.6"/><path d="M7.3 7v7M12 7v7M16.7 7v7"/><rect x="5.4" y="7" width="2.6" height="5" rx="0.6" fill="currentColor" stroke="none"/><rect x="10.1" y="7" width="2.6" height="5" rx="0.6" fill="currentColor" stroke="none"/><rect x="14.8" y="7" width="2.6" height="5" rx="0.6" fill="currentColor" stroke="none"/>',
+
   // ---- Model writes it ----
   "twenty-questions": '<path d="M20 14.5a2.5 2.5 0 0 1-2.5 2.5H9l-4.5 3.5V6.5A2.5 2.5 0 0 1 7 4h10.5A2.5 2.5 0 0 1 20 6.5z"/><path d="M10.2 8.9a2.2 2.2 0 1 1 3.1 2c-.7.4-.9.8-.9 1.4"/><circle cx="12.4" cy="14.4" r="0.95" fill="currentColor" stroke="none"/>',
   hangman: '<path d="M4 21h9M6 21V3h9v3"/><circle cx="15" cy="8.6" r="2.1"/><path d="M15 10.7v4.3M15 12.4l-2.2 1.6M15 12.4l2.2 1.6M15 15l-1.8 2.6M15 15l1.8 2.6"/>',

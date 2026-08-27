@@ -19,6 +19,7 @@ import {
   cleanList,
   cleanQuestions,
   cleanRiddles,
+  cleanSong,
   cleanText,
   cleanWords,
 } from "./validate.js";
@@ -405,6 +406,64 @@ export const HERO_SPECS: ToolSpec[] = [
           : "Codenames grid ready. Send a clue."
         : "Codenames ready. Send 25 words and a 25-letter key.";
       return { text, data: { game: "codenames", words, key, clue, count } };
+    },
+  },
+  {
+    name: "music-keyboard",
+    title: heroTitle("music-keyboard"),
+    file: heroFile("music-keyboard"),
+    description:
+      "Opens a full 88-key piano the user can play with the mouse, touch or their computer keyboard, with a metronome and four instrument voices. " +
+      "YOU can also send a song for it to play, as `notes`: an array of steps in order. The compact form is easiest for anything longer than a few bars. " +
+      "`\"C4:1\"` is middle C for one beat, `\"F#3:0.5\"` is an eighth, `\"C4-E4-G4:2\"` is a chord held two beats, and `\"rest:1\"` is a beat of silence. " +
+      "A step may instead be an object: { note: \"C4\", beats: 2 }, or { note: [\"C4\", \"E4\"], seconds: 1.5 }, or { rest: true, beats: 1 }, each taking an optional velocity from 0.1 to 1. " +
+      "Durations are in beats at the given tempo unless you pass seconds, so use seconds when the user asks for a note held for a number of seconds and beats otherwise. " +
+      "Note names are a letter, an optional # or b, then an octave, with middle C as C4. Flats are fine. " +
+      "Set voice to bright, warm, honky or dark, and title to the name of the piece.",
+    inputSchema: {
+      title: z.string().max(80).optional().describe("Name of the piece, shown above the transport."),
+      tempo: z.number().int().min(30).max(260).optional().describe("Beats per minute (default 108)."),
+      voice: z
+        .enum(["bright", "warm", "honky", "dark"])
+        .optional()
+        .describe("bright is sharp and clear, warm is blended and soulful, honky is jangling and aged, dark is heavy and slow."),
+      notes: z
+        .array(
+          z.union([
+            z.string().describe('Compact step: "C4:1", "C4-E4-G4:2", "rest:0.5".'),
+            z.object({
+              note: z.union([z.string(), z.array(z.string())]).optional().describe("Note or chord."),
+              rest: z.boolean().optional().describe("True for silence."),
+              beats: z.number().optional().describe("Length in beats at the given tempo."),
+              seconds: z.number().optional().describe("Length in seconds, overriding beats."),
+              velocity: z.number().optional().describe("How hard the note is struck, 0.1 to 1."),
+            }),
+          ]),
+        )
+        .min(1)
+        .max(600)
+        .optional()
+        .describe("The song, step by step, in order."),
+    },
+    outputSchema: z.object({
+      game: z.string(),
+      title: z.string(),
+      tempo: z.number(),
+      voice: z.string(),
+      notes: z.array(z.unknown()),
+    }),
+    run: (a) => {
+      const title = cleanText(a.title, 80);
+      const tempo = Math.min(260, Math.max(30, (a.tempo as number | undefined) ?? 108));
+      const voice = typeof a.voice === "string" ? a.voice : "bright";
+      const notes = cleanSong(a.notes, 600);
+      const text = notes.length
+        ? `Piano ready with ${notes.length} steps${title ? ` of "${title}"` : ""} at ${tempo} bpm on the ${voice} voice.`
+        : "Piano ready. 88 keys, playable by mouse, touch or the computer keyboard.";
+      return {
+        text,
+        data: { game: "music-keyboard", title: title || (notes.length ? "Untitled" : ""), tempo, voice, notes },
+      };
     },
   },
 ];

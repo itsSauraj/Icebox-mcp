@@ -53,6 +53,7 @@ export const HERO_GAMES = [
   { name: "quiz-duel", kind: "hero", title: "Quiz Duel", blurb: "Trivia on any topic you name", group: "Model" },
   { name: "story-quest", kind: "hero", title: "Story Quest", blurb: "A branching adventure the model writes", group: "Model" },
   { name: "codenames", kind: "hero", title: "Codenames", blurb: "The model is your spymaster", group: "Model" },
+  { name: "music-keyboard", kind: "hero", title: "Music Keyboard", blurb: "An 88-key piano, and songs the model writes for it", group: "Model" },
 ];
 
 /** Everything else, reached through the single `play` tool. */

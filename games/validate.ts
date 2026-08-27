@@ -188,3 +188,76 @@ export function cleanBeat(input: unknown): StoryBeat | null {
   if (!scene || choices.length < 2) return null;
   return { scene, choices };
 }
+
+export interface SongStep {
+  /** Note names, or empty for a rest. */
+  note?: string[];
+  rest?: boolean;
+  beats?: number;
+  seconds?: number;
+  velocity?: number;
+}
+
+const NOTE_RE = /^[A-Ga-g][#b]?-?\d$/;
+const REST_RE = /^(rest|r|-|silence|pause)$/i;
+
+/**
+ * A song the model wrote, for the music keyboard.
+ *
+ * Two note shapes are accepted, because a model reaches for both: an object per
+ * step, and the compact `"C4:1.5"` string it prefers once a melody gets long.
+ * Chords may be `"C4-E4-G4"` or an array. Durations arrive as beats or as
+ * seconds, since "two beats" and "hold for two seconds" are both reasonable
+ * requests and mean different things.
+ *
+ * A step whose notes are all unparseable is dropped rather than repaired: a
+ * repaired note is a wrong note, and a silent gap is less wrong than a bum
+ * one. Note names are only shape-checked here; the app resolves them to
+ * pitches, where the range is known.
+ */
+export function cleanSong(input: unknown, limit = 600): SongStep[] {
+  if (!Array.isArray(input)) return [];
+  const out: SongStep[] = [];
+
+  const names = (value: unknown): string[] => {
+    const raw =
+      typeof value === "string"
+        ? value.split(/[-+,\s]+/)
+        : Array.isArray(value)
+          ? value.filter((v): v is string => typeof v === "string")
+          : [];
+    return raw.map((n) => n.trim()).filter((n) => NOTE_RE.test(n));
+  };
+
+  for (const item of input) {
+    if (typeof item === "string") {
+      const [head, tail] = item.split(":");
+      const token = (head ?? "").trim();
+      const dur = tail === undefined ? undefined : Number(tail);
+      const beats = Number.isFinite(dur) ? Math.min(Math.max(dur as number, 0.05), 16) : undefined;
+      if (REST_RE.test(token)) {
+        out.push({ rest: true, ...(beats !== undefined ? { beats } : {}) });
+      } else {
+        const note = names(token);
+        if (note.length === 0) continue;
+        out.push({ note, ...(beats !== undefined ? { beats } : {}) });
+      }
+    } else if (item && typeof item === "object") {
+      const o = item as Record<string, unknown>;
+      const rest = Boolean(o.rest) || o.note === null;
+      const note = names(o.note ?? o.notes ?? o.chord);
+      if (!rest && note.length === 0) continue;
+
+      const step: SongStep = rest ? { rest: true } : { note };
+      const beats = Number(o.beats ?? o.duration);
+      if (Number.isFinite(beats)) step.beats = Math.min(Math.max(beats, 0.05), 16);
+      const seconds = Number(o.seconds);
+      if (Number.isFinite(seconds)) step.seconds = Math.min(Math.max(seconds, 0.05), 12);
+      const velocity = Number(o.velocity);
+      if (Number.isFinite(velocity)) step.velocity = Math.min(Math.max(velocity, 0.1), 1);
+      out.push(step);
+    }
+    if (out.length >= limit) break;
+  }
+  return out;
+}

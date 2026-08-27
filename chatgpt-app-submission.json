@@ -176,6 +176,18 @@
         "destructive_justification": "Does not delete, overwrite, revoke access, or perform irreversible actions."
       }
     },
+    "music-keyboard": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Validates an optional song and instrument setting and opens a local synthesised piano without changing stored or external data.",
+        "open_world_justification": "Does not publish content, send messages, or modify any external third-party system. The app is a self-contained bundle with no network access.",
+        "destructive_justification": "Does not delete, overwrite, revoke access, or perform irreversible actions."
+      }
+    },
     "play": {
       "annotations": {
         "readOnlyHint": true,
