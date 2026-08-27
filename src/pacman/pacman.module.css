@@ -1,0 +1,236 @@
+/**
+ * Pac-Man styles.
+ *
+ * Every piece is positioned in cell units: `--c` and `--r` are cell indices and
+ * the element is one cell wide, so a translate of `100%` per unit lands it
+ * exactly. The movers are driven by inline transforms written from the frame
+ * loop, so nothing here animates position; CSS only handles the chomp, the
+ * power-pellet pulse and the frightened tint.
+ *
+ * The board dimensions live on the wrapper, not the board, because the wrapper
+ * sizes itself from them and custom properties inherit downward only.
+ *
+ * Ghost colours arrive as `--tint` from the component, since they are content.
+ *
+ * This game deliberately commits to one look rather than following the host
+ * theme. A Pac-Man maze is blue on black; rendering it on a light ground would
+ * not read as Pac-Man. The chrome around it still uses host tokens, so only the
+ * board itself is fixed.
+ */
+
+.root {
+  gap: var(--spacing-sm);
+}
+
+.boardWrap {
+  /* Fit the taller axis: the maze is 19 wide by 21 tall. */
+  width: min(100%, calc(76vmin * var(--cols) / var(--rows)));
+  max-width: 420px;
+}
+
+.board {
+  position: relative;
+  width: 100%;
+  aspect-ratio: var(--cols) / var(--rows);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  background: light-dark(#0d1024, #05070f);
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ---- Shared cell positioning ---- */
+.wall,
+.pellet,
+.power,
+.pac,
+.ghost {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(100% / var(--cols));
+  height: calc(100% / var(--rows));
+}
+
+.wall,
+.pellet,
+.power {
+  transform: translate(calc(var(--c) * 100%), calc(var(--r) * 100%));
+}
+
+/* ---- Maze ---- */
+.wall {
+  /* Inset so neighbouring walls read as a connected pipe with a seam. */
+  box-shadow: inset 0 0 0 1.5px #2b3ad6;
+  border-radius: 3px;
+  background: #131a4a;
+}
+
+.pellet,
+.power {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.pellet::after {
+  content: "";
+  width: 18%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: #ffd9a0;
+}
+.power::after {
+  content: "";
+  width: 54%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: #ffd9a0;
+  box-shadow: 0 0 6px #ffd9a0;
+  animation: pmPulse 0.6s ease-in-out infinite;
+}
+@keyframes pmPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.78); }
+}
+
+/* ---- Pac-Man ----
+ * The wrapper takes the inline transform (position plus facing rotation) and
+ * the inner span carries the chomp, so the two never fight over `transform`.
+ *
+ * The mouth is a wedge REMOVED from the disc, which a clip-path cannot express
+ * without approximating the whole circle as a polygon. A conic-gradient mask
+ * says it directly: transparent for a few degrees either side of straight
+ * ahead, opaque everywhere else. Two keyframes swap the angle, which is the
+ * arcade's two-frame chomp rather than a smooth interpolation.
+ */
+.pac {
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform;
+}
+
+.pacBody {
+  width: 88%;
+  aspect-ratio: 1 / 1;
+  background: #ffe14d;
+  border-radius: 50%;
+  /* `from 90deg` puts 0 at the right edge, which is where the mouth faces
+     before the wrapper rotates it. */
+  -webkit-mask-image: conic-gradient(from 90deg, transparent 0 34deg, #000 34deg 326deg, transparent 326deg);
+  mask-image: conic-gradient(from 90deg, transparent 0 34deg, #000 34deg 326deg, transparent 326deg);
+  animation: pmChomp 0.22s steps(1, end) infinite alternate;
+}
+
+@keyframes pmChomp {
+  from {
+    -webkit-mask-image: conic-gradient(from 90deg, transparent 0 40deg, #000 40deg 320deg, transparent 320deg);
+    mask-image: conic-gradient(from 90deg, transparent 0 40deg, #000 40deg 320deg, transparent 320deg);
+  }
+  to {
+    -webkit-mask-image: conic-gradient(from 90deg, transparent 0 3deg, #000 3deg 357deg, transparent 357deg);
+    mask-image: conic-gradient(from 90deg, transparent 0 3deg, #000 3deg 357deg, transparent 357deg);
+  }
+}
+
+.dying .pacBody {
+  animation: pmDie 1.1s ease-in forwards;
+}
+@keyframes pmDie {
+  from { transform: scale(1) rotate(0deg); opacity: 1; }
+  to { transform: scale(0.1) rotate(540deg); opacity: 0; }
+}
+
+/* ---- Ghosts ---- */
+.ghost {
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform;
+}
+.ghostSvg {
+  width: 92%;
+  height: 92%;
+  overflow: visible;
+}
+.ghostBody {
+  fill: var(--tint);
+}
+.eyeWhite {
+  fill: #ffffff;
+}
+.pupil {
+  fill: #1a1f4d;
+}
+
+/* Frightened: every ghost reads the same, which is the point. */
+.ghost[data-mode="frightened"] .ghostBody {
+  fill: #3b4fd8;
+  animation: pmFright 0.4s steps(1, end) infinite alternate;
+}
+@keyframes pmFright {
+  from { fill: #3b4fd8; }
+  to { fill: #dfe4ff; }
+}
+
+/* Eaten: eyes only, heading home. */
+.ghost[data-mode="eaten"] .ghostBody {
+  fill: transparent;
+}
+.ghost[data-mode="eaten"] .eyeWhite {
+  fill: #cdd6ff;
+}
+
+/* In the house, still visible but clearly not in play. */
+.ghost[data-mode="housed"] {
+  opacity: 0.55;
+}
+
+/* Score popup when a ghost is eaten. */
+.points {
+  position: absolute;
+  top: 46%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 6;
+  font-size: 0.85rem;
+  font-weight: var(--font-weight-bold);
+  color: #7dd3fc;
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+  animation: pmPoints 0.8s ease-out forwards;
+}
+@keyframes pmPoints {
+  from { opacity: 0; transform: translate(-50%, -30%) scale(0.8); }
+  30% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  to { opacity: 0; transform: translate(-50%, -80%) scale(1); }
+}
+
+/* A faint wash while the power pellet is active, so the state is unmistakable
+   even at a glance. */
+.fright::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(120% 90% at 50% 50%, rgba(59, 79, 216, 0.22), transparent 70%);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .power::after,
+  .pacBody,
+  .ghost[data-mode="frightened"] .ghostBody,
+  .points {
+    animation: none;
+  }
+  /* Without the chomp the mouth would sit at whatever the base rule says,
+     which is already open, so nothing more is needed here. */
+  .dying .pacBody {
+    animation: pmDie 1.1s linear forwards;
+  }
+}

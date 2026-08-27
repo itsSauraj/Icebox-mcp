@@ -448,7 +448,7 @@ export const PLAY_SPEC: ToolSpec = {
       .enum(ARCADE_NAMES)
       .optional()
       .describe("Which game to open. Omit to show the picker."),
-    difficulty: DIFFICULTY.optional().describe("For sudoku, connect-four, battleship, mastermind, sokoban."),
+    difficulty: DIFFICULTY.optional().describe("For sudoku, connect-four, battleship, mastermind, sokoban, pacman."),
     topic: z.string().max(80).optional().describe("Theme for hangman and word-search."),
     words: z.array(z.string()).min(1).max(20).optional().describe("Themed words for hangman and word-search."),
     riddles: z

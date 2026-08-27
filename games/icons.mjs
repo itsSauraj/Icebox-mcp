@@ -48,6 +48,7 @@ export const ICONS = {
   "word-search": '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/><path d="M5.6 5.6 18.4 18.4" stroke-width="2.4"/>',
 
   // ---- Arcade ----
+  pacman: '<path d="M12 4a8 8 0 1 0 6.9 12L12 12l6.9-4A8 8 0 0 0 12 4z" fill="currentColor" stroke="none"/><circle cx="20.5" cy="12" r="1.3" fill="currentColor" stroke="none"/>',
   breakout: '<rect x="3.5" y="4" width="5" height="3" rx="0.8" fill="currentColor" stroke="none"/><rect x="9.5" y="4" width="5" height="3" rx="0.8"/><rect x="15.5" y="4" width="5" height="3" rx="0.8" fill="currentColor" stroke="none"/><rect x="6.5" y="9" width="5" height="3" rx="0.8"/><rect x="12.5" y="9" width="5" height="3" rx="0.8" fill="currentColor" stroke="none"/><circle cx="12" cy="15.6" r="1.5" fill="currentColor" stroke="none"/><path d="M8 20h8" stroke-width="2.6"/>',
   flappy: '<path d="M4 12.5c0-3.6 2.9-6.5 6.5-6.5 3 0 5.5 2 6.3 4.7L21 12l-4.2 1.3A6.5 6.5 0 0 1 4 12.5z"/><path d="M10 12.5c1.6 0 3-1.1 3.4-2.6"/><circle cx="8.2" cy="10.6" r="0.95" fill="currentColor" stroke="none"/>',
   "stack-tower": '<rect x="4" y="16.5" width="16" height="4" rx="1"/><rect x="6" y="11.5" width="12" height="4" rx="1" fill="currentColor" stroke="none"/><rect x="8" y="6.5" width="8" height="4" rx="1"/><path d="M12 4.5V2.5"/>',
