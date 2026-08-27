@@ -222,3 +222,28 @@
     transform: none;
   }
 }
+
+/* ---- Beta tag ----
+ * Sits beside the title as a flex item, so `.title`'s own gap spaces it and no
+ * margin is needed. Sized in `em` to track the title if that ever changes.
+ *
+ * The pill is filled rather than outlined so it carries its own contrast: the
+ * header sits on the host background, which may be light or dark, and an
+ * outlined violet chip would fade into one of the two. It borrows the keybed
+ * violet, inherited from `.root` on the frame above it.
+ */
+.beta {
+  flex: 0 0 auto;
+  align-self: center;
+  padding: 0.18em 0.5em;
+  border-radius: 999px;
+  background: var(--key-dark-on, #8b5cf6);
+  color: #f6f1ff;
+  font-size: 0.55em;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1.5;
+  /* The title is bold; keep the tag from inheriting a heading's tight spacing. */
+  white-space: nowrap;
+}

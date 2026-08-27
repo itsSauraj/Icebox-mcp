@@ -459,7 +459,8 @@ export function GameHeader({
   stats,
   hint,
 }: {
-  title: string;
+  /** Usually a string. Takes a node so a game can pin a badge beside its name. */
+  title: ReactNode;
   icon?: ReactNode;
   stats?: Stat[];
   hint?: ReactNode;

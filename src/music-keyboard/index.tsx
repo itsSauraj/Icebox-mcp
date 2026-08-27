@@ -431,7 +431,12 @@ export default function MusicKeyboard({ runtime }: AppProps) {
   return (
     <GameFrame runtime={runtime} innerRef={rootRef} fullscreen={isFull} wide className={s.root}>
       <GameHeader
-        title="Music Keyboard"
+        title={
+          <>
+            Music Keyboard
+            <span className={s.beta}>Beta</span>
+          </>
+        }
         stats={[
           { label: "Voice", value: VOICES[voice].label },
           { label: "Tempo", value: `${tempo}` },
