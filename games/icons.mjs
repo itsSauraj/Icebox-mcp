@@ -62,6 +62,7 @@ export const ICONS = {
   mastermind: '<circle cx="7.5" cy="7.5" r="3" fill="currentColor" stroke="none"/><circle cx="16.5" cy="7.5" r="3"/><circle cx="7.5" cy="16.5" r="3"/><circle cx="16.5" cy="16.5" r="3" fill="currentColor" stroke="none"/>',
 
   // ---- Versus ----
+  "rock-paper-scissors": '<circle cx="6.5" cy="7" r="3.5"/><path d="M14 4h5l2 2v6h-7z"/><path d="M4 21l6-6M10 21l-6-6" stroke-width="2"/><circle cx="16.5" cy="18.5" r="2.4"/>',
   "connect-four": '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8" cy="9" r="2" fill="currentColor" stroke="none"/><circle cx="16" cy="9" r="2"/><circle cx="8" cy="15" r="2"/><circle cx="16" cy="15" r="2" fill="currentColor" stroke="none"/>',
   "ultimate-ttt": '<path d="M9 3v18M15 3v18M3 9h18M3 15h18"/><path d="M4.6 4.6 7.4 7.4M7.4 4.6 4.6 7.4" stroke-width="2"/><circle cx="19.6" cy="19.6" r="1.7" stroke-width="2"/><path d="M4.6 16.6l2.8 2.8M7.4 16.6l-2.8 2.8" stroke-width="2"/>',
   blackjack: '<rect x="3.5" y="6" width="10" height="14" rx="2" transform="rotate(-9 8.5 13)"/><rect x="11" y="4" width="10" height="14" rx="2" transform="rotate(9 16 11)"/><path d="M16 9.4s-2.2 1.5-2.2 3a1.3 1.3 0 0 0 2.2.9 1.3 1.3 0 0 0 2.2-.9c0-1.5-2.2-3-2.2-3z" fill="currentColor" stroke="none"/>',

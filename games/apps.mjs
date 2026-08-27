@@ -79,6 +79,7 @@ export const ARCADE_GAMES = [
   { name: "mastermind", kind: "arcade", title: "Mastermind", blurb: "Break the colour code in ten", group: "Puzzle" },
 
   // Versus.
+  { name: "rock-paper-scissors", kind: "arcade", title: "Stone Paper Scissors", blurb: "Stone paper scissors, or rock paper scissors, against an AI that reads your habits", group: "Versus" },
   { name: "connect-four", kind: "arcade", title: "Connect Four", blurb: "Four in a row against minimax", group: "Versus" },
   { name: "ultimate-ttt", kind: "arcade", title: "Ultimate Tic-Tac-Toe", blurb: "Nine boards, one winner", group: "Versus" },
   { name: "blackjack", kind: "arcade", title: "Blackjack", blurb: "Bet, split, double, bust", group: "Versus" },

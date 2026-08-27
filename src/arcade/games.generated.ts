@@ -31,6 +31,7 @@ import Sudoku from "../sudoku";
 import Nonogram from "../nonogram";
 import Sokoban from "../sokoban";
 import Mastermind from "../mastermind";
+import RockPaperScissors from "../rock-paper-scissors";
 import ConnectFour from "../connect-four";
 import UltimateTtt from "../ultimate-ttt";
 import Blackjack from "../blackjack";
@@ -71,6 +72,7 @@ export const ARCADE_ENTRIES: ArcadeEntry[] = [
   { name: "nonogram", title: "Nonogram", blurb: "Picross from the model's bitmap", group: "Puzzle", Component: Nonogram },
   { name: "sokoban", title: "Sokoban", blurb: "Push every crate onto a target", group: "Puzzle", Component: Sokoban },
   { name: "mastermind", title: "Mastermind", blurb: "Break the colour code in ten", group: "Puzzle", Component: Mastermind },
+  { name: "rock-paper-scissors", title: "Stone Paper Scissors", blurb: "Stone paper scissors, or rock paper scissors, against an AI that reads your habits", group: "Versus", Component: RockPaperScissors },
   { name: "connect-four", title: "Connect Four", blurb: "Four in a row against minimax", group: "Versus", Component: ConnectFour },
   { name: "ultimate-ttt", title: "Ultimate Tic-Tac-Toe", blurb: "Nine boards, one winner", group: "Versus", Component: UltimateTtt },
   { name: "blackjack", title: "Blackjack", blurb: "Bet, split, double, bust", group: "Versus", Component: Blackjack },
@@ -112,6 +114,7 @@ export const CATALOGUE: CatalogueEntry[] = [
   { name: "nonogram", title: "Nonogram", blurb: "Picross from the model's bitmap", group: "Puzzle", kind: "arcade", icon: "<rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\"/><path d=\"M9 3v18M15 3v18M3 9h18M3 15h18\" stroke-width=\"1.1\"/><rect x=\"9\" y=\"3\" width=\"6\" height=\"6\" fill=\"currentColor\" stroke=\"none\"/><rect x=\"3\" y=\"9\" width=\"6\" height=\"6\" fill=\"currentColor\" stroke=\"none\"/><rect x=\"15\" y=\"15\" width=\"6\" height=\"6\" fill=\"currentColor\" stroke=\"none\"/>" },
   { name: "sokoban", title: "Sokoban", blurb: "Push every crate onto a target", group: "Puzzle", kind: "arcade", icon: "<rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\"/><rect x=\"7.5\" y=\"7.5\" width=\"6\" height=\"6\" rx=\"1\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"17\" cy=\"17\" r=\"2.4\"/><path d=\"M14.5 10.5h3\"/>" },
   { name: "mastermind", title: "Mastermind", blurb: "Break the colour code in ten", group: "Puzzle", kind: "arcade", icon: "<circle cx=\"7.5\" cy=\"7.5\" r=\"3\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"16.5\" cy=\"7.5\" r=\"3\"/><circle cx=\"7.5\" cy=\"16.5\" r=\"3\"/><circle cx=\"16.5\" cy=\"16.5\" r=\"3\" fill=\"currentColor\" stroke=\"none\"/>" },
+  { name: "rock-paper-scissors", title: "Stone Paper Scissors", blurb: "Stone paper scissors, or rock paper scissors, against an AI that reads your habits", group: "Versus", kind: "arcade", icon: "<circle cx=\"6.5\" cy=\"7\" r=\"3.5\"/><path d=\"M14 4h5l2 2v6h-7z\"/><path d=\"M4 21l6-6M10 21l-6-6\" stroke-width=\"2\"/><circle cx=\"16.5\" cy=\"18.5\" r=\"2.4\"/>" },
   { name: "connect-four", title: "Connect Four", blurb: "Four in a row against minimax", group: "Versus", kind: "arcade", icon: "<rect x=\"3\" y=\"4\" width=\"18\" height=\"16\" rx=\"2\"/><circle cx=\"8\" cy=\"9\" r=\"2\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"16\" cy=\"9\" r=\"2\"/><circle cx=\"8\" cy=\"15\" r=\"2\"/><circle cx=\"16\" cy=\"15\" r=\"2\" fill=\"currentColor\" stroke=\"none\"/>" },
   { name: "ultimate-ttt", title: "Ultimate Tic-Tac-Toe", blurb: "Nine boards, one winner", group: "Versus", kind: "arcade", icon: "<path d=\"M9 3v18M15 3v18M3 9h18M3 15h18\"/><path d=\"M4.6 4.6 7.4 7.4M7.4 4.6 4.6 7.4\" stroke-width=\"2\"/><circle cx=\"19.6\" cy=\"19.6\" r=\"1.7\" stroke-width=\"2\"/><path d=\"M4.6 16.6l2.8 2.8M7.4 16.6l-2.8 2.8\" stroke-width=\"2\"/>" },
   { name: "blackjack", title: "Blackjack", blurb: "Bet, split, double, bust", group: "Versus", kind: "arcade", icon: "<rect x=\"3.5\" y=\"6\" width=\"10\" height=\"14\" rx=\"2\" transform=\"rotate(-9 8.5 13)\"/><rect x=\"11\" y=\"4\" width=\"10\" height=\"14\" rx=\"2\" transform=\"rotate(9 16 11)\"/><path d=\"M16 9.4s-2.2 1.5-2.2 3a1.3 1.3 0 0 0 2.2.9 1.3 1.3 0 0 0 2.2-.9c0-1.5-2.2-3-2.2-3z\" fill=\"currentColor\" stroke=\"none\"/>" },
