@@ -19,10 +19,9 @@
  * their start and end times and the render loop lights whichever are sounding
  * right now. Sound and picture agree because both read the same clock.
  *
- * Colour replaces black and white. Hue is pitch class ordered by fifths, so
- * octaves share a colour and neighbouring semitones contrast; see `notes.ts` for
- * why fifths rather than chromatic. Naturals are light and accidentals are deep
- * versions of the same hue, so the shape of a piano is still readable.
+ * The keys are white and purple rather than white and black. The layout is a
+ * piano's, so the naturals stay white and read as naturals; only the
+ * accidentals change, from black to a deep violet.
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -52,7 +51,6 @@ import {
   NATURAL_COUNT,
   QWERTY,
   freqOf,
-  hueOf,
   nameOf,
   parseNote,
   pitchClass,
@@ -453,7 +451,6 @@ export default function MusicKeyboard({ runtime }: AppProps) {
                 className={`${s.natural} ${active.has(k.midi) ? s.on : ""} ${
                   k.midi >= mappedLow && k.midi < mappedLow + 29 ? s.mapped : ""
                 }`}
-                style={sv({ "--hue": hueOf(k.midi) })}
                 onPointerDown={(e) => onPointerDown(k.midi, e)}
                 onPointerEnter={(e) => {
                   if (e.buttons > 0) press(k.midi);
@@ -477,7 +474,7 @@ export default function MusicKeyboard({ runtime }: AppProps) {
                 className={`${s.accidental} ${active.has(k.midi) ? s.on : ""} ${
                   k.midi >= mappedLow && k.midi < mappedLow + 29 ? s.mapped : ""
                 }`}
-                style={sv({ "--hue": hueOf(k.midi), "--n": k.naturalIndex })}
+                style={sv({ "--n": k.naturalIndex })}
                 onPointerDown={(e) => onPointerDown(k.midi, e)}
                 onPointerEnter={(e) => {
                   if (e.buttons > 0) press(k.midi);

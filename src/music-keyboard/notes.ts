@@ -1,5 +1,5 @@
 /**
- * @file Pitch names, the 88-key layout, the QWERTY mapping and the key colours.
+ * @file Pitch names, the 88-key layout and the QWERTY mapping.
  *
  * Split out of the component because none of it is React and all of it is worth
  * reading on its own.
@@ -8,7 +8,6 @@
 /** A full-size piano: A0 up to C8, which is MIDI 21 to 108. */
 export const LOWEST = 21;
 export const HIGHEST = 108;
-export const KEY_COUNT = HIGHEST - LOWEST + 1;
 
 const NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"] as const;
 
@@ -40,32 +39,6 @@ export function parseNote(input: string): number | null {
   const midi = (octave + 1) * 12 + LETTER_SEMITONE[letter] + accidental;
   return midi >= 0 && midi <= 127 ? midi : null;
 }
-
-/* ------------------------------------------------------------------ */
-/* Colour                                                             */
-/* ------------------------------------------------------------------ */
-
-/**
- * Hue per pitch class, ordered by the circle of fifths rather than
- * chromatically.
- *
- * Chromatic ordering would produce a smooth rainbow across the keyboard, which
- * looks pleasant and is useless: neighbouring keys would be neighbouring hues
- * and so hard to tell apart at speed. Stepping by fifths puts adjacent
- * semitones almost opposite each other on the wheel, so every key contrasts
- * with the ones beside it, and notes an octave apart share a colour, which is
- * the pattern worth being able to see.
- */
-const FIFTHS = [0, 7, 2, 9, 4, 11, 6, 1, 8, 3, 10, 5];
-export const HUE: number[] = (() => {
-  const out = new Array(12).fill(0);
-  FIFTHS.forEach((pc, i) => {
-    out[pc] = i * 30;
-  });
-  return out;
-})();
-
-export const hueOf = (midi: number) => HUE[pitchClass(midi)];
 
 /* ------------------------------------------------------------------ */
 /* Layout                                                             */

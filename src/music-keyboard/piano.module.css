@@ -1,12 +1,14 @@
 /**
  * Music Keyboard styles.
  *
- * The keys are coloured, not black and white. Hue is pitch class ordered by the
- * circle of fifths, passed in as `--hue`, so notes an octave apart match and
- * neighbouring semitones contrast. Naturals are light and accidentals are deep
- * versions of the same hue, which keeps the shape of a piano readable: you still
- * see where the groups of two and three sit, but by lightness rather than by
- * black against white.
+ * White and purple rather than white and black. The naturals stay white, since
+ * that is what makes a keyboard read as a keyboard at a glance, and only the
+ * accidentals change: a deep violet in place of black.
+ *
+ * The board commits to that one palette rather than following the host theme.
+ * A piano is a white instrument with dark keys, and inverting it on a dark host
+ * would leave dark naturals and light accidentals, which stops looking like a
+ * piano at all. Everything around the board still uses host tokens.
  *
  * Naturals tile in a grid of 52 columns. Accidentals are absolutely positioned
  * from the natural index below them, which is the only sane way to place them:
@@ -16,6 +18,20 @@
 
 .root {
   gap: var(--spacing-sm);
+
+  /* Ivory for the naturals, violet for the accidentals, brighter versions of
+     each for a key that is sounding. */
+  --key-white: #fdfdff;
+  --key-white-low: #e9eaf2;
+  --key-white-on: #d8c9ff;
+  --key-white-on-low: #bda3fb;
+  --key-ink: #2b2440;
+
+  --key-dark: #4c1d95;
+  --key-dark-low: #2e1065;
+  --key-dark-on: #8b5cf6;
+  --key-dark-on-low: #6d28d9;
+  --key-dark-ink: #e9dcff;
 }
 
 /* ---- Keyboard ---- */
@@ -30,7 +46,9 @@
   overflow-y: hidden;
   padding-bottom: 4px;
   border-radius: var(--border-radius-md);
-  background: var(--color-background-secondary);
+  /* A dark case, so white keys have something to sit against on a light host. */
+  background: #1d1533;
+  padding-top: 4px;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-x: contain;
 }
@@ -64,15 +82,10 @@
   gap: 3px;
   padding-bottom: 6px;
   height: 132px;
-  border-right: 1px solid color-mix(in srgb, var(--color-text-primary) 18%, transparent);
+  border-right: 1px solid rgba(43, 36, 64, 0.22);
   border-radius: 0 0 4px 4px;
-  /* Light, saturated enough to read as a colour rather than off-white. */
-  background: linear-gradient(
-    to bottom,
-    hsl(var(--hue) 62% 92%),
-    hsl(var(--hue) 70% 82%)
-  );
-  color: hsl(var(--hue) 45% 26%);
+  background: linear-gradient(to bottom, var(--key-white), var(--key-white-low));
+  color: var(--key-ink);
 }
 
 .accidental {
@@ -84,27 +97,22 @@
   height: 82px;
   z-index: 2;
   border-radius: 0 0 3px 3px;
-  background: linear-gradient(
-    to bottom,
-    hsl(var(--hue) 68% 34%),
-    hsl(var(--hue) 72% 22%)
-  );
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.35);
+  background: linear-gradient(to bottom, var(--key-dark), var(--key-dark-low));
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: flex-end;
   justify-content: center;
   padding-bottom: 4px;
-  color: hsl(var(--hue) 40% 88%);
+  color: var(--key-dark-ink);
 }
 
 /* Sounding, whether from a finger, the keyboard or the song player. */
 .natural.on {
-  background: linear-gradient(to bottom, hsl(var(--hue) 85% 74%), hsl(var(--hue) 88% 60%));
+  background: linear-gradient(to bottom, var(--key-white-on), var(--key-white-on-low));
   transform: translateY(2px);
-  filter: brightness(1.05);
 }
 .accidental.on {
-  background: linear-gradient(to bottom, hsl(var(--hue) 90% 52%), hsl(var(--hue) 92% 38%));
+  background: linear-gradient(to bottom, var(--key-dark-on), var(--key-dark-on-low));
   transform: translateY(2px);
 }
 
@@ -117,10 +125,10 @@
 
 /* The stretch the QWERTY rows currently reach, so the mapping is visible. */
 .mapped {
-  box-shadow: inset 0 3px 0 var(--color-accent);
+  box-shadow: inset 0 3px 0 #7c3aed;
 }
 .accidental.mapped {
-  box-shadow: inset 0 3px 0 var(--color-accent), 0 2px 3px rgba(0, 0, 0, 0.35);
+  box-shadow: inset 0 3px 0 #c4b5fd, 0 2px 3px rgba(0, 0, 0, 0.4);
 }
 
 .keyName {
@@ -139,10 +147,10 @@
   line-height: 1;
 }
 .qwerty {
-  background: hsl(var(--hue) 40% 30% / 0.14);
+  background: rgba(43, 36, 64, 0.12);
 }
 .qwertyDark {
-  background: hsl(var(--hue) 30% 92% / 0.2);
+  background: rgba(233, 220, 255, 0.18);
 }
 
 /* ---- Transport ---- */
