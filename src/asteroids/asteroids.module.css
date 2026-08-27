@@ -1,0 +1,180 @@
+/**
+ * Asteroids styles.
+ *
+ * The screen commits to a phosphor look rather than following the host theme:
+ * a vector game is glowing lines on near-black, and white lines on a white
+ * ground would not read at all. Everything outside the canvas still uses host
+ * tokens, so the app still belongs to the page it sits in.
+ *
+ * The screen is given as much room as the panel allows, because this is a game
+ * about seeing a rock arrive with enough warning to turn. The touch pad below
+ * it is deliberately large: three of its buttons are meant to be held at once.
+ */
+
+.root {
+  gap: var(--spacing-sm);
+}
+
+/* ---- Screen ---- */
+.screenWrap {
+  position: relative;
+  width: 100%;
+}
+
+.screen {
+  display: block;
+  width: 100%;
+  /* 4:3, matching the world, so nothing is stretched. */
+  aspect-ratio: 4 / 3;
+  border-radius: var(--border-radius-md);
+  background: #070a18;
+  box-shadow:
+    inset 0 0 0 1px rgba(219, 228, 255, 0.16),
+    0 0 26px rgba(90, 110, 200, 0.18);
+  touch-action: none;
+}
+
+/* Transient callouts: a wave number, a pickup name. */
+.flash {
+  position: absolute;
+  left: 50%;
+  top: 18%;
+  transform: translateX(-50%);
+  padding: 3px 12px;
+  border-radius: 999px;
+  background: rgba(7, 10, 24, 0.75);
+  border: 1px solid rgba(219, 228, 255, 0.3);
+  color: #dbe4ff;
+  font-size: 0.72rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: astFlash 1.4s ease-out forwards;
+}
+@keyframes astFlash {
+  0% { opacity: 0; transform: translateX(-50%) translateY(6px); }
+  15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  75% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ---- Ability chips ---- */
+.powerRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+  margin: 0;
+}
+.chip {
+  padding: 2px 9px;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  font-size: 0.66rem;
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Touch pad ----
+ * Two clusters so a thumb reaches each without crossing the screen. Several
+ * buttons are held at once, which is why they are separate controls rather than
+ * a joystick: turning while thrusting while firing is normal play.
+ */
+.pad {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  width: 100%;
+}
+
+.padLeft,
+.padRight {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.padBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 48px;
+  padding: 0;
+  border-radius: var(--border-radius-md);
+  border: var(--border-width-regular) solid var(--color-border);
+  background: var(--color-background-secondary);
+  color: var(--color-text-primary);
+  font-size: 0.95rem;
+  cursor: pointer;
+  /* A held button must not also select text or fire the browser's own gestures. */
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.padBtn:active {
+  background: var(--color-accent);
+  color: var(--color-text-on-accent);
+}
+.padBtn:focus-visible {
+  outline: 2px solid var(--color-ring-primary);
+  outline-offset: 2px;
+}
+
+.thrust {
+  border-color: color-mix(in srgb, #ffb35c 55%, var(--color-border));
+  color: #d98a2b;
+}
+.fire {
+  width: 64px;
+  height: 58px;
+  border-color: color-mix(in srgb, var(--color-accent) 60%, var(--color-border));
+  color: var(--color-accent);
+  font-size: 1.1rem;
+}
+
+.smallBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: var(--border-radius-sm);
+  border: var(--border-width-regular) solid var(--color-border);
+  background: var(--color-background-secondary);
+  color: var(--color-text-secondary);
+  font-size: 0.68rem;
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.smallBtn:active:not(:disabled) {
+  background: var(--color-accent);
+  color: var(--color-text-on-accent);
+}
+.smallBtn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.smallBtn:focus-visible {
+  outline: 2px solid var(--color-ring-primary);
+  outline-offset: 2px;
+}
+
+/* Stack the two little buttons above Fire so the cluster stays thumb-sized. */
+.padRight {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  max-width: 190px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flash {
+    animation: none;
+  }
+}

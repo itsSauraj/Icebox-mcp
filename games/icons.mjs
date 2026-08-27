@@ -50,6 +50,7 @@ export const ICONS = {
   "word-search": '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/><path d="M5.6 5.6 18.4 18.4" stroke-width="2.4"/>',
 
   // ---- Arcade ----
+  asteroids: '<path d="M4.5 8.5 8 4.5l4.5 1L15 3.5l3.5 2.5-.5 4 2 3-2.5 3.5.5 3-4 1.5-3-2-4 1.5-2.5-3 .5-3.5z"/><path d="M14.5 17.5 21 21"/><circle cx="10" cy="10" r="1.2" fill="currentColor" stroke="none"/>',
   pacman: '<path d="M12 4a8 8 0 1 0 6.9 12L12 12l6.9-4A8 8 0 0 0 12 4z" fill="currentColor" stroke="none"/><circle cx="20.5" cy="12" r="1.3" fill="currentColor" stroke="none"/>',
   breakout: '<rect x="3.5" y="4" width="5" height="3" rx="0.8" fill="currentColor" stroke="none"/><rect x="9.5" y="4" width="5" height="3" rx="0.8"/><rect x="15.5" y="4" width="5" height="3" rx="0.8" fill="currentColor" stroke="none"/><rect x="6.5" y="9" width="5" height="3" rx="0.8"/><rect x="12.5" y="9" width="5" height="3" rx="0.8" fill="currentColor" stroke="none"/><circle cx="12" cy="15.6" r="1.5" fill="currentColor" stroke="none"/><path d="M8 20h8" stroke-width="2.6"/>',
   balloon: '<path d="M12 3c4 0 7 3 7 6.8 0 3.2-2.6 6-5 8.2h-4c-2.4-2.2-5-5-5-8.2C5 6 8 3 12 3z"/><path d="M12 3v15M6.4 7.5h11.2"/><rect x="10" y="18.6" width="4" height="3" rx="0.8"/>',

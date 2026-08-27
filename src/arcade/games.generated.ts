@@ -21,6 +21,7 @@ import Hangman from "../hangman";
 import EmojiRiddle from "../emoji-riddle";
 import HigherLower from "../higher-lower";
 import WordSearch from "../word-search";
+import Asteroids from "../asteroids";
 import Pacman from "../pacman";
 import Breakout from "../breakout";
 import Flappy from "../flappy";
@@ -62,6 +63,7 @@ export const ARCADE_ENTRIES: ArcadeEntry[] = [
   { name: "emoji-riddle", title: "Emoji Riddle", blurb: "Decode films and idioms from emoji", group: "Model", Component: EmojiRiddle },
   { name: "higher-lower", title: "Higher or Lower", blurb: "Which number is bigger, endlessly", group: "Model", Component: HigherLower },
   { name: "word-search", title: "Word Search", blurb: "Find the model's themed words", group: "Model", Component: WordSearch },
+  { name: "asteroids", title: "Asteroids", blurb: "Blast the rocks, with triple shot, rapid fire, shields and bombs", group: "Arcade", Component: Asteroids },
   { name: "pacman", title: "Pac-Man", blurb: "Four ghosts, each hunting differently", group: "Arcade", Component: Pacman },
   { name: "breakout", title: "Breakout", blurb: "Paddle, bricks, powerups", group: "Arcade", Component: Breakout },
   { name: "flappy", title: "Flappy", blurb: "One tap, many deaths", group: "Arcade", Component: Flappy },
@@ -105,6 +107,7 @@ export const CATALOGUE: CatalogueEntry[] = [
   { name: "emoji-riddle", title: "Emoji Riddle", blurb: "Decode films and idioms from emoji", group: "Model", kind: "arcade", icon: "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M8.6 14.4a4.2 4.2 0 0 0 6.8 0\"/><circle cx=\"9\" cy=\"9.6\" r=\"1.1\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"15\" cy=\"9.6\" r=\"1.1\" fill=\"currentColor\" stroke=\"none\"/>" },
   { name: "higher-lower", title: "Higher or Lower", blurb: "Which number is bigger, endlessly", group: "Model", kind: "arcade", icon: "<path d=\"M7.5 20V4M7.5 4 4 7.8M7.5 4l3.5 3.8\"/><path d=\"M16.5 4v16M16.5 20 13 16.2M16.5 20l3.5-3.8\"/>" },
   { name: "word-search", title: "Word Search", blurb: "Find the model's themed words", group: "Model", kind: "arcade", icon: "<rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\"/><path d=\"M9 3v18M15 3v18M3 9h18M3 15h18\"/><path d=\"M5.6 5.6 18.4 18.4\" stroke-width=\"2.4\"/>" },
+  { name: "asteroids", title: "Asteroids", blurb: "Blast the rocks, with triple shot, rapid fire, shields and bombs", group: "Arcade", kind: "arcade", icon: "<path d=\"M4.5 8.5 8 4.5l4.5 1L15 3.5l3.5 2.5-.5 4 2 3-2.5 3.5.5 3-4 1.5-3-2-4 1.5-2.5-3 .5-3.5z\"/><path d=\"M14.5 17.5 21 21\"/><circle cx=\"10\" cy=\"10\" r=\"1.2\" fill=\"currentColor\" stroke=\"none\"/>" },
   { name: "pacman", title: "Pac-Man", blurb: "Four ghosts, each hunting differently", group: "Arcade", kind: "arcade", icon: "<path d=\"M12 4a8 8 0 1 0 6.9 12L12 12l6.9-4A8 8 0 0 0 12 4z\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"20.5\" cy=\"12\" r=\"1.3\" fill=\"currentColor\" stroke=\"none\"/>" },
   { name: "breakout", title: "Breakout", blurb: "Paddle, bricks, powerups", group: "Arcade", kind: "arcade", icon: "<rect x=\"3.5\" y=\"4\" width=\"5\" height=\"3\" rx=\"0.8\" fill=\"currentColor\" stroke=\"none\"/><rect x=\"9.5\" y=\"4\" width=\"5\" height=\"3\" rx=\"0.8\"/><rect x=\"15.5\" y=\"4\" width=\"5\" height=\"3\" rx=\"0.8\" fill=\"currentColor\" stroke=\"none\"/><rect x=\"6.5\" y=\"9\" width=\"5\" height=\"3\" rx=\"0.8\"/><rect x=\"12.5\" y=\"9\" width=\"5\" height=\"3\" rx=\"0.8\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"12\" cy=\"15.6\" r=\"1.5\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M8 20h8\" stroke-width=\"2.6\"/>" },
   { name: "flappy", title: "Flappy", blurb: "One tap, many deaths", group: "Arcade", kind: "arcade", icon: "<path d=\"M4 12.5c0-3.6 2.9-6.5 6.5-6.5 3 0 5.5 2 6.3 4.7L21 12l-4.2 1.3A6.5 6.5 0 0 1 4 12.5z\"/><path d=\"M10 12.5c1.6 0 3-1.1 3.4-2.6\"/><circle cx=\"8.2\" cy=\"10.6\" r=\"0.95\" fill=\"currentColor\" stroke=\"none\"/>" },

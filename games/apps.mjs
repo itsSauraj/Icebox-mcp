@@ -66,6 +66,7 @@ export const ARCADE_GAMES = [
   { name: "word-search", kind: "arcade", title: "Word Search", blurb: "Find the model's themed words", group: "Model" },
 
   // Arcade.
+  { name: "asteroids", kind: "arcade", title: "Asteroids", blurb: "Blast the rocks, with triple shot, rapid fire, shields and bombs", group: "Arcade" },
   { name: "pacman", kind: "arcade", title: "Pac-Man", blurb: "Four ghosts, each hunting differently", group: "Arcade" },
   { name: "breakout", kind: "arcade", title: "Breakout", blurb: "Paddle, bricks, powerups", group: "Arcade" },
   { name: "flappy", kind: "arcade", title: "Flappy", blurb: "One tap, many deaths", group: "Arcade" },
