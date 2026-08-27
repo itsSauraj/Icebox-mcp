@@ -24,6 +24,7 @@ import WordSearch from "../word-search";
 import Pacman from "../pacman";
 import Breakout from "../breakout";
 import Flappy from "../flappy";
+import Balloon from "../balloon";
 import StackTower from "../stack-tower";
 import AimTrainer from "../aim-trainer";
 import Sudoku from "../sudoku";
@@ -63,6 +64,7 @@ export const ARCADE_ENTRIES: ArcadeEntry[] = [
   { name: "pacman", title: "Pac-Man", blurb: "Four ghosts, each hunting differently", group: "Arcade", Component: Pacman },
   { name: "breakout", title: "Breakout", blurb: "Paddle, bricks, powerups", group: "Arcade", Component: Breakout },
   { name: "flappy", title: "Flappy", blurb: "One tap, many deaths", group: "Arcade", Component: Flappy },
+  { name: "balloon", title: "Hot Air Balloon", blurb: "Hold to rise, collect bubbles, miss the spikes", group: "Arcade", Component: Balloon },
   { name: "stack-tower", title: "Stack Tower", blurb: "Time each drop, the tower narrows", group: "Arcade", Component: StackTower },
   { name: "aim-trainer", title: "Aim Trainer", blurb: "Thirty seconds of targets", group: "Arcade", Component: AimTrainer },
   { name: "sudoku", title: "Sudoku", blurb: "Generated, solvable, four difficulties", group: "Puzzle", Component: Sudoku },
@@ -103,6 +105,7 @@ export const CATALOGUE: CatalogueEntry[] = [
   { name: "pacman", title: "Pac-Man", blurb: "Four ghosts, each hunting differently", group: "Arcade", kind: "arcade", icon: "<path d=\"M12 4a8 8 0 1 0 6.9 12L12 12l6.9-4A8 8 0 0 0 12 4z\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"20.5\" cy=\"12\" r=\"1.3\" fill=\"currentColor\" stroke=\"none\"/>" },
   { name: "breakout", title: "Breakout", blurb: "Paddle, bricks, powerups", group: "Arcade", kind: "arcade", icon: "<rect x=\"3.5\" y=\"4\" width=\"5\" height=\"3\" rx=\"0.8\" fill=\"currentColor\" stroke=\"none\"/><rect x=\"9.5\" y=\"4\" width=\"5\" height=\"3\" rx=\"0.8\"/><rect x=\"15.5\" y=\"4\" width=\"5\" height=\"3\" rx=\"0.8\" fill=\"currentColor\" stroke=\"none\"/><rect x=\"6.5\" y=\"9\" width=\"5\" height=\"3\" rx=\"0.8\"/><rect x=\"12.5\" y=\"9\" width=\"5\" height=\"3\" rx=\"0.8\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"12\" cy=\"15.6\" r=\"1.5\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M8 20h8\" stroke-width=\"2.6\"/>" },
   { name: "flappy", title: "Flappy", blurb: "One tap, many deaths", group: "Arcade", kind: "arcade", icon: "<path d=\"M4 12.5c0-3.6 2.9-6.5 6.5-6.5 3 0 5.5 2 6.3 4.7L21 12l-4.2 1.3A6.5 6.5 0 0 1 4 12.5z\"/><path d=\"M10 12.5c1.6 0 3-1.1 3.4-2.6\"/><circle cx=\"8.2\" cy=\"10.6\" r=\"0.95\" fill=\"currentColor\" stroke=\"none\"/>" },
+  { name: "balloon", title: "Hot Air Balloon", blurb: "Hold to rise, collect bubbles, miss the spikes", group: "Arcade", kind: "arcade", icon: "<path d=\"M12 3c4 0 7 3 7 6.8 0 3.2-2.6 6-5 8.2h-4c-2.4-2.2-5-5-5-8.2C5 6 8 3 12 3z\"/><path d=\"M12 3v15M6.4 7.5h11.2\"/><rect x=\"10\" y=\"18.6\" width=\"4\" height=\"3\" rx=\"0.8\"/>" },
   { name: "stack-tower", title: "Stack Tower", blurb: "Time each drop, the tower narrows", group: "Arcade", kind: "arcade", icon: "<rect x=\"4\" y=\"16.5\" width=\"16\" height=\"4\" rx=\"1\"/><rect x=\"6\" y=\"11.5\" width=\"12\" height=\"4\" rx=\"1\" fill=\"currentColor\" stroke=\"none\"/><rect x=\"8\" y=\"6.5\" width=\"8\" height=\"4\" rx=\"1\"/><path d=\"M12 4.5V2.5\"/>" },
   { name: "aim-trainer", title: "Aim Trainer", blurb: "Thirty seconds of targets", group: "Arcade", kind: "arcade", icon: "<circle cx=\"12\" cy=\"12\" r=\"8.5\"/><circle cx=\"12\" cy=\"12\" r=\"4.2\"/><circle cx=\"12\" cy=\"12\" r=\"1.2\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M12 1.5v3.5M12 19v3.5M1.5 12H5M19 12h3.5\"/>" },
   { name: "sudoku", title: "Sudoku", blurb: "Generated, solvable, four difficulties", group: "Puzzle", kind: "arcade", icon: "<rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\" stroke-width=\"2\"/><path d=\"M9 3v18M15 3v18M3 9h18M3 15h18\" stroke-width=\"1.2\"/>" },

@@ -1,0 +1,207 @@
+/**
+ * Hot Air Balloon styles.
+ *
+ * The original is lo-fi and near-monochrome, and that suits this codebase: the
+ * scene is built almost entirely from the host text and background tokens, so it
+ * follows the host theme rather than insisting on one. The only colour is the
+ * two pickups, which is exactly where colour carries meaning.
+ *
+ * `.world` is a fixed box of virtual pixels, scaled from the component by a
+ * single transform on this one element. Every child therefore positions itself
+ * in plain virtual pixels, which is what lets the frame loop write
+ * `translate(96px, 130px)` and mean it. Scaling each child instead would not
+ * work: `transform` and the `scale` property do not compose that way, and the
+ * translation would stay unscaled.
+ */
+
+.root {
+  gap: var(--spacing-sm);
+}
+
+.fieldWrap {
+  width: min(100%, 96vmin);
+  max-width: 440px;
+}
+
+.field {
+  position: relative;
+  width: 100%;
+  aspect-ratio: var(--vw) / var(--vh);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  background: var(--color-background-secondary);
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.world {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(var(--vw) * 1px);
+  height: calc(var(--vh) * 1px);
+  transform-origin: 0 0;
+  /* The component sets the scale from the rendered width. */
+}
+
+.world > * {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* ---- Scenery ---- */
+.hills {
+  width: calc(var(--vw) * 1px);
+  height: calc(var(--vh) * 1px);
+  background-image:
+    radial-gradient(58px 28px at 44px 232px, color-mix(in srgb, var(--color-text-primary) 10%, transparent) 60%, transparent 61%),
+    radial-gradient(86px 38px at 172px 236px, color-mix(in srgb, var(--color-text-primary) 7%, transparent) 60%, transparent 61%),
+    radial-gradient(66px 32px at 302px 234px, color-mix(in srgb, var(--color-text-primary) 10%, transparent) 60%, transparent 61%);
+}
+
+.ground {
+  width: calc(var(--vw) * 1px);
+  height: 10px;
+  transform: translateY(calc(var(--vh) * 1px - 10px));
+  background: color-mix(in srgb, var(--color-text-primary) 22%, transparent);
+}
+
+/* ---- Spike platforms ----
+ * A solid slab with a zigzag strip on the edge facing the player. The zigzag is
+ * a clip-path on a pseudo-element, so a platform is still one node.
+ */
+.spikes {
+  background: color-mix(in srgb, var(--color-text-primary) 60%, var(--color-background-secondary));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-text-primary) 28%, transparent);
+}
+.spikes::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 7px;
+  background: color-mix(in srgb, var(--color-text-primary) 60%, var(--color-background-secondary));
+}
+/* Points grow away from the wall the platform hangs off. */
+.spikes[data-from="top"]::after {
+  bottom: -7px;
+  clip-path: polygon(
+    0% 0%, 7% 100%, 14% 0%, 21% 100%, 28% 0%, 35% 100%, 42% 0%, 49% 100%,
+    56% 0%, 63% 100%, 70% 0%, 77% 100%, 84% 0%, 91% 100%, 98% 0%, 100% 0%
+  );
+}
+.spikes[data-from="bottom"]::after {
+  top: -7px;
+  clip-path: polygon(
+    0% 100%, 7% 0%, 14% 100%, 21% 0%, 28% 100%, 35% 0%, 42% 100%, 49% 0%,
+    56% 100%, 63% 0%, 70% 100%, 77% 0%, 84% 100%, 91% 0%, 98% 100%, 100% 100%
+  );
+}
+
+/* ---- Bubbles ---- */
+.bubble {
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--color-text-primary) 55%, transparent);
+  background: color-mix(in srgb, var(--color-text-primary) 10%, transparent);
+}
+
+/* ---- Pickups: the only colour in the scene, because it means something ---- */
+.pickup {
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
+  border-radius: 50%;
+  animation: blBob 1.1s ease-in-out infinite alternate;
+}
+.pickup[data-kind="magnet"] {
+  background: #22d3ee;
+  box-shadow: 0 0 8px rgba(34, 211, 238, 0.7);
+}
+.pickup[data-kind="shield"] {
+  background: linear-gradient(135deg, #f472b6, #facc15, #4ade80);
+  box-shadow: 0 0 8px rgba(250, 204, 21, 0.6);
+}
+@keyframes blBob {
+  from { translate: 0 -3px; }
+  to { translate: 0 3px; }
+}
+
+/* ---- Balloon ---- */
+.balloon {
+  width: 32px;
+  height: 40px;
+  /* Centred on its coordinate, and tilting about the envelope rather than the
+     basket so a climb reads as leaning into it. */
+  margin: -16px 0 0 -16px;
+  transform-origin: 50% 40%;
+  will-change: transform;
+}
+.balloonSvg {
+  width: 32px;
+  height: 40px;
+  overflow: visible;
+}
+.envelope {
+  fill: color-mix(in srgb, var(--color-text-primary) 80%, var(--color-background-secondary));
+}
+.seam {
+  fill: none;
+  stroke: var(--color-background-secondary);
+  stroke-width: 1;
+  opacity: 0.5;
+}
+.rope {
+  fill: none;
+  stroke: color-mix(in srgb, var(--color-text-primary) 70%, transparent);
+  stroke-width: 1;
+}
+.basket {
+  fill: color-mix(in srgb, var(--color-text-primary) 55%, var(--color-background-secondary));
+}
+
+/* Shield: a ring around the whole balloon, unmistakable at a glance. */
+.shielded::after {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: 2px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 2px solid #facc15;
+  box-shadow: 0 0 10px rgba(250, 204, 21, 0.55);
+  animation: blRing 0.9s ease-in-out infinite alternate;
+}
+@keyframes blRing {
+  from { opacity: 0.5; }
+  to { opacity: 1; }
+}
+
+/* ---- Powerup chips ---- */
+.powerRow {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin: 0;
+}
+.powerChip {
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.66rem;
+  font-weight: var(--font-weight-bold);
+  color: #0b1220;
+}
+.magnetChip { background: #22d3ee; }
+.shieldChip { background: #facc15; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pickup,
+  .shielded::after {
+    animation: none;
+  }
+}

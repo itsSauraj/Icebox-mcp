@@ -68,6 +68,7 @@ export const ARCADE_GAMES = [
   { name: "pacman", kind: "arcade", title: "Pac-Man", blurb: "Four ghosts, each hunting differently", group: "Arcade" },
   { name: "breakout", kind: "arcade", title: "Breakout", blurb: "Paddle, bricks, powerups", group: "Arcade" },
   { name: "flappy", kind: "arcade", title: "Flappy", blurb: "One tap, many deaths", group: "Arcade" },
+  { name: "balloon", kind: "arcade", title: "Hot Air Balloon", blurb: "Hold to rise, collect bubbles, miss the spikes", group: "Arcade" },
   { name: "stack-tower", kind: "arcade", title: "Stack Tower", blurb: "Time each drop, the tower narrows", group: "Arcade" },
   { name: "aim-trainer", kind: "arcade", title: "Aim Trainer", blurb: "Thirty seconds of targets", group: "Arcade" },
 
