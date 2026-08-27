@@ -18,7 +18,7 @@
   <div class="wrap legal">
     <a class="back" href="/">← Back</a>
     <h1>Privacy Policy</h1>
-    <p class="updated">Last updated: July 2, 2026</p>
+    <p class="updated">Last updated: August 27, 2026</p>
 
     <p>
       This Privacy Policy describes how the “Icebox” MCP
@@ -36,11 +36,29 @@
 
     <h2>Information we collect</h2>
     <p>
-      <strong>None.</strong> The Service has no user accounts, no cookies, no
-      analytics, and no tracking. It does not request or store names, email
-      addresses, contacts, files, or any other personal information. The inputs
-      you provide to a tool are processed only to produce that tool’s result and
-      are not retained after the request completes.
+      <strong>No personal data.</strong> The Service has no user accounts, no
+      cookies, and no cross-site tracking. It does not request or store names,
+      email addresses, contacts, files, or any other personal information. The
+      inputs you provide to a tool are processed only to produce that tool’s
+      result and are not retained after the request completes.
+    </p>
+
+    <h2>Website measurement</h2>
+    <p>
+      The pages of this website load Vercel Web Analytics and Vercel Speed
+      Insights. Both are cookieless and record anonymous, aggregate data only:
+      the page URL and referrer, approximate location, browser, operating system
+      and device type, and page-performance timings. Visitors are identified only
+      by a hash derived from the request, which is discarded within 24 hours, and
+      no profile is built across pages, sites, or sessions. See Vercel’s
+      <a href="https://vercel.com/docs/analytics/privacy-policy">Web Analytics</a>
+      and <a href="https://vercel.com/docs/speed-insights/privacy-policy">Speed
+      Insights</a> privacy notes for the full list of fields.
+    </p>
+    <p>
+      The mini apps and games themselves are <strong>not</strong> measured. They
+      run inside your MCP host, are delivered without any analytics script, and
+      report nothing back.
     </p>
 
     <h2>Hosting and logs</h2>
@@ -83,5 +101,10 @@
       <a href="/terms">Terms of Service</a>
     </footer>
   </div>
+  <!-- Vercel Web Analytics + Speed Insights. Same-origin routes the platform
+       serves once each product is enabled for the project; both 404 in local
+       dev, which is harmless. -->
+  <script defer src="/_vercel/insights/script.js"></script>
+  <script defer src="/_vercel/speed-insights/script.js"></script>
 </body>
 </html>
