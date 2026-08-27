@@ -486,6 +486,7 @@ export default function Battleship({ runtime }: AppProps) {
         <>
           <Grid
             label="Your waters"
+            coords
             cursor={cursor}
             onCursor={setCursor}
             onHover={setHover}
@@ -522,53 +523,63 @@ export default function Battleship({ runtime }: AppProps) {
         </>
       ) : (
         <>
-          <div className={s.boards}>
-            <div className={s.boardCol}>
-              <Grid
-                label="Enemy waters"
-                cursor={cursor}
-                onCursor={setCursor}
-                onPick={fire}
-                disabled={!myTurn || status !== "playing"}
-                cellClass={(i) => {
-                  const shot = foe.shots.get(i);
-                  const sunkHere = sunkShips(foe).some((sh) => sh.cells.includes(i));
-                  return `${shot === "hit" ? s.hit : ""} ${shot === "miss" ? s.miss : ""} ${sunkHere ? s.sunk : ""}`;
-                }}
-                // Never reveals whether a ship is there before it is fired on.
-                cellLabel={(i) => {
-                  const shot = foe.shots.get(i);
-                  return `${coordLabel(i)}${shot ? `, ${shot}` : ", not fired on"}`;
-                }}
-              />
-            </div>
+          {/* The enemy board is the game, so it takes the full width and the
+              game-over panel sits over it. Your own board is a status display,
+              so it drops to minimap scale beside the log. */}
+          <div className={s.primaryWrap}>
+            <Grid
+              label="Enemy waters"
+              coords
+              cursor={cursor}
+              onCursor={setCursor}
+              onPick={fire}
+              disabled={!myTurn || status !== "playing"}
+              cellClass={(i) => {
+                const shot = foe.shots.get(i);
+                const sunkHere = sunkShips(foe).some((sh) => sh.cells.includes(i));
+                return `${shot === "hit" ? s.hit : ""} ${shot === "miss" ? s.miss : ""} ${sunkHere ? s.sunk : ""}`;
+              }}
+              // Never reveals whether a ship is there before it is fired on.
+              cellLabel={(i) => {
+                const shot = foe.shots.get(i);
+                return `${coordLabel(i)}${shot ? `, ${shot}` : ", not fired on"}`;
+              }}
+            />
 
-            <div className={s.boardCol}>
-              <Grid
-                label="Your waters"
-                small
-                cellClass={(i) => {
-                  const shot = me.shots.get(i);
-                  const mine = me.ships.some((sh) => sh.cells.includes(i));
-                  const sunkHere = sunkShips(me).some((sh) => sh.cells.includes(i));
-                  return `${mine ? s.ship : ""} ${shot === "hit" ? s.hit : ""} ${shot === "miss" ? s.miss : ""} ${sunkHere ? s.sunk : ""}`;
-                }}
-                cellLabel={(i) => {
-                  const shot = me.shots.get(i);
-                  const mine = me.ships.some((sh) => sh.cells.includes(i));
-                  return `${coordLabel(i)}${mine ? ", your ship" : ""}${shot ? `, ${shot}` : ""}`;
-                }}
-              />
-            </div>
+            <Overlay
+              status={status}
+              title={status === "won" ? "Fleet sunk" : "You were sunk"}
+              detail={`${shots} shots at ${accuracy}% accuracy.`}
+              action="New game"
+              onAction={reset}
+            />
           </div>
 
-          <ul className={s.log} aria-label="Shot log">
-            {log.slice(0, 6).map((entry, i) => (
-              <li key={`${entry}-${i}`} className={s.logLine}>
-                {entry}
-              </li>
-            ))}
-          </ul>
+          <div className={s.aside}>
+            <Grid
+              label="Yours"
+              small
+              cellClass={(i) => {
+                const shot = me.shots.get(i);
+                const mine = me.ships.some((sh) => sh.cells.includes(i));
+                const sunkHere = sunkShips(me).some((sh) => sh.cells.includes(i));
+                return `${mine ? s.ship : ""} ${shot === "hit" ? s.hit : ""} ${shot === "miss" ? s.miss : ""} ${sunkHere ? s.sunk : ""}`;
+              }}
+              cellLabel={(i) => {
+                const shot = me.shots.get(i);
+                const mine = me.ships.some((sh) => sh.cells.includes(i));
+                return `${coordLabel(i)}${mine ? ", your ship" : ""}${shot ? `, ${shot}` : ""}`;
+              }}
+            />
+
+            <ul className={s.log} aria-label="Shot log">
+              {log.slice(0, 4).map((entry, i) => (
+                <li key={`${entry}-${i}`} className={s.logLine}>
+                  {entry}
+                </li>
+              ))}
+            </ul>
+          </div>
 
           <ControlBar>
             <button className={ui.btn} onClick={reset}>
@@ -581,28 +592,20 @@ export default function Battleship({ runtime }: AppProps) {
         </>
       )}
 
-      <ControlBar>
-        <Segmented
-          label="Difficulty"
-          options={DIFFICULTIES}
-          value={difficulty}
-          onChange={(d) => {
-            setDifficulty(d);
-            reset();
-          }}
-        />
-      </ControlBar>
-
-      {isTerminal(status) && (
-        <div className={s.result}>
-          <Overlay
-            status={status}
-            title={status === "won" ? "Fleet sunk" : "You were sunk"}
-            detail={`${shots} shots at ${accuracy}% accuracy.`}
-            action="New game"
-            onAction={reset}
+      {/* Changing difficulty restarts, so it belongs with setup rather than
+          sitting under a board mid-battle where it destroys the game. */}
+      {phase === "placing" && (
+        <ControlBar>
+          <Segmented
+            label="Difficulty"
+            options={DIFFICULTIES}
+            value={difficulty}
+            onChange={(d) => {
+              setDifficulty(d);
+              reset();
+            }}
           />
-        </div>
+        </ControlBar>
       )}
 
       <StatusLine>{shareStatus}</StatusLine>
@@ -610,10 +613,16 @@ export default function Battleship({ runtime }: AppProps) {
   );
 }
 
-/** One 10x10 grid with A-J / 1-10 headers and a roving tabindex. */
+/**
+ * One 10x10 grid. `coords` adds the A to J and 1 to 10 headers, which the
+ * primary board wants because the shot log names cells by coordinate and an
+ * unlabelled grid makes "they fired at E2" unlocatable. The minimap omits them:
+ * at that size they would cost more room than they explain.
+ */
 function Grid({
   label,
   small,
+  coords,
   cursor,
   onCursor,
   onHover,
@@ -624,6 +633,7 @@ function Grid({
 }: {
   label: string;
   small?: boolean;
+  coords?: boolean;
   cursor?: number;
   onCursor?: (i: number) => void;
   onHover?: (i: number | null) => void;
@@ -633,30 +643,55 @@ function Grid({
   cellLabel: (i: number) => string;
 }) {
   const interactive = Boolean(onPick);
+  const cursorRow = cursor === undefined ? -1 : rc(cursor).r;
+  const cursorCol = cursor === undefined ? -1 : rc(cursor).c;
+
   return (
     <div className={`${s.gridWrap} ${small ? s.small : ""}`}>
       <p className={s.gridLabel}>{label}</p>
-      <div
-        className={s.grid}
-        style={sv({ "--n": SIZE })}
-        role="grid"
-        aria-label={label}
-        onPointerLeave={() => onHover?.(null)}
-      >
-        {Array.from({ length: CELLS }, (_, i) => (
-          <button
-            key={i}
-            type="button"
-            className={`${s.cell} ${cellClass(i)} ${cursor === i && interactive ? s.cursor : ""}`}
-            role="gridcell"
-            tabIndex={interactive && cursor === i ? 0 : -1}
-            disabled={!interactive || disabled}
-            onFocus={() => onCursor?.(i)}
-            onPointerEnter={() => onHover?.(i)}
-            onClick={() => onPick?.(i)}
-            aria-label={cellLabel(i)}
-          />
-        ))}
+
+      <div className={`${s.gridBox} ${coords ? s.withCoords : ""}`} style={sv({ "--n": SIZE })}>
+        {coords && (
+          <>
+            <span className={s.corner} aria-hidden="true" />
+            <div className={s.colHeads} aria-hidden="true">
+              {Array.from({ length: SIZE }, (_, c) => (
+                <span key={c} className={c === cursorCol ? s.headOn : ""}>
+                  {String.fromCharCode(65 + c)}
+                </span>
+              ))}
+            </div>
+            <div className={s.rowHeads} aria-hidden="true">
+              {Array.from({ length: SIZE }, (_, r) => (
+                <span key={r} className={r === cursorRow ? s.headOn : ""}>
+                  {r + 1}
+                </span>
+              ))}
+            </div>
+          </>
+        )}
+
+        <div
+          className={s.grid}
+          role="grid"
+          aria-label={label}
+          onPointerLeave={() => onHover?.(null)}
+        >
+          {Array.from({ length: CELLS }, (_, i) => (
+            <button
+              key={i}
+              type="button"
+              className={`${s.cell} ${cellClass(i)} ${cursor === i && interactive ? s.cursor : ""}`}
+              role="gridcell"
+              tabIndex={interactive && cursor === i ? 0 : -1}
+              disabled={!interactive || disabled}
+              onFocus={() => onCursor?.(i)}
+              onPointerEnter={() => onHover?.(i)}
+              onClick={() => onPick?.(i)}
+              aria-label={cellLabel(i)}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
