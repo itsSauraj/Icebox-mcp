@@ -100,9 +100,6 @@ body::after {
   margin-left: auto;
   margin-right: auto;
 }
-.wrap > .lead {
-  max-width: 72ch;
-}
 
 
 
@@ -188,10 +185,6 @@ body::after {
   .topbar .copy-btn { padding: 0 9px; }
 }
 
-header.hero { text-align: center; margin-bottom: 40px; }
-.hero .logo { color: var(--accent); line-height: 0; filter: drop-shadow(0 0 18px var(--glow)); }
-.hero .logo svg { width: 56px; height: 56px; }
-
 h1 {
   font-family: var(--font-display);
   font-weight: 400;
@@ -201,17 +194,7 @@ h1 {
   text-shadow: 0 0 30px var(--glow);
 }
 
-.subtitle {
-  margin: 0;
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-
 p, li { color: var(--text); }
-.lead { font-size: 1.05rem; }
 .muted { color: var(--muted); }
 
 h2 {
