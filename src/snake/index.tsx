@@ -356,7 +356,7 @@ function SnakeApp({ runtime }: AppProps) {
           <div className={s.overlay}>
             {game.status === "over" ? (
               <>
-                <span className={`${ui.banner} ${ui.lose}`}>Game over</span>
+                <span className={`${ui.banner} ${ui.lose}`}>Game Over</span>
                 <p className={s.big}>Score {game.score}</p>
                 <button className={`${ui.btn} ${ui.primary}`} onClick={() => startFresh(true)}>Play again</button>
               </>
@@ -368,7 +368,22 @@ function SnakeApp({ runtime }: AppProps) {
             ) : (
               <>
                 <p className={s.big}><SnakeIcon className={ui.titleIcon} />Snake</p>
-                <p className={ui.subtitle}>Arrows / WASD · swipe · D-pad</p>
+                <div className={s.rules}>
+                  <h2 className={s.rulesTitle}>How to play</h2>
+                  <ul className={s.rulesList}>
+                    <li>Eat the apples to grow longer.</li>
+                    <li>Never run into your own tail.</li>
+                    <li>Walls end the game, unless you pick Wrap.</li>
+                  </ul>
+                  <dl className={s.keys}>
+                    <dt><kbd className={s.kbd}>Arrows</kbd><kbd className={s.kbd}>WASD</kbd></dt>
+                    <dd>Steer</dd>
+                    <dt><kbd className={s.kbd}>Swipe</kbd></dt>
+                    <dd>Steer on touch</dd>
+                    <dt><kbd className={s.kbd}>Space</kbd></dt>
+                    <dd>Pause</dd>
+                  </dl>
+                </div>
                 <button className={`${ui.btn} ${ui.primary}`} onClick={() => startFresh(true)}>Play</button>
               </>
             )}
