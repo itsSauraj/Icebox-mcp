@@ -19,14 +19,16 @@
  */
 import fs from "node:fs/promises";
 import path from "node:path";
-import { ARCADE_GAMES, HERO_GAMES, ORIGINAL_APPS } from "../games/apps.mjs";
+import { ARCADE_GAMES, ENTRY_DIR, HERO_GAMES, ORIGINAL_APPS } from "../games/apps.mjs";
 import { ICON_ATTRS, iconFor } from "../games/icons.mjs";
 
 const root = process.cwd();
 
 /** Where a given app opens in standalone preview. */
 const previewHref = (app) =>
-  app.kind === "arcade" ? `/arcade.html?game=${app.name}` : `/${app.name}.html`;
+  app.kind === "arcade"
+    ? `/${ENTRY_DIR}/arcade.html?game=${app.name}`
+    : `/${ENTRY_DIR}/${app.name}.html`;
 
 /**
  * Sections in display order. The originals split from the games because they

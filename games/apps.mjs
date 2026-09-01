@@ -99,14 +99,32 @@ export const ALL_APPS = [...ORIGINAL_APPS, ...HERO_GAMES, ...ARCADE_GAMES];
 export const GROUPS = ["Model", "Arcade", "Puzzle", "Versus"];
 
 /**
- * Vite build inputs. The originals and the heroes each build to their own
- * single-file HTML; every arcade game rides in `arcade.html`.
+ * Where the Vite entry documents live, relative to the project root.
+ *
+ * They sit in one folder rather than loose at the root: there is one per app,
+ * so at the root they outnumbered every other top-level file put together. Only
+ * `index.html`, the dev launcher Vite serves at `/`, stays outside, because
+ * Vite resolves `/` to the root document by convention.
+ */
+export const ENTRY_DIR = "entries";
+
+/**
+ * Vite build inputs, as paths from the project root. The originals and the
+ * heroes each build to their own single-file HTML; every arcade game rides in
+ * `arcade.html`.
  */
 export const BUILD_INPUTS = [
-  ...ORIGINAL_APPS.map((a) => `${a.name}.html`),
-  ...HERO_GAMES.map((a) => `${a.name}.html`),
-  "arcade.html",
+  ...ORIGINAL_APPS.map((a) => `${ENTRY_DIR}/${a.name}.html`),
+  ...HERO_GAMES.map((a) => `${ENTRY_DIR}/${a.name}.html`),
+  `${ENTRY_DIR}/arcade.html`,
 ];
 
-/** Files `scripts/bundle-html.mjs` inlines for the server to serve. */
+/**
+ * Files `scripts/bundle-html.mjs` inlines for the server to serve.
+ *
+ * Same list, still as paths. The server addresses an app by bare file name
+ * (`snake.html`), which is an identity rather than a location, so
+ * `bundle-html.mjs` reduces these to their base names for its loader keys.
+ * That keeps `games/registry.ts` free of build layout.
+ */
 export const BUNDLED_FILES = BUILD_INPUTS;

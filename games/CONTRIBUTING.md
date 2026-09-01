@@ -244,10 +244,10 @@ Then build just your bundle:
 
 ```bash
 # hero game
-node scripts/build-apps.mjs <your-game>.html
+node scripts/build-apps.mjs entries/<your-game>.html
 
 # arcade game
-node scripts/build-apps.mjs arcade.html
+node scripts/build-apps.mjs entries/arcade.html
 ```
 
 Must exit 0. Note that the arcade build compiles all 18 arcade games, so a

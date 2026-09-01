@@ -2,7 +2,7 @@
  * Generates the mechanical scaffolding around each game so nobody hand-writes
  * it thirty-two times:
  *
- *  - `<hero>.html` and `arcade.html`, the Vite entry documents
+ *  - `entries/<hero>.html` and `entries/arcade.html`, the Vite entry documents
  *  - `src/<hero>/main.tsx`, which mounts the hero's component
  *  - `src/arcade/main.tsx` and `src/arcade/games.generated.ts`, the dispatcher
  *    and its map of arcade game name to component
@@ -17,11 +17,12 @@
  */
 import fs from "node:fs/promises";
 import path from "node:path";
-import { ARCADE_GAMES, ALL_APPS, ALL_GAMES, HERO_GAMES } from "../games/apps.mjs";
+import { ARCADE_GAMES, ALL_APPS, ALL_GAMES, ENTRY_DIR, HERO_GAMES } from "../games/apps.mjs";
 import { ICON_ATTRS, iconFor } from "../games/icons.mjs";
 
 const root = process.cwd();
 const src = path.join(root, "src");
+const entryDir = path.join(root, ENTRY_DIR);
 
 /** `stack-tower` becomes `StackTower`; `2048` becomes `Game2048`. */
 export function ident(name) {
@@ -199,14 +200,19 @@ async function main() {
   const created = [];
 
   for (const hero of HERO_GAMES) {
-    if (await writeIfChanged(path.join(root, `${hero.name}.html`), htmlEntry(hero.title, `/src/${hero.name}/main.tsx`)))
-      wrote.push(`${hero.name}.html`);
+    if (
+      await writeIfChanged(
+        path.join(entryDir, `${hero.name}.html`),
+        htmlEntry(hero.title, `/src/${hero.name}/main.tsx`),
+      )
+    )
+      wrote.push(`${ENTRY_DIR}/${hero.name}.html`);
     if (await writeIfChanged(path.join(src, hero.name, "main.tsx"), heroMain(hero.name, hero.title)))
       wrote.push(`src/${hero.name}/main.tsx`);
   }
 
-  if (await writeIfChanged(path.join(root, "arcade.html"), htmlEntry("Icebox Arcade", "/src/arcade/main.tsx")))
-    wrote.push("arcade.html");
+  if (await writeIfChanged(path.join(entryDir, "arcade.html"), htmlEntry("Icebox Arcade", "/src/arcade/main.tsx")))
+    wrote.push(`${ENTRY_DIR}/arcade.html`);
   if (await writeIfChanged(path.join(src, "arcade", "main.tsx"), arcadeMain)) wrote.push("src/arcade/main.tsx");
   if (await writeIfChanged(path.join(src, "arcade", "games.generated.ts"), arcadeMap()))
     wrote.push("src/arcade/games.generated.ts");

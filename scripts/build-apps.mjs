@@ -13,7 +13,7 @@
  * Usage:
  *   node scripts/build-apps.mjs              production, all inputs
  *   node scripts/build-apps.mjs --dev        sourcemaps, no minify
- *   node scripts/build-apps.mjs snake.html   just these inputs
+ *   node scripts/build-apps.mjs entries/snake.html   just these inputs
  */
 import { spawn } from "node:child_process";
 import fs from "node:fs/promises";
@@ -60,7 +60,7 @@ function buildOne(input) {
 
 async function run() {
   const started = Date.now();
-  // Only a full build owns dist/. A targeted build (`build-apps.mjs snake.html`)
+  // Only a full build owns dist/. A targeted build (`build-apps.mjs entries/snake.html`)
   // must leave the other bundles alone: several people, or several agents, may
   // be verifying different games against the same tree at once, and clearing
   // dist/ here would delete work that is not ours.

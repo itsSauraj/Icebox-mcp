@@ -23,5 +23,7 @@ export declare const ARCADE_GAMES: AppEntry[];
 export declare const ALL_GAMES: AppEntry[];
 export declare const ALL_APPS: AppEntry[];
 export declare const GROUPS: string[];
+/** Folder holding the Vite entry documents, relative to the project root. */
+export declare const ENTRY_DIR: string;
 export declare const BUILD_INPUTS: string[];
 export declare const BUNDLED_FILES: string[];
