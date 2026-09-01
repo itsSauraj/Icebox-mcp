@@ -113,8 +113,12 @@
   border-radius: 999px;
   font-weight: var(--font-weight-bold);
 }
-.win { color: #065f46; background: light-dark(#d1fae5, #064e3b); }
-.lose { color: #7f1d1d; background: light-dark(#fee2e2, #7f1d1d33); }
+/* Both halves flip with the theme. A fixed dark ink over a dark ground fell to
+   roughly 1.4:1, well under the 4.5:1 floor. Backgrounds are opaque on purpose:
+   a translucent one composites over whatever the overlay is covering, so the
+   contrast changed with the state of the board behind it. */
+.win { color: light-dark(#065f46, #a7f3d0); background: light-dark(#d1fae5, #064e3b); }
+.lose { color: light-dark(#7f1d1d, #fecaca); background: light-dark(#fee2e2, #7f1d1d); }
 .tie { color: var(--color-text-secondary); background: var(--color-background-secondary); }
 
 /* ---- Inline number stepper ---- */

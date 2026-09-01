@@ -356,7 +356,7 @@ function SnakeApp({ runtime }: AppProps) {
           <div className={s.overlay}>
             {game.status === "over" ? (
               <>
-                <span className={`${ui.banner} ${ui.lose}`}>Game over</span>
+                <span className={`${ui.banner} ${ui.lose}`}>Game Over</span>
                 <p className={s.big}>Score {game.score}</p>
                 <button className={`${ui.btn} ${ui.primary}`} onClick={() => startFresh(true)}>Play again</button>
               </>

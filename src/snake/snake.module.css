@@ -64,6 +64,10 @@
   touch-action: none;
   -webkit-user-select: none;
   user-select: none;
+  /* Confines the food and segment z-indexes below to this element. Without it
+     they escape into the parent stacking context and paint over .overlay, since
+     neither `position: relative` nor `overflow: hidden` creates one. */
+  isolation: isolate;
 }
 
 /* ---- Food (amber apple) ---- */
