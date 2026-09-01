@@ -47,8 +47,8 @@ body {
   overflow-x: hidden;
 }
 
-/* Canvas dotted-glow background — dotted-glow.js draws a shimmering dot grid
-   into this fixed layer (behind content, above the page background). */
+/* The background layer (behind content, above the page background). The
+   landing page fills it with beams.js; the legal pages with dotted-glow.js. */
 .fx {
   position: fixed;
   inset: 0;
@@ -56,6 +56,20 @@ body {
   pointer-events: none;
   overflow: hidden;
 }
+
+/* SVG background beams — beams.js builds them into `.fx`. The lead colour
+   rides the palette so the beams stay legible on the navy and on the light
+   background; the indigo/purple tail reads on either. */
+.beams {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.beams .beam-lead { stop-color: var(--accent); }
+.beams .beam-mid { stop-color: #6344f5; }
+.beams .beam-tail { stop-color: #ae48ff; }
+.beams .beam-backdrop { stop-color: var(--muted); }
 
 /* Mouse-following purple spotlight (spotlight.js updates --mouse-x/y). */
 body::after {
