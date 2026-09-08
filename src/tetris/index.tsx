@@ -738,18 +738,19 @@ export default function Tetris({ runtime }: AppProps) {
             }
             action={ready ? "Play" : game.status === "paused" ? "Resume" : "Play again"}
             onAction={game.status === "paused" ? togglePause : () => reset(startLevel, true)}
-          >
-            {ready && (
-              <p className={s.legend}>
-                {KEY_HELP.map(([key, what]) => (
-                  <span key={key}>
-                    <kbd>{key}</kbd> {what}
-                  </span>
-                ))}
-                <span>Or swipe, tap to rotate.</span>
-              </p>
-            )}
-          </Overlay>
+            rules={{
+              rules: [
+                "Fill a whole row across the well and it clears.",
+                "Clearing several rows at once scores far more than clearing them one at a time.",
+                "Every ten lines raises the level, and the pieces fall faster.",
+                "Hold parks a piece for later — one swap per piece.",
+                "If a new piece has nowhere to go, the game is over.",
+              ],
+              keys: KEY_HELP.map(([key, what]) => ({ keys: [key], action: what })).concat([
+                { keys: ["Swipe"], action: "Move, tap to rotate" },
+              ]),
+            }}
+          />
         </div>
 
         <div className={s.rail}>

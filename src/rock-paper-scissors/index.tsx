@@ -35,7 +35,7 @@ import {
   ControlBar,
   GameFrame,
   GameHeader,
-  Notice,
+  HowToPlay,
   Segmented,
   StatusLine,
   seedString,
@@ -398,10 +398,14 @@ export default function RockPaperScissors({ runtime }: AppProps) {
         </button>
       </ControlBar>
 
-      <Notice>
-        It only ever sees throws you have already made, never the current one. Being predictable is the
-        only way it wins.
-      </Notice>
+      <HowToPlay
+        rules={[
+          "Stone breaks scissors, scissors cut paper, paper wraps stone. Matching throws are a draw.",
+          "Pick your throw and the opponent reveals at the same time.",
+          "It predicts from the patterns in the throws you have already made, never the current one.",
+          "So being predictable is the only way it wins. Mix it up.",
+        ]}
+      />
 
       <StatusLine>{shareStatus}</StatusLine>
     </GameFrame>

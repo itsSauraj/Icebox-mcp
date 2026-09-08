@@ -25,8 +25,8 @@ import {
   ControlBar,
   GameFrame,
   GameHeader,
-  Notice,
   Overlay,
+  Rules,
   Segmented,
   StatusLine,
   clamp,
@@ -519,7 +519,21 @@ export default function Battleship({ runtime }: AppProps) {
             </button>
           </ControlBar>
 
-          <Notice>Tap to place, R rotates. Ships may touch but not overlap.</Notice>
+          {/* Battleship has no ready overlay — `ready` is this placement
+              screen — so the rules sit under the fleet controls instead. */}
+          <Rules
+            rules={[
+              "Place all five ships, then take turns firing at the enemy grid.",
+              "Ships may touch but never overlap.",
+              "A shot is a hit or a miss, and a ship sinks once every one of its cells is hit.",
+              "Sink the whole enemy fleet before they sink yours.",
+            ]}
+            keys={[
+              { keys: ["Tap"], action: "Place, then fire" },
+              { keys: ["R"], action: "Rotate the ship" },
+              { keys: ["Arrows"], action: "Move the cursor" },
+            ]}
+          />
         </>
       ) : (
         <>

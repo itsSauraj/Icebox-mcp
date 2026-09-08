@@ -718,6 +718,18 @@ export default function Pacman({ runtime }: AppProps) {
             onAction={
               status === "won" ? nextLevel : status === "over" ? () => reset(false, 1) : () => setStatus("playing")
             }
+            rules={{
+              rules: [
+                "Eat every pellet in the maze to clear the level.",
+                "The four big pellets in the corners turn the ghosts blue. While they are blue you can eat them, and each one in a row is worth more.",
+                "Touching a ghost that is not blue costs a life.",
+                "Each ghost hunts differently — one chases, one cuts you off, and two are less predictable.",
+              ],
+              keys: [
+                { keys: ["Arrows", "WASD"], action: "Steer" },
+                { keys: ["Swipe"], action: "Steer on touch" },
+              ],
+            }}
           />
         </div>
       </div>

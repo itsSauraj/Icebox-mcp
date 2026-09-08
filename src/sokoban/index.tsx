@@ -26,6 +26,7 @@ import {
   DPad,
   GameFrame,
   GameHeader,
+  HowToPlay,
   Notice,
   Overlay,
   StatusLine,
@@ -497,6 +498,21 @@ export default function Sokoban({ runtime }: AppProps) {
       <p className={ui.status} role="status" aria-live="polite">
         {shareStatus || (won ? `Level cleared in ${moves} moves.` : "")}
       </p>
+
+      <HowToPlay
+        rules={[
+          "Push every crate onto a target square to clear the level.",
+          "You can only push, never pull, and only one crate at a time.",
+          "A crate pushed into a corner is stuck for good — undo is the only way back.",
+          "Par is the number of moves a tidy solution takes. Beating it is optional.",
+        ]}
+        keys={[
+          { keys: ["Arrows", "WASD"], action: "Walk and push" },
+          { keys: ["Swipe"], action: "Move on touch" },
+          { keys: ["Z", "U"], action: "Undo" },
+          { keys: ["R"], action: "Restart the level" },
+        ]}
+      />
 
       <StatusLine>{null}</StatusLine>
     </GameFrame>

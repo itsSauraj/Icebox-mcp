@@ -31,6 +31,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   GameFrame,
   GameHeader,
+  HowToPlay,
   Notice,
   StatusLine,
   seedArray,
@@ -689,6 +690,22 @@ export default function QuizDuel({ runtime }: AppProps) {
           )}
         </>
       )}
+
+      <HowToPlay
+        rules={[
+          "Name a topic and the model writes the questions. Pick the right answer from the options.",
+          "Each question is on a clock. Let it run out and the question is lost.",
+          `A correct answer scores up to ${BASE_POINTS}, scaled by how much of the clock was left — so answering fast is worth far more.`,
+          `A run of correct answers multiplies that, up to ${MAX_MULTIPLIER}x. One wrong answer resets the streak to nothing.`,
+          "Three lifelines, one use each: cut half the wrong answers, skip the question, or buy more time.",
+        ]}
+        keys={[
+          { keys: ["1–6", "Click"], action: "Pick an answer" },
+          { keys: ["F"], action: "Fifty-fifty" },
+          { keys: ["S"], action: "Skip" },
+          { keys: ["T"], action: `Add ${EXTRA_SECONDS} seconds` },
+        ]}
+      />
 
       <StatusLine>{shareStatus}</StatusLine>
     </GameFrame>

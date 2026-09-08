@@ -575,6 +575,19 @@ export default function Breakout({ runtime }: AppProps) {
             }
             action={game.status === "ready" ? "Serve" : "Play again"}
             onAction={game.status === "ready" ? serve : restart}
+            rules={{
+              rules: [
+                "Clear every brick to finish the level. Some bricks take more than one hit.",
+                "Where the ball strikes the paddle sets its angle — hit it off-centre to steer.",
+                "Catch a falling capsule for a wider paddle, a slower ball, or extra balls.",
+                "Miss the ball and you lose a life. Lose them all and the run ends.",
+              ],
+              keys: [
+                { keys: ["Move"], action: "Aim the paddle" },
+                { keys: ["Arrows", "A", "D"], action: "Move the paddle" },
+                { keys: ["Space"], action: "Serve" },
+              ],
+            }}
           />
         </div>
       </div>

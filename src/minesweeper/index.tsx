@@ -32,7 +32,7 @@ import {
   ControlBar,
   GameFrame,
   GameHeader,
-  Notice,
+  HowToPlay,
   Overlay,
   Segmented,
   StatusLine,
@@ -617,10 +617,21 @@ export default function Minesweeper({ runtime }: AppProps) {
         </button>
       </ControlBar>
 
-      <Notice>
-        Click or Enter opens, arrows move. Right-click, long press or F flags. Click a number whose
-        flags match it to open the rest.
-      </Notice>
+      <HowToPlay
+        rules={[
+          "Open every square that is not a mine. Open a mine and the game is over.",
+          "A number tells you how many mines touch that square, counting diagonals.",
+          "Flag the squares you think are mines. Flags block opening, so they cannot misfire.",
+          "Click a number whose flags already match it to open all its remaining neighbours at once.",
+          "The first square you open is always safe.",
+        ]}
+        keys={[
+          { keys: ["Click", "Enter"], action: "Open" },
+          { keys: ["Right-click", "F"], action: "Flag" },
+          { keys: ["Long press"], action: "Flag on touch" },
+          { keys: ["Arrows"], action: "Move the cursor" },
+        ]}
+      />
 
       <StatusLine>{shareStatus}</StatusLine>
     </GameFrame>

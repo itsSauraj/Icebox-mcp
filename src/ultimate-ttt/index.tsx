@@ -25,6 +25,7 @@ import {
   ControlBar,
   GameFrame,
   GameHeader,
+  HowToPlay,
   Overlay,
   Segmented,
   StatusLine,
@@ -557,6 +558,21 @@ export default function UltimateTtt({ runtime }: AppProps) {
           Tell the model
         </button>
       </ControlBar>
+
+      <HowToPlay
+        rules={[
+          "Nine small boards make one big board. Win three small boards in a row to win the game.",
+          "Where you play inside a small board decides which board your opponent must play in next.",
+          "Play the middle cell and they are sent to the middle board, and so on.",
+          "If that board is already won or full, they may play anywhere.",
+          "A drawn small board is closed and counts for neither side.",
+        ]}
+        keys={[
+          { keys: ["Click"], action: "Play a cell" },
+          { keys: ["Arrows"], action: "Move the cursor" },
+          { keys: ["Enter"], action: "Play the cursor cell" },
+        ]}
+      />
 
       <StatusLine>{shareStatus}</StatusLine>
     </GameFrame>

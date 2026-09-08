@@ -24,6 +24,7 @@ import {
   ControlBar,
   GameFrame,
   GameHeader,
+  HowToPlay,
   Notice,
   Overlay,
   StatusLine,
@@ -410,6 +411,20 @@ export default function Hangman({ runtime }: AppProps) {
           </div>
         </div>
       )}
+
+      <HowToPlay
+        rules={[
+          "Guess the hidden word one letter at a time. Every word fits the round's theme.",
+          "A correct letter fills in every place it appears.",
+          "A wrong letter draws another part of the gallows.",
+          `${MAX_WRONG} wrong letters and the word is lost. Reveal all the letters first and it is yours.`,
+          "One hint per round, if you ask for it.",
+        ]}
+        keys={[
+          { keys: ["A–Z"], action: "Guess a letter" },
+          { keys: ["Click"], action: "Guess from the keyboard" },
+        ]}
+      />
 
       <StatusLine>{shareStatus}</StatusLine>
     </GameFrame>

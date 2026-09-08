@@ -423,6 +423,32 @@ function WordleApp({ runtime }: AppProps) {
         <button className={ui.btn} onClick={tell} disabled={!allDone}>Tell the model</button>
       </div>
 
+      {/* Wordle is one of the original apps and does not use the shared game
+          shell, so it states its rules with its own markup. Same shape as the
+          `HowToPlay` panel the shell provides. */}
+      <details className={s.howto}>
+        <summary className={s.howtoSummary}>How to play</summary>
+        <div className={s.howtoBody}>
+          <ul className={s.rulesList}>
+            <li>Guess the hidden word in {MAX_GUESSES} tries.</li>
+            <li>Every guess must be a real word of the right length.</li>
+            <li>A green tile means that letter is correct and in the right place.</li>
+            <li>A yellow tile means the letter is in the word but somewhere else.</li>
+            <li>A grey tile means the letter is not in the word at all.</li>
+            <li>Repeated letters are marked honestly: two yellows only if the word really has two.</li>
+            <li>Solve one word and the next begins. The model chooses the list.</li>
+          </ul>
+          <dl className={s.keys}>
+            <dt><kbd className={s.kbd}>A–Z</kbd></dt>
+            <dd>Type a letter</dd>
+            <dt><kbd className={s.kbd}>Enter</kbd></dt>
+            <dd>Submit the guess</dd>
+            <dt><kbd className={s.kbd}>Backspace</kbd></dt>
+            <dd>Delete</dd>
+          </dl>
+        </div>
+      </details>
+
       <p className={ui.status} role="status" aria-live="polite">{status}</p>
     </div>
   );

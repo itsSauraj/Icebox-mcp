@@ -304,26 +304,6 @@
   line-height: 1;
 }
 
-/* ---- Ready-screen key legend ---- */
-.legend {
-  margin: 0;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 2px var(--spacing-sm);
-  max-width: 30ch;
-  font-size: 0.72rem;
-  color: var(--color-text-secondary);
-}
-.legend kbd {
-  padding: 1px 5px;
-  border-radius: var(--border-radius-sm);
-  border: var(--border-width-regular) solid var(--color-border);
-  background: var(--color-background-secondary);
-  color: var(--color-text-primary);
-  font-size: 0.68rem;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .pop,
   .drop,

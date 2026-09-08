@@ -493,6 +493,21 @@ export default function Asteroids({ runtime }: AppProps) {
           }
           action={status === "ready" ? "Launch" : "Launch again"}
           onAction={begin}
+          rules={{
+            rules: [
+              "Shoot a rock and it splits into smaller, faster pieces. Clear the wave to move on.",
+              "The screen wraps. Rocks come back around, and so do you.",
+              "Wrecks drop triple shot, rapid fire, shields and bombs.",
+              "A shield absorbs one hit. Hyperspace throws you somewhere random, which is sometimes worse.",
+            ],
+            keys: [
+              { keys: ["Arrows", "A", "D"], action: "Turn" },
+              { keys: ["Up", "W"], action: "Thrust" },
+              { keys: ["Space"], action: "Fire" },
+              { keys: ["B"], action: "Bomb" },
+              { keys: ["H", "Shift"], action: "Hyperspace" },
+            ],
+          }}
         />
       </div>
 

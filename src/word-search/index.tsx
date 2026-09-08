@@ -30,7 +30,7 @@ import {
 import {
   GameFrame,
   GameHeader,
-  Notice,
+  HowToPlay,
   Overlay,
   StandardControls,
   StatusLine,
@@ -569,10 +569,19 @@ export default function WordSearch({ runtime }: AppProps) {
         })}
       </ul>
 
-      <Notice>
-        Drag across letters to select. Or press Enter to anchor a cell, arrows to extend, Enter to
-        confirm.
-      </Notice>
+      <HowToPlay
+        rules={[
+          "Every word in the list is hidden somewhere in the grid.",
+          "Words run in a straight line — across, down or diagonally — and some are backwards.",
+          "Drag from the first letter to the last to claim a word. A correct one stays highlighted.",
+          "Find them all to finish the puzzle.",
+        ]}
+        keys={[
+          { keys: ["Drag"], action: "Select letters" },
+          { keys: ["Enter"], action: "Anchor, then confirm" },
+          { keys: ["Arrows"], action: "Extend the selection" },
+        ]}
+      />
 
       <StandardControls
         status={status}

@@ -22,7 +22,7 @@ import {
   ControlBar,
   GameFrame,
   GameHeader,
-  Notice,
+  HowToPlay,
   StatusLine,
   useBest,
   useFullscreen,
@@ -555,10 +555,15 @@ export default function Blackjack({ runtime }: AppProps) {
         </ControlBar>
       )}
 
-      <Notice>
-        Six decks. Dealer stands on all 17. Blackjack pays 3:2, insurance 2:1. One split, and split aces
-        take one card each.
-      </Notice>
+      <HowToPlay
+        rules={[
+          "Bet, then get closer to 21 than the dealer without going over. Over 21 is a bust and loses at once.",
+          "Number cards count face value, picture cards are 10, and an ace is 11 or 1 — whichever keeps you alive.",
+          "Hit to take another card, stand to keep what you have. Double doubles the bet for exactly one more card.",
+          "Two cards of the same rank can be split into two hands.",
+          "This table: six decks, dealer stands on all 17, blackjack pays 3:2, insurance pays 2:1, one split only, and split aces take one card each.",
+        ]}
+      />
 
       <StatusLine>{shareStatus}</StatusLine>
     </GameFrame>

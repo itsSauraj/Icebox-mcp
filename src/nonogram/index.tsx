@@ -22,6 +22,7 @@ import {
   ControlBar,
   GameFrame,
   GameHeader,
+  HowToPlay,
   Notice,
   Overlay,
   Segmented,
@@ -511,6 +512,21 @@ export default function Nonogram({ runtime }: AppProps) {
       </p>
 
       {best !== Infinity && !won && <Notice>Best time so far: {best}s.</Notice>}
+
+      <HowToPlay
+        rules={[
+          "The numbers beside each row and above each column describe the filled runs in it, in order.",
+          "So “4 2” means a run of four filled cells, then at least one gap, then a run of two.",
+          "Fill the cells that must be filled and mark the ones that cannot be, until the picture appears.",
+          "Check tells you how many cells are wrong, but not which ones.",
+        ]}
+        keys={[
+          { keys: ["Click"], action: "Fill or mark" },
+          { keys: ["Space"], action: "Fill the cursor cell" },
+          { keys: ["X"], action: "Mark it empty" },
+          { keys: ["Enter"], action: "Check" },
+        ]}
+      />
 
       <StatusLine>{shareStatus}</StatusLine>
     </GameFrame>

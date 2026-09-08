@@ -27,6 +27,7 @@ import {
   ControlBar,
   GameFrame,
   GameHeader,
+  HowToPlay,
   Notice,
   Overlay,
   Segmented,
@@ -608,6 +609,23 @@ export default function Sudoku({ runtime }: AppProps) {
           </p>
 
           {best !== Infinity && !solved && <Notice>Best time so far: {best}s.</Notice>}
+
+          <HowToPlay
+            rules={[
+              "Fill every empty cell with a digit from 1 to 9.",
+              "No digit may repeat in a row, a column, or a bold 3x3 box.",
+              "Every puzzle here has exactly one solution, so it is always solvable by reasoning.",
+              "Notes mode writes small pencil marks instead of an answer, for candidates you have not settled.",
+            ]}
+            keys={[
+              { keys: ["1–9"], action: "Enter a digit" },
+              { keys: ["Backspace"], action: "Clear the cell" },
+              { keys: ["N"], action: "Toggle notes" },
+              { keys: ["H"], action: "Hint" },
+              { keys: ["Z"], action: "Undo" },
+              { keys: ["Arrows"], action: "Move the cursor" },
+            ]}
+          />
         </>
       )}
 

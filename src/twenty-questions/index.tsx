@@ -24,6 +24,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   GameFrame,
   GameHeader,
+  HowToPlay,
   StatusLine,
   seedString,
   sv,
@@ -394,6 +395,17 @@ export default function TwentyQuestions({ runtime }: AppProps) {
           </div>
         </>
       )}
+
+      <HowToPlay
+        rules={[
+          "Think of any one thing and keep it to yourself.",
+          "The model asks yes-or-no questions about it. Answer each one honestly.",
+          "It gets twenty questions to work out what you are thinking of.",
+          "When it names the right thing, tap “That's it!” to give it the win.",
+          "Tap “Give up” to end early and let it say what it was guessing.",
+        ]}
+        keys={[{ keys: ["Yes", "No"], action: "Answer the question" }]}
+      />
 
       <StatusLine>{shareStatus}</StatusLine>
     </GameFrame>
