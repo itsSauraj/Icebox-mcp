@@ -29,6 +29,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   GameFrame,
   GameHeader,
+  HowToPlay,
   Notice,
   StatusLine,
   seedArray,
@@ -456,6 +457,20 @@ export default function StoryQuest({ runtime }: AppProps) {
       {current && !current.ending && current.choices.length > 0 && (
         <p className={s.hintLine}>Press 1 to {current.choices.length} to choose, H folds the log.</p>
       )}
+
+      <HowToPlay
+        rules={[
+          "The model writes one beat of the story at a time, then offers you a few choices.",
+          "Pick one and it writes what happens next. There is no wrong answer, only a different story.",
+          "Your choices are remembered, so the tale follows from what you have already done.",
+          "The log keeps every beat so far. Fold it away if you would rather just read the present.",
+          "Some beats are endings. When you reach one, that run of the story is finished.",
+        ]}
+        keys={[
+          { keys: ["1–9"], action: "Take that choice" },
+          { keys: ["H"], action: "Fold the log" },
+        ]}
+      />
 
       <StatusLine>{shareStatus}</StatusLine>
     </GameFrame>

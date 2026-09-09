@@ -26,6 +26,7 @@ import {
   ControlBar,
   GameFrame,
   GameHeader,
+  HowToPlay,
   Notice,
   Overlay,
   StatusLine,
@@ -437,7 +438,21 @@ export default function Codenames({ runtime }: AppProps) {
         </button>
       </ControlBar>
 
-      <Notice>Tap a card to guess. Arrows move, Enter guesses, Escape passes.</Notice>
+      <HowToPlay
+        rules={[
+          "The model is your spymaster. It gives you a one-word clue and a number.",
+          "The number is how many cards on the board relate to that clue. Tap the ones you think it means.",
+          "Guess an agent and you may keep going. Guess a bystander and your turn ends.",
+          "Guess the assassin and the game is over on the spot.",
+          "Find every agent to win. Pass whenever you would rather not risk another guess.",
+        ]}
+        keys={[
+          { keys: ["Tap"], action: "Guess a card" },
+          { keys: ["Arrows"], action: "Move the cursor" },
+          { keys: ["Enter"], action: "Guess" },
+          { keys: ["Escape"], action: "Pass" },
+        ]}
+      />
       <StatusLine>{shareStatus || event}</StatusLine>
     </GameFrame>
   );

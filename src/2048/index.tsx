@@ -24,6 +24,7 @@ import {
   DPad,
   GameFrame,
   GameHeader,
+  HowToPlay,
   Overlay,
   StatusLine,
   isTerminal,
@@ -413,6 +414,21 @@ export default function Game2048({ runtime }: AppProps) {
           Tell the model
         </button>
       </ControlBar>
+
+      <HowToPlay
+        rules={[
+          "Swipe or press an arrow and every tile slides that way as far as it can.",
+          "Two tiles with the same number merge into one worth double, and the total is added to your score.",
+          "A tile can only merge once per move.",
+          "Every move drops a new tile in. Reach 2048 to win, then keep going if you like.",
+          "When no move can change the board, the game is over.",
+        ]}
+        keys={[
+          { keys: ["Arrows", "WASD"], action: "Slide" },
+          { keys: ["Swipe"], action: "Slide on touch" },
+          { keys: ["Z"], action: "Undo" },
+        ]}
+      />
 
       <StatusLine>{shareStatus}</StatusLine>
     </GameFrame>

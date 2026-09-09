@@ -21,6 +21,7 @@ import {
   ControlBar,
   GameFrame,
   GameHeader,
+  HowToPlay,
   Notice,
   Overlay,
   StandardControls,
@@ -423,6 +424,16 @@ export default function EmojiRiddle({ runtime }: AppProps) {
         onRestart={replay}
         onShare={askForMore}
         shareLabel="Ask for more"
+      />
+
+      <HowToPlay
+        rules={[
+          "Each puzzle is a film or an idiom spelled out in emoji. Type what you think it is.",
+          "Spelling is forgiving, and a near miss is told apart from a plain wrong answer.",
+          "A correct guess is worth 100 points, dropping by 20 for each wrong guess before it.",
+          `A hint appears after ${HINT_AT} wrong guesses. After ${MAX_WRONG} the answer is revealed and you move on.`,
+        ]}
+        keys={[{ keys: ["Enter"], action: "Submit your guess" }]}
       />
 
       <StatusLine>{verdictMessage || shareStatus}</StatusLine>

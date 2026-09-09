@@ -28,6 +28,7 @@ import {
   ControlBar,
   GameFrame,
   GameHeader,
+  HowToPlay,
   Notice,
   Segmented,
   StatusLine,
@@ -571,12 +572,21 @@ export default function MusicKeyboard({ runtime }: AppProps) {
       </ControlBar>
 
       {!ready && <Notice>Touch a key or press one to start the audio. Browsers require a gesture first.</Notice>}
-      {ready && (
-        <Notice>
-          Z row and Q row are two octaves of naturals, the keys between them are the sharps. Left and right
-          arrows shift octave.
-        </Notice>
-      )}
+
+      <HowToPlay
+        rules={[
+          "Play the keys with the mouse, a touch screen, or your computer keyboard.",
+          "The Z row and the Q row are two octaves of naturals; the keys between them are the sharps.",
+          "Only 88 keys exist, so shift the octave to reach the rest of the piano.",
+          "Ask the model for a song and it writes one for this keyboard, which you can then play back.",
+          "Key hints print the mapping on the keys themselves if you would rather see it than remember it.",
+        ]}
+        keys={[
+          { keys: ["Z row", "Q row"], action: "Naturals, two octaves" },
+          { keys: ["Left", "Right"], action: "Shift octave" },
+          { keys: ["Panic"], action: "Silence a stuck note" },
+        ]}
+      />
 
       <StatusLine>{shareStatus}</StatusLine>
     </GameFrame>

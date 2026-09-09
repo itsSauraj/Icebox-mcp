@@ -358,6 +358,18 @@ export default function StackTower({ runtime }: AppProps) {
             onAction={
               game.status === "over" ? restart : game.status === "ready" || game.status === "paused" ? togglePause : undefined
             }
+            rules={{
+              rules: [
+                "The block slides back and forth. Drop it when it lines up with the one below.",
+                "Overhang is sliced off, so a sloppy drop makes the tower narrower for good.",
+                "A dead-centre drop is perfect: it scores extra and keeps the full width.",
+                "Miss the tower completely and the run ends.",
+              ],
+              keys: [
+                { keys: ["Tap", "Click"], action: "Drop" },
+                { keys: ["Space"], action: "Drop" },
+              ],
+            }}
           />
         </div>
       </div>

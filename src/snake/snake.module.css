@@ -64,6 +64,10 @@
   touch-action: none;
   -webkit-user-select: none;
   user-select: none;
+  /* Confines the food and segment z-indexes below to this element. Without it
+     they escape into the parent stacking context and paint over .overlay, since
+     neither `position: relative` nor `overflow: hidden` creates one. */
+  isolation: isolate;
 }
 
 /* ---- Food (amber apple) ---- */
@@ -149,6 +153,72 @@
   display: inline-flex;
   align-items: center;
   gap: 0.35em;
+}
+
+/* ---- How to play, shown on the ready overlay only ---- */
+/* `min-height: 0` lets flex shrink this below its content on a short board, so
+   the scrollbar lands here and the Play button below stays visible. */
+.rules {
+  width: 100%;
+  max-width: 30ch;
+  min-height: 0;
+  overflow-y: auto;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  /* Without this the children stretch to the full box width and their text
+     lands hard against the left edge. Centred, each one hugs its content. */
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+.rulesTitle {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--color-text-secondary);
+}
+.rulesList {
+  margin: 0;
+  padding-left: 1.15em;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 0.84rem;
+  line-height: 1.35;
+  color: var(--color-text-secondary);
+}
+.rulesList li::marker {
+  color: var(--color-accent);
+}
+.keys {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  gap: 5px var(--spacing-sm);
+  font-size: 0.84rem;
+}
+.keys dt {
+  display: flex;
+  gap: 3px;
+}
+.keys dd {
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+.kbd {
+  padding: 2px 6px;
+  border: var(--border-width-regular) solid var(--color-border);
+  border-radius: var(--border-radius-sm);
+  background: var(--color-background-secondary);
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: var(--font-weight-bold);
+  line-height: 1.6;
+  white-space: nowrap;
 }
 
 /* ---- D-pad ---- */

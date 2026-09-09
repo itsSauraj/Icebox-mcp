@@ -23,6 +23,7 @@ import {
   ControlBar,
   GameFrame,
   GameHeader,
+  HowToPlay,
   Notice,
   StatusLine,
   useBest,
@@ -393,7 +394,20 @@ export default function Yahtzee({ runtime }: AppProps) {
         </ControlBar>
       )}
 
-      <Notice>Joker rules apply: an extra Yahtzee goes in its matching upper box when that is still free.</Notice>
+      <HowToPlay
+        rules={[
+          "Thirteen rounds. Each round you roll five dice, and may reroll any of them twice more.",
+          "Then you must score the roll in one of the thirteen boxes. Every box is used exactly once.",
+          "Upper boxes score the total of that number only. Score 63 or more up there for a 35 bonus.",
+          "Lower boxes want a pattern: a full house, a straight, four of a kind, or all five alike for a Yahtzee.",
+          "If a roll fits nothing you still have to fill a box, so a zero is sometimes the least bad move.",
+          "Joker rules apply: an extra Yahtzee goes in its matching upper box when that is still free.",
+        ]}
+        keys={[
+          { keys: ["Click"], action: "Hold a die, or pick a box" },
+          { keys: ["Roll"], action: "Reroll what is not held" },
+        ]}
+      />
 
       <StatusLine>{shareStatus}</StatusLine>
     </GameFrame>

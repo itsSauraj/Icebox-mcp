@@ -24,6 +24,7 @@ import {
   ControlBar,
   GameFrame,
   GameHeader,
+  HowToPlay,
   Overlay,
   Segmented,
   StandardControls,
@@ -465,6 +466,22 @@ export default function Mastermind({ runtime }: AppProps) {
         status={game.status}
         onRestart={() => reset(game.difficulty)}
         onShare={tell}
+      />
+
+      <HowToPlay
+        rules={[
+          `Break the hidden code of ${game.length} colours in ${game.maxGuesses} guesses.`,
+          "Fill every slot, then submit to be scored.",
+          "A dark peg means one colour is right and in the right place.",
+          "A light peg means a colour is in the code but in the wrong place.",
+          "The pegs never say which slot they refer to. That is the puzzle.",
+        ]}
+        keys={[
+          { keys: ["Tap"], action: "Pick a colour, then a slot" },
+          { keys: ["1–8"], action: "Place a colour" },
+          { keys: ["Backspace"], action: "Take one back" },
+          { keys: ["Enter"], action: "Submit the guess" },
+        ]}
       />
 
       <StatusLine>{shareStatus}</StatusLine>

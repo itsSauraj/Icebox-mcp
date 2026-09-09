@@ -26,6 +26,7 @@ import {
   ControlBar,
   GameFrame,
   GameHeader,
+  HowToPlay,
   Overlay,
   Segmented,
   StandardControls,
@@ -321,6 +322,17 @@ export default function AimTrainer({ runtime }: AppProps) {
         onRestart={restart}
         onShare={tell}
       />
+
+      <HowToPlay
+        rules={[
+          "Tap the centre target to start the clock, then hit each new one as it appears.",
+          "Tapping anywhere but the target counts as a miss and drags your accuracy down.",
+          "Targets get smaller the more you hit, so it gets harder as you go.",
+          "At the end you get your hits, your accuracy and your average reaction time.",
+        ]}
+        keys={[{ keys: ["Click", "Tap"], action: "Shoot the target" }]}
+      />
+
       <StatusLine>{shareStatus}</StatusLine>
     </GameFrame>
   );

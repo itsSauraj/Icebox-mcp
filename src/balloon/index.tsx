@@ -580,6 +580,17 @@ export default function Balloon({ runtime }: AppProps) {
                 setPhase("playing");
               }
             }}
+            rules={{
+              rules: [
+                "Hold to fire the burner and rise. Let go and you sink.",
+                "Collect bubbles for points. A magnet pulls nearby ones in.",
+                "Spikes end the flight, unless a shield takes the hit for you.",
+              ],
+              keys: [
+                { keys: ["Hold"], action: "Rise" },
+                { keys: ["Space"], action: "Rise" },
+              ],
+            }}
           />
         </div>
       </div>

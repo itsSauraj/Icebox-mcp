@@ -384,6 +384,17 @@ export default function Flappy({ runtime }: AppProps) {
               overlayStatus === "ready" ? "Play" : overlayStatus === "over" ? "Play again" : overlayStatus === "paused" ? "Resume" : undefined
             }
             onAction={overlayStatus === "over" ? startGame : onPlayPause}
+            rules={{
+              rules: [
+                "Every tap gives one upward flap. Let go and gravity takes over.",
+                "Fly through the gap in each pipe. One point per pipe cleared.",
+                "Touching a pipe, the ground or the ceiling ends the run.",
+              ],
+              keys: [
+                { keys: ["Tap", "Click"], action: "Flap" },
+                { keys: ["Space"], action: "Flap" },
+              ],
+            }}
           />
         </div>
       </div>

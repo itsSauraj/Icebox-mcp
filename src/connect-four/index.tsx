@@ -30,6 +30,7 @@ import {
   DPad,
   GameFrame,
   GameHeader,
+  HowToPlay,
   Overlay,
   Segmented,
   StandardControls,
@@ -524,6 +525,20 @@ export default function ConnectFour({ runtime }: AppProps) {
         status={game.status}
         onRestart={reset}
         onShare={tell}
+      />
+
+      <HowToPlay
+        rules={[
+          "Drop a disc into any column that is not full. It falls to the lowest free slot.",
+          "First to line up four in a row — across, down or diagonally — wins.",
+          "Fill the board with no line and it is a draw.",
+          "You move first. Harder difficulties look further ahead.",
+        ]}
+        keys={[
+          { keys: ["Click"], action: "Drop into a column" },
+          { keys: ["Left", "Right"], action: "Pick a column" },
+          { keys: ["Space", "Enter"], action: "Drop" },
+        ]}
       />
 
       <StatusLine>{shareStatus}</StatusLine>

@@ -17,6 +17,7 @@
  * over fresh state without restarting its loop on every keystroke.
  */
 import {
+  Fragment,
   useCallback,
   useEffect,
   useRef,
@@ -487,6 +488,80 @@ export function GameHeader({
 }
 
 /**
+ * How to play: a short list of rules, plus an optional key/gesture legend.
+ *
+ * Every game states its own rules rather than inheriting a generic blurb,
+ * because the useful sentence is always game-specific ("walls end the game,
+ * unless you pick Wrap" is not something a shell can guess). Keep it to three
+ * or four lines — this panel shares the overlay with the Play button, and on a
+ * short board it is the part that scrolls.
+ */
+export interface GameRules {
+  /** One entry per rule. Three or four reads best. */
+  rules: ReactNode[];
+  /** Control legend. `keys` render as `<kbd>`, `action` is the plain label. */
+  keys?: { keys: string[]; action: string }[];
+}
+
+/** The list and legend on their own, so both presentations share one body. */
+function RulesBody({ rules, keys }: GameRules) {
+  return (
+    <>
+      <ul className={g.rulesList}>
+        {rules.map((r, i) => (
+          <li key={i}>{r}</li>
+        ))}
+      </ul>
+      {keys && keys.length > 0 && (
+        <dl className={g.keys}>
+          {keys.map((k) => (
+            <Fragment key={k.action}>
+              <dt>
+                {k.keys.map((label) => (
+                  <kbd key={label} className={g.kbd}>
+                    {label}
+                  </kbd>
+                ))}
+              </dt>
+              <dd>{k.action}</dd>
+            </Fragment>
+          ))}
+        </dl>
+      )}
+    </>
+  );
+}
+
+export function Rules({ rules, keys, title = "How to play" }: GameRules & { title?: string }) {
+  return (
+    <div className={g.rules}>
+      <h2 className={g.rulesTitle}>{title}</h2>
+      <RulesBody rules={rules} keys={keys} />
+    </div>
+  );
+}
+
+/**
+ * The same rules, collapsed behind a disclosure.
+ *
+ * For the many games that start mid-play and so never show a ready overlay
+ * (Sudoku, Minesweeper, 2048, every model-driven game): there is no start
+ * screen to put the rules on, and a permanently expanded panel would push the
+ * board around. Closed by default, and it sits below the controls, so it costs
+ * one line until someone wants it.
+ */
+export function HowToPlay({ rules, keys }: GameRules) {
+  return (
+    <details className={g.howto}>
+      <summary className={g.howtoSummary}>How to play</summary>
+      <div className={g.howtoBody}>
+        <RulesBody rules={rules} keys={keys} />
+      </div>
+    </details>
+  );
+}
+
+/**
  * The panel that covers the board when the game is not running. One component
  * handles all four non-playing states so every game reads the same way.
  */
@@ -498,6 +573,7 @@ export function Overlay({
   onAction,
   secondary,
   onSecondary,
+  rules,
   children,
 }: {
   status: GameStatus;
@@ -508,6 +584,13 @@ export function Overlay({
   onAction?: () => void;
   secondary?: string;
   onSecondary?: () => void;
+  /**
+   * How to play. Rendered on `ready` only: once the board is in a known state,
+   * a player who paused or lost wants the score and the button, not the rules
+   * again. Passed as a prop rather than left to each call site so the "ready
+   * only" rule holds everywhere without twenty repetitions of the same check.
+   */
+  rules?: GameRules;
   children?: ReactNode;
 }) {
   if (status === "playing") return null;
@@ -524,6 +607,7 @@ export function Overlay({
         <p className={g.overlayTitle}>{heading}</p>
       )}
       {detail && <p className={g.overlayDetail}>{detail}</p>}
+      {status === "ready" && rules && <Rules {...rules} />}
       {children}
       <div className={ui.controls}>
         {action && onAction && (

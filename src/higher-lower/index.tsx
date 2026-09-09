@@ -338,6 +338,18 @@ export default function HigherLower({ runtime }: AppProps) {
           onAction={start}
           secondary={phase === "over" ? "More pairs" : undefined}
           onSecondary={phase === "over" ? askMore : undefined}
+          rules={{
+            rules: [
+              "Two labels are shown. The left one's number is revealed, the right one's is hidden.",
+              "Say whether the right number is higher or lower than the left.",
+              "Right answers build a streak. The first wrong answer ends the run.",
+              "Clear the whole deck and you can ask the model for more pairs.",
+            ],
+            keys: [
+              { keys: ["Higher"], action: "Right side is bigger" },
+              { keys: ["Lower"], action: "Right side is smaller" },
+            ],
+          }}
         />
       </div>
 
